@@ -1,0 +1,168 @@
+{
+  "categories": {
+    "cat_founders": {
+      "name": "Founders",
+      "slug": "founders",
+      "description": "Stories from the minds behind the most innovative companies built in Bombay.",
+      "image": "https://images.unsplash.com/photo-1552664730-d307ca884978?q=80&w=2070&auto=format&fit=crop",
+      "color": "#1A365D",
+      "createdAt": "2024-01-01T00:00:00.000Z"
+    },
+    "cat_creators": {
+      "name": "Creators",
+      "slug": "creators",
+      "description": "The creative force of the city: artists, designers, and visionaries.",
+      "image": "https://images.unsplash.com/photo-1513364776144-60967b0f800f?q=80&w=2071&auto=format&fit=crop",
+      "color": "#2C7A7B",
+      "createdAt": "2024-01-02T00:00:00.000Z"
+    },
+    "cat_tech": {
+      "name": "Technology",
+      "slug": "technology",
+      "description": "Exploring how tech is driving Bombay's evolving ecosystem.",
+      "image": "https://images.unsplash.com/photo-1518770660439-4636190af475?q=80&w=2070&auto=format&fit=crop",
+      "color": "#7B341E",
+      "createdAt": "2024-01-03T00:00:00.000Z"
+    }
+  },
+  "founders": {
+    "founder_1": {
+      "name": "Aarav Desai",
+      "slug": "aarav-desai",
+      "title": "CEO & Co-founder",
+      "company": "FinEdge Analytics",
+      "bio": "Aarav founded FinEdge to bridge the gap between traditional finance and modern AI. With a decade of experience in investment banking, he realized the potential for predictive modeling in everyday trading.",
+      "image": "https://images.unsplash.com/photo-1560250097-0b93528c311a?q=80&w=2000&auto=format&fit=crop",
+      "quote": "Building in Bombay teaches you resilience. If you can make it work here, amidst the chaos, you can scale it anywhere.",
+      "achievements": [
+        "Forbes 30 Under 30 Asia",
+        "Raised $15M Series A",
+        "Launched first AI driven micro-investment app"
+      ],
+      "socialLinks": {
+        "twitter": "https://twitter.com/aaravdesai",
+        "linkedin": "https://linkedin.com/in/aaravdesai",
+        "website": "https://finedge.com"
+      },
+      "createdAt": "2024-02-15T10:00:00.000Z"
+    },
+    "founder_2": {
+      "name": "Riya Sharma",
+      "slug": "riya-sharma",
+      "title": "Founder",
+      "company": "EcoWeave",
+      "bio": "Riya started EcoWeave with a mission to bring sustainable fashion to the mainstream. Combining traditional Indian weaving techniques with modern ethical practices, her brand has taken over the D2C space.",
+      "image": "https://images.unsplash.com/photo-1573496359142-b8d87734a5a2?q=80&w=2000&auto=format&fit=crop",
+      "quote": "Sustainability is not a luxury; it is the only way forward for the fashion industry.",
+      "achievements": [
+        "Vogue's Best Sustainable Brand 2023",
+        "Zero-waste production certified",
+        "Employs over 500 local artisans"
+      ],
+      "socialLinks": {
+        "instagram": "https://instagram.com/riyasharma",
+        "linkedin": "https://linkedin.com/in/riyasharma"
+      },
+      "createdAt": "2024-03-01T14:30:00.000Z"
+    }
+  },
+  "creators": {
+    "creator_1": {
+      "name": "Karan Kapoor",
+      "slug": "karan-kapoor",
+      "title": "Digital Artist & Animator",
+      "bio": "Karan creates stunning 3D visual loops combining cyberpunk aesthetics with traditional Indian motifs. His work has been featured in major digital art festivals worldwide.",
+      "image": "https://images.unsplash.com/photo-1522075469751-3a6694fb2f61?q=80&w=2000&auto=format&fit=crop",
+      "specialization": "3D Animation",
+      "quote": "The canvas is unlimited. I want to paint the future exactly as chaotic and beautiful as I see it.",
+      "works": [
+        "The Neon Bazaar (Short Film)",
+        "Cyber-Deity Series (NFT Collection)",
+        "Visuals for OML Festival 2023"
+      ],
+      "socialLinks": {
+        "twitter": "https://twitter.com/karandigital",
+        "instagram": "https://instagram.com/karankapoor_art"
+      },
+      "createdAt": "2024-04-05T09:15:00.000Z"
+    },
+    "creator_2": {
+      "name": "Ananya Patel",
+      "slug": "ananya-patel",
+      "title": "Documentary Photographer",
+      "bio": "Ananya documents the unseen side of Mumbai. From the early morning prep at Dadar flower market to the late-night jazz scenes in Bandra, her lens captures raw emotion.",
+      "image": "https://images.unsplash.com/photo-1544005313-94ddf0286df2?q=80&w=2000&auto=format&fit=crop",
+      "specialization": "Photography",
+      "quote": "A photograph is a pause button on life.",
+      "works": [
+        "Bombay In Rain (Photo Book)",
+        "Exhibition at Jehangir Art Gallery",
+        "Faces of the Local (Series)"
+      ],
+      "socialLinks": {
+        "instagram": "https://instagram.com/ananyaptel",
+        "website": "https://ananyapatel.com"
+      },
+      "createdAt": "2024-04-10T11:45:00.000Z"
+    }
+  },
+  "articles": {
+    "article_1": {
+      "title": "The Rise of FinTech in Mumbai's Old Districts",
+      "subtitle": "How AI and cloud computing are modernizing Dalal Street.",
+      "content": "Mumbai has always been the financial nerve center of India. However, the last five years have seen a drastic shift. Traditional brokerages are being replaced by sleek algorithmic trading startups...\n\nWe sat down with Aarav Desai to understand this shift. 'The data was always there,' Aarav says, 'we just didn't have the compute to make sense of it.'...",
+      "category": "cat_tech",
+      "author": "Priya Nair",
+      "authorBio": "Tech journalist covering Indian startups.",
+      "authorImage": "https://images.unsplash.com/photo-1494790108377-be9c29b29330?q=80&w=150&auto=format&fit=crop",
+      "featuredImage": "https://images.unsplash.com/photo-1590283603385-17ffb141ebbb?q=80&w=2000&auto=format&fit=crop",
+      "slug": "rise-of-fintech-mumbai",
+      "excerpt": "How AI and cloud computing are modernizing Dalal Street.",
+      "readTime": 5,
+      "published": true,
+      "createdAt": "2024-05-01T08:00:00.000Z",
+      "updatedAt": "2024-05-01T08:00:00.000Z"
+    },
+    "article_2": {
+      "title": "Sustainable Fashion: The EcoWeave Story",
+      "subtitle": "Redefining D2C apparel in India.",
+      "content": "Fast fashion is one of the largest pollutants globally. When Riya Sharma started EcoWeave, her goal was simple: zero waste.\n\n'It is harder to scale, yes, but it is necessary.' Today, EcoWeave employs hundreds of local artisans, preserving fading weaving techniques while building a modern apparel line...",
+      "category": "cat_founders",
+      "author": "Vikram Singh",
+      "authorBio": "Lifestyle and business editor.",
+      "authorImage": "https://images.unsplash.com/photo-1500648767791-00dcc994a43e?q=80&w=150&auto=format&fit=crop",
+      "featuredImage": "https://images.unsplash.com/photo-1581044777550-4cfa60707c03?q=80&w=2000&auto=format&fit=crop",
+      "slug": "sustainable-fashion-ecoweave-story",
+      "excerpt": "Redefining D2C apparel in India through zero-waste production.",
+      "readTime": 4,
+      "published": true,
+      "createdAt": "2024-05-15T10:30:00.000Z",
+      "updatedAt": "2024-05-15T15:00:00.000Z"
+    },
+    "article_3": {
+      "title": "Digital Art and the Bombay Cyberpunk Aesthetic",
+      "subtitle": "Karan Kapoor's vision of the future.",
+      "content": "Walking through the crowded streets of Mumbai, Karan Kapoor sees something different. He sees a high-tech future layered over the colonial architecture.\n\nHis recent NFT collection 'Cyber-Deity' broke records, merging traditional elements with neon-drenched 3D art...",
+      "category": "cat_creators",
+      "author": "Neha Gupta",
+      "authorBio": "Art critic and culture writer.",
+      "authorImage": "https://images.unsplash.com/photo-1534528741775-53994a69daeb?q=80&w=150&auto=format&fit=crop",
+      "featuredImage": "https://images.unsplash.com/photo-1550745165-9bc0b252726f?q=80&w=2000&auto=format&fit=crop",
+      "slug": "digital-art-bombay-cyberpunk",
+      "excerpt": "Karan Kapoor's vision of the future merging tradition and cyber aesthetics.",
+      "readTime": 6,
+      "published": true,
+      "createdAt": "2024-06-01T12:00:00.000Z",
+      "updatedAt": "2024-06-02T09:00:00.000Z"
+    }
+  },
+  "admins": {
+    "admin_1": {
+      "email": "admin@thebombayforum.com",
+      "name": "Super Admin",
+      "accessKey": "ADMIN123456",
+      "role": "admin",
+      "createdAt": "2024-01-01T00:00:00.000Z"
+    }
+  }
+}

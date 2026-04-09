@@ -1,0 +1,41 @@
+@import url("https://fonts.googleapis.com/css2?family=Newsreader:ital,opsz,wght@0,6..72,200..800;1,6..72,200..800&family=Manrope:wght@200..800&display=swap");
+@import url("https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&display=swap");
+
+@import "tailwindcss";
+
+:root {
+  --font-newsreader: "Newsreader", serif;
+  --font-manrope: "Manrope", sans-serif;
+}
+
+html {
+  color-scheme: light;
+}
+
+body {
+  background-color: #fafaf5;
+  font-family: var(--font-manrope);
+  overflow-x: hidden;
+}
+
+.material-symbols-outlined {
+  font-variation-settings: "FILL" 0, "wght" 400, "GRAD" 0, "opsz" 24;
+  vertical-align: middle;
+}
+
+.tonal-layering {
+  box-shadow: 0px 20px 40px rgba(17, 38, 43, 0.06);
+}
+
+.no-scrollbar::-webkit-scrollbar {
+  display: none;
+}
+
+.no-scrollbar {
+  -ms-overflow-style: none;
+  scrollbar-width: none;
+}
+
+.editorial-shadow {
+  box-shadow: 0px 20px 40px rgba(15, 28, 44, 0.4);
+}
