@@ -234,3 +234,105 @@ export async function verifyAdminAccess(email: string, accessKey: string): Promi
   const admin = await getAdminByEmail(email);
   return admin && admin.accessKey === accessKey;
 }
+
+// ─────────────────────────────────────────────────────────
+// Future Page
+// ─────────────────────────────────────────────────────────
+
+// Hero (singleton)
+export async function getFutureHero() {
+  const snap = await get(ref(database, 'future/hero'));
+  return snap.exists() ? snap.val() : null;
+}
+export async function setFutureHero(data: any) {
+  await set(ref(database, 'future/hero'), data);
+}
+
+// Lead Story (singleton)
+export async function getFutureLeadStory() {
+  const snap = await get(ref(database, 'future/leadStory'));
+  return snap.exists() ? snap.val() : null;
+}
+export async function setFutureLeadStory(data: any) {
+  await set(ref(database, 'future/leadStory'), data);
+}
+
+// Side Items (list)
+export async function getFutureSideItems() {
+  const snap = await get(ref(database, 'future/sideItems'));
+  if (!snap.exists()) return [];
+  return Object.entries(snap.val()).map(([id, val]: [string, any]) => ({ id, ...val }));
+}
+export async function createFutureSideItem(data: any) {
+  const r = push(ref(database, 'future/sideItems'));
+  await set(r, data);
+  return r.key;
+}
+export async function updateFutureSideItem(id: string, data: any) {
+  await set(ref(database, `future/sideItems/${id}`), data);
+}
+export async function deleteFutureSideItem(id: string) {
+  await remove(ref(database, `future/sideItems/${id}`));
+}
+
+// Signal Cards (list)
+export async function getFutureSignalCards() {
+  const snap = await get(ref(database, 'future/signalCards'));
+  if (!snap.exists()) return [];
+  return Object.entries(snap.val()).map(([id, val]: [string, any]) => ({ id, ...val }));
+}
+export async function createFutureSignalCard(data: any) {
+  const r = push(ref(database, 'future/signalCards'));
+  await set(r, data);
+  return r.key;
+}
+export async function updateFutureSignalCard(id: string, data: any) {
+  await set(ref(database, `future/signalCards/${id}`), data);
+}
+export async function deleteFutureSignalCard(id: string) {
+  await remove(ref(database, `future/signalCards/${id}`));
+}
+
+// Story Grid (list)
+export async function getFutureStoryGrid() {
+  const snap = await get(ref(database, 'future/storyGrid'));
+  if (!snap.exists()) return [];
+  return Object.entries(snap.val()).map(([id, val]: [string, any]) => ({ id, ...val }));
+}
+export async function createFutureStoryItem(data: any) {
+  const r = push(ref(database, 'future/storyGrid'));
+  await set(r, data);
+  return r.key;
+}
+export async function updateFutureStoryItem(id: string, data: any) {
+  await set(ref(database, `future/storyGrid/${id}`), data);
+}
+export async function deleteFutureStoryItem(id: string) {
+  await remove(ref(database, `future/storyGrid/${id}`));
+}
+
+// Opinion Strip (singleton)
+export async function getFutureOpinionStrip() {
+  const snap = await get(ref(database, 'future/opinionStrip'));
+  return snap.exists() ? snap.val() : null;
+}
+export async function setFutureOpinionStrip(data: any) {
+  await set(ref(database, 'future/opinionStrip'), data);
+}
+
+// Fetch everything in one call
+export async function getAllFutureData() {
+  const snap = await get(ref(database, 'future'));
+  if (!snap.exists()) return null;
+  const d = snap.val();
+  const listify = (obj: any) =>
+    obj ? Object.entries(obj).map(([id, val]: [string, any]) => ({ id, ...val })) : [];
+  return {
+    hero: d.hero || null,
+    leadStory: d.leadStory || null,
+    sideItems: listify(d.sideItems).sort((a: any, b: any) => (a.order ?? 0) - (b.order ?? 0)),
+    signalCards: listify(d.signalCards).sort((a: any, b: any) => (a.order ?? 0) - (b.order ?? 0)),
+    storyGrid: listify(d.storyGrid).sort((a: any, b: any) => (a.order ?? 0) - (b.order ?? 0)),
+    opinionStrip: d.opinionStrip || null,
+  };
+}

@@ -8,12 +8,14 @@ const NAV = [
   { icon: 'dashboard', label: 'Overview', href: '/admin/dashboard' },
   { icon: 'article', label: 'Articles', href: '/admin/articles' },
   { icon: 'group', label: 'Founders & Creators', href: '/admin/profiles' },
+  { icon: 'rocket_launch', label: 'Future', href: '/admin/future' },
   { icon: 'web', label: 'Homepage', href: '/' },
   { icon: 'star', label: 'Spotlight', href: '/spotlight' },
   { icon: 'mail', label: 'Newsletter', href: '#' },
   { icon: 'search', label: 'SEO', href: '/admin/seo' },
   { icon: 'settings', label: 'Settings', href: '#' },
 ];
+
 
 export default function AdminLayout({ children }: { children: React.ReactNode }) {
   const router = useRouter();
