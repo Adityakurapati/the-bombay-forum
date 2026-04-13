@@ -77,7 +77,7 @@ export default async function FuturePage() {
       <Header />
       <main>
         {/* ── Hero (static brand element) ── */}
-        <section className="relative h-[707px] w-full overflow-hidden" style={{ backgroundColor: '#0B1929' }}>
+        <section className="relative h-[calc(100vh-100px)] w-full overflow-hidden" style={{ backgroundColor: '#0B1929' }}>
           <img
             className="absolute inset-0 w-full h-full object-cover opacity-60"
             alt="Futuristic Mumbai skyline at twilight"

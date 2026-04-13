@@ -83,14 +83,14 @@ export default async function BombayPage() {
 
       <main>
         {/* Hero Section */}
-        <section className="w-full bg-[#0B1929] text-white pt-16 pb-12 px-10">
-          <div className="max-w-7xl mx-auto flex flex-col gap-8">
+        <section className="w-full bg-[#0B1929] text-white md:h-[calc(100vh-100px)] flex flex-col justify-center px-6 md:px-10">
+          <div className="max-w-7xl mx-auto w-full flex flex-col gap-4 md:gap-8">
             <div>
               <span className="text-[#2DD4BF] text-xs font-bold tracking-[0.3em] uppercase border-b border-[#2DD4BF] pb-1 font-label">BOMBAY</span>
-              <h1 className="text-7xl md:text-8xl mt-6 font-light leading-tight tracking-tighter font-headline italic">
+              <h1 className="text-5xl md:text-8xl mt-6 font-light leading-tight tracking-tighter font-headline italic">
                 The City That Never Settles.
               </h1>
-              <p className="mt-8 text-xl text-slate-300 max-w-2xl font-body font-extralight leading-relaxed">
+              <p className="mt-8 text-lg md:text-xl text-slate-300 max-w-2xl font-body font-extralight leading-relaxed">
                 Chronicles of Mumbai's evolving culture, architecture, food, and the stories that define the city's soul.
               </p>
             </div>

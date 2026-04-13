@@ -89,11 +89,11 @@ export default async function SuitePage() {
       <Header />
 
       {/* Hero Section */}
-      <section className="relative w-full h-[795px] bg-[#11262B] flex items-end">
+      <section className="relative w-full h-[calc(100vh-100px)] bg-[#11262B] flex items-end">
         <img
           alt="Luxury Penthouse View"
           className="absolute inset-0 w-full h-full object-cover opacity-80"
-          src="https://lh3.googleusercontent.com/aida-public/AB6AXuCg5anWb0X_wLAgsAu1ogpkByr4ABGZj9bLYP_MdvxIbOuMcRR7YuNK6EN3ag9IptjV5aN-huJ-yS_D2hwOf3eTvXQcHg4sUTgcUBU251dcixW06eYNstJ0zqrTXYLt9Cc8yTZA83LFDDNK56VG5FWyakcskJmjw7_tyj_s1fxprpN6lP9pKTm4wEVy926ybr8YzedpkdJqD3Fwd7eaC8ApZYb1gJ6YsDcvVolKdLhqOfcvwiJpmH9PrWFoifZ4lAP64DP99TL5dHz5"
+          src={hero.image || 'https://lh3.googleusercontent.com/aida-public/AB6AXuCg5anWb0X_wLAgsAu1ogpkByr4ABGZj9bLYP_MdvxIbOuMcRR7YuNK6EN3ag9IptjV5aN-huJ-yS_D2hwOf3eTvXQcHg4sUTgcUBU251dcixW06eYNstJ0zqrTXYLt9Cc8yTZA83LFDDNK56VG5FWyakcskJmjw7_tyj_s1fxprpN6lP9pKTm4wEVy926ybr8YzedpkdJqD3Fwd7eaC8ApZYb1gJ6YsDcvVolKdLhqOfcvwiJpmH9PrWFoifZ4lAP64DP99TL5dHz5'}
         />
         <div className="absolute inset-0 bg-gradient-to-t from-[#0B1929] via-transparent to-transparent opacity-60"></div>
         <div className="relative z-10 w-full max-w-7xl mx-auto px-8 pb-20">

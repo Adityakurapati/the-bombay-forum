@@ -81,7 +81,7 @@ export default async function CreatorPage({ params }: PageProps) {
       <Header />
       <main>
         {/* Hero Split */}
-        <section className="grid grid-cols-1 md:grid-cols-2 min-h-[795px]">
+        <section className="grid grid-cols-1 md:grid-cols-2 h-auto md:h-[calc(100vh-100px)]">
           <div className="relative overflow-hidden h-[530px] md:h-auto">
             {(creator.heroImage || creator.image) && (
               <img

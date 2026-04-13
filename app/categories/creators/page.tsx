@@ -114,7 +114,7 @@ export default async function CreatorsPage() {
       <Header />
       <main>
         {/* Hero */}
-        <section className="relative h-[751px] w-full overflow-hidden flex items-end">
+        <section className="relative h-[calc(100vh-100px)] w-full overflow-hidden flex items-end">
           <div className="absolute inset-0 z-0">
             <img
               className="w-full h-full object-cover"

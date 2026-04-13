@@ -77,7 +77,7 @@ export default async function FoundersPage() {
       <Header />
 
       {/* ── 1. HERO ── */}
-      <header className="relative w-full h-[795px] flex items-end overflow-hidden">
+      <header className="relative w-full h-[calc(100vh-100px)] flex items-end overflow-hidden">
         <div className="absolute inset-0" style={{ backgroundColor: '#0B1929' }}>
           <img
             src="https://lh3.googleusercontent.com/aida-public/AB6AXuBL77Y80uPMF7YvDxrWCRXWGzTtbhLO0vP8MXO5C-ja0hEjWor64rNo_FgDb79p1urwj2DsNHvKjSG-fLH0M2cty6Z92Riednp3FLnMUX46RJ61sQmu05F5VgYu0c0TM2h3NCCKUFKmBxrWfuN-TZdW98Dxyi7GLiOiG2vo1afJasHOGjdzQ_Sm0rYzzFhDA_9gzzCZW-ki3MwfRjj_btTHp298J7BwA6hqw9APhCxaGPDWAwcM4HGudUdFQM8P0hiyOAP3TniDEHkj"

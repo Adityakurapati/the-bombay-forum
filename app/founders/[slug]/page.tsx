@@ -78,7 +78,7 @@ export default async function FounderPage({ params }: PageProps) {
       <Header />
       <main>
         {/* HERO */}
-        <section className="flex flex-col md:flex-row min-h-screen">
+        <section className="flex flex-col md:flex-row h-auto md:h-[calc(100vh-100px)]">
           {/* Portrait */}
           <div className="w-full md:w-1/2 bg-slate-900 overflow-hidden">
             {(founder.heroImage || founder.image) && (
