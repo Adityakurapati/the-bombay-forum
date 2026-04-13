@@ -138,8 +138,8 @@ export default async function CreatorsPage() {
 
         {/* Featured Creator */}
         {featuredCreator && (
-          <section className="py-24 px-12" style={{ backgroundColor: '#F5F5F0' }}>
-            <div className="max-w-7xl mx-auto grid grid-cols-1 md:grid-cols-2 gap-16 items-center">
+          <section className="py-16 md:py-24 px-6 md:px-12" style={{ backgroundColor: '#F5F5F0' }}>
+            <div className="max-w-7xl mx-auto grid grid-cols-1 md:grid-cols-2 gap-12 md:gap-16 items-center">
               <div className="aspect-[4/5] overflow-hidden">
                 <img
                   className="w-full h-full object-cover"
@@ -157,8 +157,8 @@ export default async function CreatorsPage() {
                 </p>
                 
                 {/* Pull Quote */}
-                <div className="border-l-4 border-brand-teal pl-8 mb-8">
-                  <blockquote className="font-headline text-2xl text-brand-navy leading-relaxed italic">
+                <div className="border-l-4 border-brand-teal pl-6 md:pl-8 mb-8">
+                  <blockquote className="font-headline text-xl md:text-2xl text-brand-navy leading-relaxed italic">
                     "{featuredCreator.quote || featuredCreator.tagline || 'Bombay isn\'t just a city; it\'s a living, breathing storyboard that demands to be told through a lens of raw, unpolished truth.'}"
                   </blockquote>
                 </div>
@@ -186,15 +186,15 @@ export default async function CreatorsPage() {
         )}
 
         {/* Content Grid */}
-        <section className="py-24 px-12 bg-surface">
+        <section className="py-20 lg:py-24 px-6 md:px-12 bg-surface">
           <div className="max-w-7xl mx-auto">
-            <div className="flex items-center gap-6 mb-16">
+            <div className="flex items-center gap-6 mb-12 lg:mb-16">
               <span className="text-[11px] tracking-[0.4em] font-bold text-on-surface/40 uppercase whitespace-nowrap font-label">
                 Latest Stories
               </span>
               <div className="h-[1px] bg-outline-variant/30 w-full" />
             </div>
-            <div className="grid grid-cols-1 md:grid-cols-3 gap-y-16 gap-x-12">
+            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-y-12 lg:gap-y-16 gap-x-8 lg:gap-x-12">
               {articles.map((item: any, i: number) => (
                 <article key={i} className="group flex flex-col cursor-pointer">
                   <Link href={`/articles/${item.slug}`}>
@@ -245,12 +245,12 @@ export default async function CreatorsPage() {
         </section>
 
         {/* Creator Economy Strip */}
-        <section className="bg-surface-container-high py-20 px-12">
+        <section className="bg-surface-container-high py-16 md:py-20 px-6 md:px-12">
           <div className="max-w-7xl mx-auto">
-            <span className="text-[11px] tracking-[0.4em] font-bold text-on-surface/40 uppercase block mb-12 font-label">
+            <span className="text-[11px] tracking-[0.4em] font-bold text-on-surface/40 uppercase block mb-10 md:mb-12 font-label">
               Creator Economy
             </span>
-            <div className="grid grid-cols-1 md:grid-cols-3 gap-12">
+            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-12">
               {economyItems.map((item) => (
                 <div key={item.title} className="flex flex-col">
                   <span className="text-brand-teal text-[9px] tracking-[0.2em] font-bold mb-3 uppercase font-label">
@@ -266,16 +266,16 @@ export default async function CreatorsPage() {
 
         {/* Faces in Creation (Spotlight on others) */}
         {facesCreators.length > 0 && (
-          <section className="py-24 px-12 bg-surface">
+          <section className="py-20 lg:py-24 px-6 md:px-12 bg-surface">
             <div className="max-w-7xl mx-auto">
-              <div className="flex items-center gap-6 mb-16">
+              <div className="flex items-center gap-6 mb-12 lg:mb-16">
                 <span className="text-[11px] tracking-[0.4em] font-bold text-on-surface/40 uppercase whitespace-nowrap font-label">
                   Faces in Creation
                 </span>
                 <div className="h-[1px] bg-outline-variant/30 w-full" />
               </div>
               
-              <div className="grid grid-cols-2 lg:grid-cols-5 gap-8">
+              <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-5 gap-8">
                 {facesCreators.map((c: any) => (
                   <Link key={c.id} href={`/creators/${c.slug}`} className="group block">
                     <div className="aspect-square rounded-full overflow-hidden mb-6 bg-surface-container-low grayscale group-hover:grayscale-0 transition-all duration-700">
@@ -301,9 +301,9 @@ export default async function CreatorsPage() {
         )}
 
         {/* Creator Directory */}
-        <section className="py-32 px-12" style={{ backgroundColor: '#F5F5F0' }}>
+        <section className="py-20 lg:py-32 px-6 md:px-12" style={{ backgroundColor: '#F5F5F0' }}>
           <div className="max-w-7xl mx-auto">
-            <div className="flex items-center gap-6 mb-20">
+            <div className="flex items-center gap-6 mb-12 md:mb-20">
               <h3 className="text-[11px] tracking-[0.4em] font-bold uppercase whitespace-nowrap font-label text-brand-navy">
                 CREATOR DIRECTORY
               </h3>

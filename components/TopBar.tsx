@@ -18,9 +18,9 @@ export function TopBar() {
   }, []);
 
   return (
-    <aside className="bg-surface-container-high text-[10px] tracking-[0.2em] uppercase py-2 px-8 flex justify-between items-center border-b border-outline-variant/20">
-      <div className="flex items-center gap-6">
-        <span>MUMBAI, MH</span>
+    <aside className="bg-surface-container-high text-[10px] tracking-[0.2em] uppercase py-2 px-4 md:px-8 flex justify-between items-center border-b border-outline-variant/20">
+      <div className="flex items-center gap-4 md:gap-6">
+        <span className="hidden sm:inline">MUMBAI, MH</span>
         <span>{dateStr}</span>
       </div>
       <div className="flex items-center gap-4">

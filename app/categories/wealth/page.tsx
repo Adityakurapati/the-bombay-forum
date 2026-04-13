@@ -91,14 +91,14 @@ export default async function WealthPage() {
 
       <main>
         {/* Hero Section */}
-        <section className="w-full bg-[#0B1929] text-white pt-16 pb-12 px-10">
+        <section className="w-full bg-[#0B1929] text-white pt-16 pb-12 px-6 md:px-10">
           <div className="max-w-7xl mx-auto flex flex-col gap-8">
             <div>
               <span className="text-[#2DD4BF] text-xs font-bold tracking-[0.3em] uppercase border-b border-[#2DD4BF] pb-1 font-label">WEALTH</span>
-              <h1 className="text-7xl md:text-8xl mt-6 font-light leading-tight tracking-tighter font-headline italic">
+              <h1 className="text-5xl md:text-8xl mt-6 font-light leading-tight tracking-tighter font-headline italic">
                 {hero.title}
               </h1>
-              <p className="mt-8 text-xl text-slate-300 max-w-2xl font-body font-extralight leading-relaxed">
+              <p className="mt-8 text-lg md:text-xl text-slate-300 max-w-2xl font-body font-extralight leading-relaxed">
                 {hero.description}
               </p>
             </div>
@@ -129,8 +129,8 @@ export default async function WealthPage() {
         </section>
 
         {/* Lead Story Section */}
-        <section className="bg-[#F5F5F0] py-20 px-10">
-          <div className="max-w-7xl mx-auto grid grid-cols-1 lg:grid-cols-3 gap-16">
+        <section className="bg-[#F5F5F0] py-16 md:py-20 px-6 md:px-10">
+          <div className="max-w-7xl mx-auto grid grid-cols-1 lg:grid-cols-3 gap-12 lg:gap-16">
             {/* Main Story */}
             <div className="lg:col-span-2 group">
               <Link href={lead.slug || '#'}>
@@ -165,7 +165,7 @@ export default async function WealthPage() {
         </section>
 
         {/* Market Pulse Strip */}
-        <section className="bg-surface-container py-16 px-10">
+        <section className="bg-surface-container py-16 px-6 md:px-10">
           <div className="max-w-7xl mx-auto">
             <div className="flex items-center gap-4 mb-10">
               <h2 className="text-xs font-bold tracking-[0.4em] uppercase text-on-surface/50 font-label">Market Pulse</h2>
@@ -183,10 +183,10 @@ export default async function WealthPage() {
         </section>
 
         {/* Story Grid */}
-        <section className="bg-[#F5F5F0] py-24 px-10">
+        <section className="bg-[#F5F5F0] py-20 md:py-24 px-6 md:px-10">
           <div className="max-w-7xl mx-auto">
-            <h2 className="text-4xl font-headline italic mb-16">Latest from Wealth</h2>
-            <div className="grid grid-cols-1 md:grid-cols-3 gap-y-16 gap-x-12">
+            <h2 className="text-3xl md:text-4xl font-headline italic mb-12 md:mb-16">Latest from Wealth</h2>
+            <div className="grid grid-cols-1 md:grid-cols-3 gap-y-12 md:gap-y-16 gap-x-12">
               {storyGrid.map((item: any) => (
                 <Link key={item.id} href={item.slug || '#'} className="group cursor-pointer block">
                   <div className="aspect-[4/3] bg-surface-dim overflow-hidden font-body">
@@ -203,11 +203,11 @@ export default async function WealthPage() {
         </section>
 
         {/* Featured Opinion */}
-        <section className="w-full bg-[#0B1929] py-32 px-10 relative overflow-hidden">
+        <section className="w-full bg-[#0B1929] py-24 md:py-32 px-6 md:px-10 relative overflow-hidden">
           <div className="absolute top-0 right-0 w-1/3 h-full bg-gradient-to-l from-primary/10 to-transparent pointer-events-none"></div>
           <div className="max-w-4xl mx-auto text-center flex flex-col items-center gap-10">
             <div className="w-12 h-1 bg-[#2DD4BF]"></div>
-            <blockquote className="text-5xl md:text-6xl text-white font-headline italic leading-tight">
+            <blockquote className="text-4xl md:text-6xl text-white font-headline italic leading-tight">
               {opinion.quote}
             </blockquote>
             <div className="flex flex-col items-center">
@@ -223,9 +223,9 @@ export default async function WealthPage() {
         </section>
 
         {/* Newsletter CTA */}
-        <section className="bg-white py-24 px-10 border-t border-surface-container">
+        <section className="bg-white py-20 md:py-24 px-6 md:px-10 border-t border-surface-container">
           <div className="max-w-3xl mx-auto text-center">
-            <h2 className="text-4xl font-headline mb-4 italic">Get the Wealth Brief — every Friday.</h2>
+            <h2 className="text-3xl md:text-4xl font-headline mb-4 italic">Get the Wealth Brief — every Friday.</h2>
             <p className="text-on-surface/60 font-body mb-10">A curated distillation of the week's most important financial moves, delivered directly to your inbox.</p>
             <form className="flex flex-col md:flex-row gap-4">
               <input className="flex-grow bg-surface-container-low border-0 px-6 py-4 focus:ring-2 focus:ring-primary text-on-surface placeholder:text-on-surface/40 font-body" placeholder="Email Address" type="email"/>

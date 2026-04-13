@@ -132,7 +132,7 @@ export default function HomePageClient() {
 
       {/* ── MAIN NAV / HEADER ── */}
       <header
-        className="text-white sticky top-0 z-50 flex justify-between items-center px-12 py-4 w-full"
+        className="text-white sticky top-0 z-50 flex justify-between items-center px-4 md:px-12 py-4 w-full"
         style={{ backgroundColor: '#0B1929' }}
       >
         {/* Left nav */}
@@ -172,10 +172,10 @@ export default function HomePageClient() {
       </header>
 
       {/* ── MAIN CONTENT ── */}
-      <main className="max-w-[1440px] mx-auto px-8 pt-16">
+      <main className="max-w-[1440px] mx-auto px-4 md:px-8 pt-8 md:pt-16">
 
         {/* ── 1. MAGAZINE HERO ── */}
-        <section className="flex flex-col lg:flex-row gap-12 mb-32">
+        <section className="flex flex-col lg:flex-row gap-8 lg:gap-12 mb-20 lg:mb-32">
 
           {/* Cover Story (65%) */}
           <article className="lg:w-[65%] group cursor-pointer">
@@ -193,7 +193,7 @@ export default function HomePageClient() {
               </div>
             </div>
             <div>
-              <h1 className="font-headline text-5xl lg:text-7xl leading-[0.95] tracking-tight mb-8 text-primary">
+              <h1 className="font-headline text-4xl lg:text-7xl leading-[0.95] tracking-tight mb-6 lg:mb-8 text-primary">
                 {coverStory.title}
               </h1>
               <p className="text-xl text-on-surface-variant max-w-2xl font-body leading-relaxed opacity-80">
@@ -238,14 +238,14 @@ export default function HomePageClient() {
         </section>
 
         {/* ── 2. FEATURED THIS WEEK ── */}
-        <section className="mb-32">
-          <div className="flex justify-between items-end mb-16 border-b border-outline-variant/30 pb-6">
-            <h2 className="font-headline text-4xl">Featured This Week</h2>
+        <section className="mb-20 lg:mb-32">
+          <div className="flex flex-col md:flex-row justify-between items-start md:items-end mb-12 lg:mb-16 border-b border-outline-variant/30 pb-6 gap-4">
+            <h2 className="font-headline text-3xl md:text-4xl">Featured This Week</h2>
             <Link href="/categories/founders" className="text-[10px] uppercase tracking-widest font-bold border-b-2 border-accent-teal pb-1 hover:text-accent-teal transition-colors font-label">
               View All Stories
             </Link>
           </div>
-          <div className="grid grid-cols-1 md:grid-cols-3 gap-16">
+          <div className="grid grid-cols-1 md:grid-cols-3 gap-12 md:gap-16">
             {featuredWeek.map((art: any) => (
               <Link href={art.href || '#'} key={art.title}>
                 <article className="group cursor-pointer">
@@ -278,8 +278,8 @@ export default function HomePageClient() {
                 className="w-full aspect-[4/5] object-cover grayscale brightness-90"
               />
               {/* Pull-quote card */}
-              <div className="absolute -bottom-10 -right-10 bg-white p-12 max-w-sm shadow-2xl hidden lg:block border-l-8 border-accent-teal">
-                <p className="font-headline text-2xl italic text-primary mb-6">
+              <div className="absolute -bottom-6 -right-0 md:-bottom-10 md:-right-10 bg-white p-6 md:p-12 max-w-sm shadow-2xl border-l-8 border-accent-teal md:block">
+                <p className="font-headline text-xl md:text-2xl italic text-primary mb-4 md:mb-6">
                   "{featuredFounder?.quote || featuredFounder?.tagline || 'The next decade of global innovation won\'t happen in Silicon Valley. It\'s happening in the streets of Bengaluru and the boardrooms of Mumbai.'}"
                 </p>
                 <span className="text-[10px] uppercase tracking-[0.3em] font-bold text-accent-teal font-label">
@@ -290,11 +290,11 @@ export default function HomePageClient() {
           </div>
 
           {/* Right: Editorial content */}
-          <div className="lg:w-1/2">
-            <span className="text-accent-teal text-[11px] font-bold uppercase tracking-[0.4em] block mb-8 font-label">
+          <div className="lg:w-1/2 mt-12 lg:mt-0">
+            <span className="text-accent-teal text-[11px] font-bold uppercase tracking-[0.4em] block mb-6 md:mb-8 font-label">
               The Founders
             </span>
-            <h2 className="font-headline text-6xl mb-10 leading-[1.1] text-primary">
+            <h2 className="font-headline text-4xl md:text-6xl mb-8 md:mb-10 leading-[1.1] text-primary">
               {featuredFounder?.name
                 ? `${featuredFounder.name}: ${featuredFounder.company || 'Redefining Indian Business.'}`
                 : 'The Decacorn Manifesto: Why Profitability is the New Status Symbol.'}
@@ -322,7 +322,7 @@ export default function HomePageClient() {
       </main>
 
       {/* ── 4. SPONSORED STRIP ── */}
-      <section className="py-14 px-8 mb-32 overflow-hidden relative" style={{ backgroundColor: '#11262B' }}>
+      <section className="py-14 px-4 md:px-8 mb-20 lg:mb-32 overflow-hidden relative" style={{ backgroundColor: '#11262B' }}>
         <div className="max-w-[1440px] mx-auto flex flex-col md:flex-row items-center justify-between gap-12">
           <div className="flex items-center gap-8">
             <span className="text-[9px] uppercase tracking-[0.3em] font-label" style={{ color: 'rgba(139,176,184,0.6)' }}>
@@ -342,9 +342,9 @@ export default function HomePageClient() {
       </section>
 
       {/* ── 5. THE SUITE CAROUSEL ── */}
-      <section className="max-w-[1440px] mx-auto px-8 mb-32">
-        <div className="flex justify-between items-end mb-16 border-b border-outline-variant/30 pb-8">
-          <h2 className="font-headline text-5xl">The Suite</h2>
+      <section className="max-w-[1440px] mx-auto px-4 md:px-8 mb-20 lg:mb-32">
+        <div className="flex justify-between items-end mb-10 md:mb-16 border-b border-outline-variant/30 pb-6 md:pb-8">
+          <h2 className="font-headline text-3xl md:text-5xl">The Suite</h2>
           <div className="flex gap-4">
             <button className="w-12 h-12 border border-outline-variant/50 flex items-center justify-center hover:bg-surface-container transition-colors group">
               <span className="material-symbols-outlined group-hover:text-accent-teal">chevron_left</span>
@@ -354,9 +354,9 @@ export default function HomePageClient() {
             </button>
           </div>
         </div>
-        <div className="flex gap-10 overflow-x-auto pb-10" style={{ scrollbarWidth: 'none', msOverflowStyle: 'none' } as React.CSSProperties}>
+        <div className="flex gap-6 md:gap-10 overflow-x-auto pb-10 no-scrollbar" style={{ scrollbarWidth: 'none', msOverflowStyle: 'none' } as React.CSSProperties}>
           {suiteItems.map((item: any) => (
-            <div key={item.title} className="min-w-[400px] group cursor-pointer flex-shrink-0">
+            <div key={item.title} className="min-w-[280px] md:min-w-[400px] group cursor-pointer flex-shrink-0">
               <div className="aspect-square bg-surface-container mb-8 overflow-hidden">
                 <img src={item.img || item.image} alt={item.title} className="w-full h-full object-cover transition-transform duration-1000 group-hover:scale-110" />
               </div>
@@ -373,9 +373,9 @@ export default function HomePageClient() {
       </section>
 
       {/* ── 6. NEWSLETTER ── */}
-      <section className="py-32 px-8 text-center border-y border-outline-variant/20 mb-0" style={{ backgroundColor: 'rgba(214,233,228,0.3)' }}>
+      <section className="py-20 lg:py-32 px-4 md:px-8 text-center border-y border-outline-variant/20 mb-0" style={{ backgroundColor: 'rgba(214,233,228,0.3)' }}>
         <div className="max-w-2xl mx-auto">
-          <h2 className="font-headline text-6xl mb-8 text-primary">The Saturday Communiqué</h2>
+          <h2 className="font-headline text-4xl md:text-6xl mb-6 md:mb-8 text-primary">The Saturday Communiqué</h2>
           <p className="text-on-surface-variant font-body text-lg mb-12 opacity-80">
             Our weekly curation of business intelligence, culture, and luxury, delivered every Saturday morning to 120,000+ elite readers.
           </p>
@@ -398,8 +398,8 @@ export default function HomePageClient() {
       </section>
 
       {/* ── 7. FOOTER ── */}
-      <footer className="text-white pt-24 pb-12 px-12" style={{ backgroundColor: '#11262B' }}>
-        <div className="grid grid-cols-1 md:grid-cols-4 gap-16 mb-24 max-w-[1440px] mx-auto">
+      <footer className="text-white pt-20 lg:pt-24 pb-12 px-6 lg:px-12" style={{ backgroundColor: '#11262B' }}>
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-12 lg:gap-16 mb-20 lg:mb-24 max-w-[1440px] mx-auto">
           {/* Brand Col */}
           <div className="col-span-1">
             <div className="mb-10">

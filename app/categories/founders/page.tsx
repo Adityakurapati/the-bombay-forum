@@ -94,10 +94,10 @@ export default async function FoundersPage() {
             >
               THE FOUNDERS
             </span>
-            <h1 className="font-headline text-6xl md:text-8xl text-white mb-6 leading-[0.9] tracking-tighter">
+            <h1 className="font-headline text-5xl md:text-8xl text-white mb-6 leading-[0.9] tracking-tighter">
               The New Architects of India.
             </h1>
-            <p className="text-lg md:text-xl text-white/80 font-light font-body max-w-lg tracking-wide">
+            <p className="text-base md:text-xl text-white/80 font-light font-body max-w-lg tracking-wide leading-relaxed">
               Stories of the founders building businesses that will define the next decade.
             </p>
           </div>
@@ -120,7 +120,7 @@ export default async function FoundersPage() {
 
             {/* Content */}
             <div
-              className="flex flex-col justify-center px-8 md:px-20 py-20"
+              className="flex flex-col justify-center px-6 md:px-20 py-16 md:py-20"
               style={{ backgroundColor: '#F5F5F0' }}
             >
               <span
@@ -130,19 +130,19 @@ export default async function FoundersPage() {
                 FEATURED FOUNDER
               </span>
               <h2
-                className="text-5xl md:text-7xl font-headline mb-2 tracking-tighter"
+                className="text-4xl md:text-7xl font-headline mb-2 tracking-tighter"
                 style={{ color: '#0B1929' }}
               >
                 {featuredFounder.name}
               </h2>
-              <p className="text-sm font-label uppercase tracking-widest text-secondary mb-12">
+              <p className="text-sm font-label uppercase tracking-widest text-secondary mb-8 md:mb-12">
                 {featuredFounder.company} {featuredFounder.title ? ` ${featuredFounder.title}` : ''}
               </p>
 
               {/* Pull Quote */}
-              <div className="pl-8 mb-12" style={{ borderLeft: `4px solid ${TEAL}` }}>
+              <div className="pl-6 md:pl-8 mb-8 md:mb-12" style={{ borderLeft: `4px solid ${TEAL}` }}>
                 <blockquote
-                  className="text-3xl md:text-4xl font-headline italic leading-tight font-light"
+                  className="text-2xl md:text-4xl font-headline italic leading-tight font-light"
                   style={{ color: '#0B1929' }}
                 >
                   "{featuredFounder.quote || featuredFounder.tagline || 'The goal is to build something that lasts, not just something that grows.'}"
@@ -173,7 +173,7 @@ export default async function FoundersPage() {
       )}
 
       {/* ── 3. FEATURED THIS WEEK ── */}
-      <section className="max-w-7xl mx-auto px-8 md:px-12 py-32 bg-surface">
+      <section className="max-w-7xl mx-auto px-6 md:px-12 py-20 md:py-32 bg-surface">
         <div className="flex items-center gap-4 mb-16">
           <h3
             className="text-[10px] tracking-[0.4em] font-bold uppercase whitespace-nowrap font-label"
@@ -226,15 +226,15 @@ export default async function FoundersPage() {
       </section>
 
       {/* ── 4. ONES TO WATCH ── */}
-      <section className="w-full py-20" style={{ backgroundColor: '#E8ECE9' }}>
-        <div className="max-w-7xl mx-auto px-8 md:px-12">
+      <section className="w-full py-16 md:py-24" style={{ backgroundColor: '#E8ECE9' }}>
+        <div className="max-w-7xl mx-auto px-6 md:px-12">
           <h3
             className="text-[10px] tracking-[0.4em] font-bold uppercase mb-12 font-label"
             style={{ color: '#0B1929' }}
           >
             ONES TO WATCH
           </h3>
-          <div className="grid grid-cols-2 md:grid-cols-5 gap-8">
+          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-5 gap-8">
             {onesToWatch.length > 0 ? onesToWatch.map((p: any) => (
               <Link key={p.id} href={`/founders/${p.slug}`} className="flex flex-col group cursor-pointer">
                 <div className="aspect-[3/4] overflow-hidden mb-6 bg-surface-container-low">
@@ -291,7 +291,7 @@ export default async function FoundersPage() {
       </section>
 
       {/* ── 5. COMMUNITY DIRECTORY ── */}
-      <section className="py-32 px-8 md:px-12 bg-white">
+      <section className="py-20 md:py-32 px-6 md:px-12 bg-white">
         <div className="max-w-7xl mx-auto">
           <div className="flex items-center gap-6 mb-20">
             <h3 className="text-[11px] tracking-[0.4em] font-bold uppercase whitespace-nowrap font-label text-brand-navy">
@@ -300,7 +300,7 @@ export default async function FoundersPage() {
             <div className="h-[1px] w-full bg-brand-navy/10" />
           </div>
 
-          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-x-8 gap-y-20">
+          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-x-8 gap-y-12 md:gap-y-20">
             {founders.map((p: any) => (
               <Link key={p.id} href={`/founders/${p.slug}`} className="group block">
                 <div className="aspect-[4/5] overflow-hidden mb-8 bg-surface-container-low">
@@ -328,9 +328,9 @@ export default async function FoundersPage() {
       </section>
 
       {/* ── 6. SPOTLIGHT STRIP ── */}
-      <section className="py-24" style={{ backgroundColor: '#0B1929' }}>
-        <div className="max-w-7xl mx-auto px-12">
-          <div className="flex flex-col md:flex-row items-start md:items-center justify-between gap-12 md:gap-24">
+      <section className="py-20 lg:py-24" style={{ backgroundColor: '#0B1929' }}>
+        <div className="max-w-7xl mx-auto px-6 lg:px-12">
+          <div className="flex flex-col md:flex-row items-start md:items-center justify-between gap-8 md:gap-24">
             <div className="flex-shrink-0">
               <h2 className="text-3xl md:text-4xl font-headline font-bold text-white tracking-[0.1em]">
                 THE OBEROI GROUP

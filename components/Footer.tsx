@@ -26,7 +26,7 @@ export function Footer() {
   const year = new Date().getFullYear();
 
   return (
-    <footer className="text-white pt-24 pb-12 px-12" style={{ backgroundColor: '#11262B' }}>
+    <footer className="text-white pt-24 pb-12 px-6 md:px-12" style={{ backgroundColor: '#11262B' }}>
       <div className="grid grid-cols-1 md:grid-cols-4 gap-16 mb-24 max-w-[1440px] mx-auto">
 
         {/* ── Brand Col ── */}
