@@ -1,18 +1,23 @@
-'use client';
-
 import Link from 'next/link';
-import { useEffect, useState } from 'react';
 import { TopBar } from '@/components/TopBar';
 import { Header } from '@/components/Header';
 import { Footer } from '@/components/Footer';
+import { getAllFutureData } from '@/lib/firebase';
+
+export const dynamic = 'force-dynamic'; // SSR on every request – always fresh from Firebase
+
+export const metadata = {
+  title: 'Future | THE BOMBAY FORUM',
+  description: 'Technology, ideas and forces shaping the world India will live in.',
+};
 
 const TEAL = '#006A6A';
 
-/* ── Static fallback data (shown while loading / if DB empty) ── */
+/* ── Default content (fallback when Firebase is empty) ── */
 const DEFAULT_LEAD = {
   leadImage: 'https://lh3.googleusercontent.com/aida-public/AB6AXuDQ8VomQSVjynppc7Q_7mDwN_dpLcgOM_QBTWJBdXbL9zk7ZNaE5MOWxAW304LITOHoQoxQHXhg_p3LyxAzw02gbJTk-txBj7ORNI7uJWmP6bi_QacVN0UKvrSFKtQzIB4sz7EPRC6eWImhzicgO5XGac0jxTKGLDQxtlwy1zyHvUasHwRZCD2wq6x48VkRJL6F6wJbkf4Hxs8VU5zG2g46RnyeFew41oqldPEWp_l3BH77aFPTR6U034v16Rc6siltnMemKbSncJW5',
   leadCategory: 'FUTURE',
-  leadTitle: 'The Intelligence Sovereign: India\'s Path to AGI.',
+  leadTitle: "The Intelligence Sovereign: India's Path to AGI.",
   leadAuthor: 'Aarav Malhotra',
   leadDate: 'October 24, 2024',
   leadExcerpt: 'As the global race for artificial general intelligence accelerates, India is carving out a unique strategy that prioritizes sovereign data over raw compute power.',
@@ -50,80 +55,28 @@ const DEFAULT_OPINION = {
   linkSlug: '#',
 };
 
-/* ── Types ── */
-type SideItem    = { id: string; sub: string; title: string; body: string };
-type SignalCard  = { id: string; title: string; body: string; signal: boolean };
-type StoryItem   = { id: string; sub: string; title: string; body: string; read: string; img: string };
-type LeadStory   = typeof DEFAULT_LEAD;
-type OpinionStrip = typeof DEFAULT_OPINION;
+export default async function FuturePage() {
+  /* ── Fetch live data from Firebase (server-side) ── */
+  let raw: Awaited<ReturnType<typeof getAllFutureData>> = null;
+  try {
+    raw = await getAllFutureData();
+  } catch (err) {
+    console.error('[FuturePage] Firebase fetch failed:', err);
+  }
 
-/* ── Skeleton helpers ── */
-function SideItemSkeleton() {
-  return (
-    <div className="flex flex-col border-t border-outline-variant/30 py-6 animate-pulse">
-      <div className="w-20 h-2 bg-surface-container-highest mb-2" />
-      <div className="w-full h-4 bg-surface-container-highest mb-2" />
-      <div className="w-3/4 h-3 bg-surface-container-highest" />
-    </div>
-  );
-}
-function SignalCardSkeleton() {
-  return (
-    <div className="bg-surface-container-lowest p-10 flex flex-col justify-between min-h-[300px] border-b-4 border-outline-variant animate-pulse">
-      <div className="space-y-3">
-        <div className="w-full h-5 bg-surface-container-highest" />
-        <div className="w-3/4 h-3 bg-surface-container-highest" />
-        <div className="w-1/2 h-3 bg-surface-container-highest" />
-      </div>
-      <div className="w-16 h-6 bg-surface-container-highest mt-6" />
-    </div>
-  );
-}
-function StoryItemSkeleton() {
-  return (
-    <div className="animate-pulse">
-      <div className="aspect-square bg-surface-container-highest mb-6" />
-      <div className="w-16 h-2 bg-surface-container-highest mb-3" />
-      <div className="w-full h-5 bg-surface-container-highest mb-4" />
-      <div className="w-3/4 h-3 bg-surface-container-highest mb-2" />
-      <div className="w-1/2 h-3 bg-surface-container-highest" />
-    </div>
-  );
-}
-
-export default function FuturePage() {
-  const [lead, setLead] = useState<LeadStory>(DEFAULT_LEAD);
-  const [sideItems, setSideItems] = useState<SideItem[]>([]);
-  const [signalCards, setSignalCards] = useState<SignalCard[]>([]);
-  const [storyGrid, setStoryGrid] = useState<StoryItem[]>([]);
-  const [opinion, setOpinion] = useState<OpinionStrip>(DEFAULT_OPINION);
-  const [loading, setLoading] = useState(true);
-
-  useEffect(() => {
-    fetch('/api/future')
-      .then((r) => r.json())
-      .then((data) => {
-        if (data?.leadStory)   setLead({ ...DEFAULT_LEAD, ...data.leadStory });
-        if (data?.sideItems?.length)   setSideItems(data.sideItems);
-        if (data?.signalCards?.length) setSignalCards(data.signalCards);
-        if (data?.storyGrid?.length)   setStoryGrid(data.storyGrid);
-        if (data?.opinionStrip) setOpinion({ ...DEFAULT_OPINION, ...data.opinionStrip });
-      })
-      .catch(console.error)
-      .finally(() => setLoading(false));
-  }, []);
-
-  /* Use defaults while loading so layout never collapses */
-  const displaySide    = loading || !sideItems.length    ? DEFAULT_SIDE_ITEMS    : sideItems;
-  const displaySignal  = loading || !signalCards.length  ? DEFAULT_SIGNAL_CARDS  : signalCards;
-  const displayStory   = loading || !storyGrid.length    ? DEFAULT_STORY_GRID    : storyGrid;
+  /* ── Merge with defaults ── */
+  const lead        = raw?.leadStory    ? { ...DEFAULT_LEAD,    ...raw.leadStory    } : DEFAULT_LEAD;
+  const sideItems   = raw?.sideItems?.length   ? raw.sideItems   : DEFAULT_SIDE_ITEMS;
+  const signalCards = raw?.signalCards?.length ? raw.signalCards : DEFAULT_SIGNAL_CARDS;
+  const storyGrid   = raw?.storyGrid?.length   ? raw.storyGrid   : DEFAULT_STORY_GRID;
+  const opinion     = raw?.opinionStrip ? { ...DEFAULT_OPINION, ...raw.opinionStrip } : DEFAULT_OPINION;
 
   return (
     <>
       <TopBar />
       <Header />
       <main>
-        {/* ── Hero (static) ── */}
+        {/* ── Hero (static brand element) ── */}
         <section className="relative h-[707px] w-full overflow-hidden" style={{ backgroundColor: '#0B1929' }}>
           <img
             className="absolute inset-0 w-full h-full object-cover opacity-60"
@@ -147,32 +100,21 @@ export default function FuturePage() {
         {/* ── Lead Story ── */}
         <section className="bg-surface-container-lowest py-24 px-12">
           <div className="flex flex-col lg:flex-row gap-16">
-            {/* Main */}
+            {/* Main featured article */}
             <div className="lg:w-3/5 group cursor-pointer">
               <div className="aspect-[16/10] overflow-hidden mb-8">
-                {loading ? (
-                  <div className="w-full h-full bg-surface-container-highest animate-pulse" />
-                ) : (
-                  <img
-                    className="w-full h-full object-cover transition-transform duration-700 group-hover:scale-105"
-                    alt={lead.leadTitle}
-                    src={lead.leadImage}
-                  />
-                )}
+                <img
+                  className="w-full h-full object-cover transition-transform duration-700 group-hover:scale-105"
+                  alt={lead.leadTitle}
+                  src={lead.leadImage}
+                />
               </div>
               <span className="font-label uppercase tracking-widest text-xs font-bold mb-4 block" style={{ color: TEAL }}>
                 {lead.leadCategory}
               </span>
-              {loading ? (
-                <div className="space-y-3 mb-6">
-                  <div className="w-full h-8 bg-surface-container-highest animate-pulse" />
-                  <div className="w-4/5 h-8 bg-surface-container-highest animate-pulse" />
-                </div>
-              ) : (
-                <h2 className="font-headline text-5xl md:text-6xl font-bold mb-6 text-on-surface leading-tight">
-                  {lead.leadTitle}
-                </h2>
-              )}
+              <h2 className="font-headline text-5xl md:text-6xl font-bold mb-6 text-on-surface leading-tight">
+                {lead.leadTitle}
+              </h2>
               <div className="flex items-center gap-4 mb-6 font-label text-xs uppercase tracking-widest text-secondary">
                 <span>{lead.leadAuthor}</span>
                 <span className="w-1 h-1 rounded-full" style={{ backgroundColor: TEAL }} />
@@ -187,21 +129,19 @@ export default function FuturePage() {
               </Link>
             </div>
 
-            {/* Side Stack */}
+            {/* Side stack */}
             <div className="lg:w-2/5 flex flex-col">
-              {loading
-                ? [1, 2, 3, 4].map((i) => <SideItemSkeleton key={i} />)
-                : displaySide.map((item) => (
-                    <div key={item.id} className="flex flex-col border-t border-outline-variant/30 py-6 group cursor-pointer">
-                      <span className="font-label uppercase tracking-widest text-[10px] font-bold mb-2" style={{ color: TEAL }}>
-                        {item.sub}
-                      </span>
-                      <h3 className="font-headline text-2xl font-bold mb-2 transition-colors">
-                        {item.title}
-                      </h3>
-                      <p className="font-body text-sm text-secondary line-clamp-2">{item.body}</p>
-                    </div>
-                  ))}
+              {sideItems.map((item: any) => (
+                <div key={item.id} className="flex flex-col border-t border-outline-variant/30 py-6 group cursor-pointer">
+                  <span className="font-label uppercase tracking-widest text-[10px] font-bold mb-2" style={{ color: TEAL }}>
+                    {item.sub}
+                  </span>
+                  <h3 className="font-headline text-2xl font-bold mb-2 transition-colors">
+                    {item.title}
+                  </h3>
+                  <p className="font-body text-sm text-secondary line-clamp-2">{item.body}</p>
+                </div>
+              ))}
             </div>
           </div>
         </section>
@@ -213,26 +153,24 @@ export default function FuturePage() {
               SIGNAL VS NOISE
             </span>
             <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-8">
-              {loading
-                ? [1, 2, 3, 4].map((i) => <SignalCardSkeleton key={i} />)
-                : displaySignal.map((card) => (
-                    <div
-                      key={card.id}
-                      className="bg-surface-container-lowest p-10 flex flex-col justify-between min-h-[300px] border-b-4"
-                      style={{ borderBottomColor: card.signal ? TEAL : '#bac7dd' }}
-                    >
-                      <div>
-                        <h4 className="font-headline text-2xl font-bold mb-4">{card.title}</h4>
-                        <p className="font-body text-sm text-secondary leading-relaxed mb-6">{card.body}</p>
-                      </div>
-                      <span
-                        className="text-white font-label text-[10px] font-bold tracking-[0.2em] py-1 px-3 w-fit"
-                        style={{ backgroundColor: card.signal ? TEAL : '#525f72' }}
-                      >
-                        {card.signal ? 'SIGNAL' : 'NOISE'}
-                      </span>
-                    </div>
-                  ))}
+              {signalCards.map((card: any) => (
+                <div
+                  key={card.id}
+                  className="bg-surface-container-lowest p-10 flex flex-col justify-between min-h-[300px] border-b-4"
+                  style={{ borderBottomColor: card.signal ? TEAL : '#bac7dd' }}
+                >
+                  <div>
+                    <h4 className="font-headline text-2xl font-bold mb-4">{card.title}</h4>
+                    <p className="font-body text-sm text-secondary leading-relaxed mb-6">{card.body}</p>
+                  </div>
+                  <span
+                    className="text-white font-label text-[10px] font-bold tracking-[0.2em] py-1 px-3 w-fit"
+                    style={{ backgroundColor: card.signal ? TEAL : '#525f72' }}
+                  >
+                    {card.signal ? 'SIGNAL' : 'NOISE'}
+                  </span>
+                </div>
+              ))}
             </div>
           </div>
         </section>
@@ -251,51 +189,39 @@ export default function FuturePage() {
             </Link>
           </div>
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-y-20 gap-x-12">
-            {loading
-              ? [1, 2, 3, 4, 5, 6].map((i) => <StoryItemSkeleton key={i} />)
-              : displayStory.map((item) => (
-                  <div key={item.id} className="group cursor-pointer">
-                    <div className="aspect-square overflow-hidden mb-6">
-                      <img
-                        className="w-full h-full object-cover grayscale group-hover:grayscale-0 transition-all duration-700"
-                        alt={item.title}
-                        src={item.img}
-                      />
-                    </div>
-                    <span className="font-label uppercase tracking-widest text-[10px] font-bold mb-3 block" style={{ color: TEAL }}>
-                      {item.sub}
-                    </span>
-                    <h3 className="font-headline text-2xl font-bold mb-4">{item.title}</h3>
-                    <p className="font-body text-sm text-secondary leading-relaxed mb-4">{item.body}</p>
-                    <span className="font-label text-[10px] text-outline uppercase tracking-widest">{item.read}</span>
-                  </div>
-                ))}
+            {storyGrid.map((item: any) => (
+              <div key={item.id} className="group cursor-pointer">
+                <div className="aspect-square overflow-hidden mb-6">
+                  <img
+                    className="w-full h-full object-cover grayscale group-hover:grayscale-0 transition-all duration-700"
+                    alt={item.title}
+                    src={item.img}
+                  />
+                </div>
+                <span className="font-label uppercase tracking-widest text-[10px] font-bold mb-3 block" style={{ color: TEAL }}>
+                  {item.sub}
+                </span>
+                <h3 className="font-headline text-2xl font-bold mb-4">{item.title}</h3>
+                <p className="font-body text-sm text-secondary leading-relaxed mb-4">{item.body}</p>
+                <span className="font-label text-[10px] text-outline uppercase tracking-widest">{item.read}</span>
+              </div>
+            ))}
           </div>
         </section>
 
         {/* ── Opinion Strip ── */}
         <section className="py-32 px-12 text-center overflow-hidden relative" style={{ backgroundColor: '#0B1929' }}>
           <div className="max-w-4xl mx-auto relative z-10">
-            {loading ? (
-              <div className="space-y-6 animate-pulse">
-                <div className="w-full h-12 bg-white/10 mx-auto" />
-                <div className="w-3/4 h-12 bg-white/10 mx-auto" />
-                <div className="w-48 h-4 bg-white/10 mx-auto" />
-              </div>
-            ) : (
-              <>
-                <blockquote className="font-headline italic text-4xl md:text-6xl text-white leading-tight mb-12">
-                  {opinion.quote}
-                </blockquote>
-                <p className="font-label uppercase tracking-[0.3em] text-sm text-white/60 mb-8">
-                  {opinion.attribution}
-                </p>
-                <Link href={opinion.linkSlug} className="font-label font-bold flex items-center justify-center gap-2 group/link" style={{ color: TEAL }}>
-                  {opinion.linkLabel}
-                  <span className="transition-transform duration-300 group-hover/link:translate-x-2">→</span>
-                </Link>
-              </>
-            )}
+            <blockquote className="font-headline italic text-4xl md:text-6xl text-white leading-tight mb-12">
+              {opinion.quote}
+            </blockquote>
+            <p className="font-label uppercase tracking-[0.3em] text-sm text-white/60 mb-8">
+              {opinion.attribution}
+            </p>
+            <Link href={opinion.linkSlug} className="font-label font-bold flex items-center justify-center gap-2 group/link" style={{ color: TEAL }}>
+              {opinion.linkLabel}
+              <span className="transition-transform duration-300 group-hover/link:translate-x-2">→</span>
+            </Link>
           </div>
           <div
             className="absolute -right-20 -bottom-20 w-96 h-96 rounded-full border"
