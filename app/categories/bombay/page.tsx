@@ -1,13 +1,81 @@
 import { TopBar } from '@/components/TopBar';
 import { Header } from '@/components/Header';
 import { Footer } from '@/components/Footer';
+import { getAllBombayData } from '@/lib/firebase';
+
+export const dynamic = 'force-dynamic';
 
 export const metadata = {
   title: 'Bombay | THE BOMBAY FORUM',
-  description: 'Chronicles of Mumbai\'s evolving culture, architecture, food, and the stories that define the city\'s soul.',
+  description: "Chronicles of Mumbai's evolving culture, architecture, food, and the stories that define the city's soul.",
 };
 
-export default function BombayPage() {
+/* ── DEFAULTS (shown when DB is empty) ── */
+const DEFAULT_HERO = {
+  title: 'The City That Never Settles.',
+  subtitle: "Chronicles of Mumbai's evolving culture, architecture, food, and the stories that define the city's soul.",
+  ticker: [
+    { label: 'AQI', value: '112', badge: 'Moderate', badgeColor: 'text-yellow-400' },
+    { label: 'TRAFFIC INDEX', value: 'High', badge: 'Peak', badgeColor: 'text-red-400' },
+    { label: 'LOCAL TEMP', value: '32°C', badge: 'Humid', badgeColor: 'text-blue-400' },
+    { label: 'TRANSIT', value: 'Normal', badge: 'On Time', badgeColor: 'text-green-400' },
+  ],
+};
+
+const DEFAULT_LEAD_STORY = {
+  image: 'https://lh3.googleusercontent.com/aida-public/AB6AXuDnXjqHsjlTXQTo482LeWLj3QI75OjDIWux9SXXJFA8ycCcVGUy4u8fpeYEWGWKKP5AirFqT9e7NsYtBHVibaSxQbTsd_ZveFxvn-kiRUMohgHCmr5pqxNX1VXlATI4dNExyAwV19e6Fz1vbESx00Mi1z_jPgE-GemJ7ZKzk-fq_c9zN7TZgWDL7lPVOCLEb0dWobK65b7vWF59XzsIqzF92DfG317L6QC5nGqSBDoZfScP1LV4Cx4cwpOY-2IVx-_Vdq4GCeuUs-Gl',
+  tag: 'BOMBAY • ARCHITECTURE',
+  title: 'The Art Deco Renaissance of Marine Drive.',
+  author: 'ARJUN KHANNA',
+  date: 'MARCH 14, 2024',
+  excerpt: "Exploring the pastel facades and nautical motifs that define Mumbai's most iconic coastline in a new golden era of preservation.",
+};
+
+const DEFAULT_SIDE_STORIES = [
+  { tag: 'BOMBAY • GASTRONOMY', title: 'Gateway to the Gastronomy: The Evolving Palate of Colaba.' },
+  { tag: 'BOMBAY • CULTURE', title: 'The Street Photographers of Southern Tip.' },
+  { tag: 'BOMBAY • HERITAGE', title: 'The Lost Mills of Central Mumbai.' },
+  { tag: 'BOMBAY • URBANISM', title: 'The Coastal Road and the Changing Geography.' },
+];
+
+const DEFAULT_PULSE = [
+  { title: 'Infrastructure', body: 'The new aqua line is reshaping daily commutes, drastically reducing travel time between Colaba and Seepz.' },
+  { title: 'Culture', body: 'The indie music scene finds a new home in the revived acoustic halls of the Royal Opera House.' },
+  { title: 'Real Estate', body: 'Luxury residential demand in the suburbs is outpacing supply, leading to a new wave of sky-high developments.' },
+];
+
+const DEFAULT_STORY_GRID = [
+  { tag: 'BOMBAY • DISTRICTS', title: 'The Secrets of Fort.', image: 'https://lh3.googleusercontent.com/aida-public/AB6AXuD4JM8Ir55bADxTD5UUwcuKTy3dsihbJ2EFK-0nRu-lqelIYZFl6wgj1PXbnG5MRDsyor3ARi3oT9jOLl0OPELnuqPhvzzTjGZOg8TLd0P2Iof3_K2w0oUptCGiotuyII-Tp0JdIH0t15o6m0jSaUYIr0Yxg8yJQU6lurgxq6SmlYeBp6naQEV73l_f476MAwy8WFL6UYqB0RNWdfxA76rkZWAUGqjJs9NlWP5HyljKpKzINArYh6xCtCrHGVkQ_6fp92Ogh-IhoIwS' },
+  { tag: 'BOMBAY • HERITAGE', title: "Kala Ghoda's Revival.", image: 'https://lh3.googleusercontent.com/aida-public/AB6AXuB9cpNtQww0uYa8eK8OOEN11y3ESOJoLZhRDFnAlaVvsrbn2wAIi6gxEhPAp49bkVpQdsQ51nmqWk9j75iLfgrJWnZqY82u9eDUHSD9naR2nZBeLv9WIcj3D4jjLywbrSAqI-j2cz-uGXPG8GvOYUdNCBHvCXn1mA-lkkvxZ4l0FaoTd24iu3XqQLpq3G3FjJcL6LaK9mqQvyYC0EbyBZ-_Ln8IdfORu0xUeqqU_pOUHIM5N_JJ2K61FtiRSPQ_Oqq5iO536I2UXbOJ' },
+  { tag: 'BOMBAY • SOCIETY', title: 'The New Social Clubs.', image: 'https://lh3.googleusercontent.com/aida-public/AB6AXuB7BEji4Rfxsc9uaDm92BhJKteJCpeEqIL_XbM8586WBB9DSJNJ7N9akeh95DbZaM49P7H8Lmc4c_uHiKRU9XOM8IjoIu9GgIeyhnsm9HOpwWWSaqNWWea98xLl-0pRdFpXLMG498bLbOBSOt4UqmMh1loFyPpzRA71jzNObBm3BzsvVEJgE1Z5Wr0UBJJpo1HqDjr3oxswAUQfLxTkHAC5NMZLMyWJZGkv0ZMps02UtHaCrrY30lm5qkEzjEQvRUYbmmvZYz0hmFT_' },
+  { tag: 'BOMBAY • NIGHTLIFE', title: 'After Hours in Bandra.', image: 'https://lh3.googleusercontent.com/aida-public/AB6AXuB7UCUWRzhE-9M6HKolX1RxWFaqgIJ4t6ytMqkSD7NB739-HkzX8JFaTcLikLuyBen53CPIpmLdlecWt-c8LUpmJnj2JsYfT1n5HVgA5BP3ZtKgifrHWD68EP9EfQtAcZ5OKKJ92p3he_DxiIateXgM6uphbcQI4IEV_1vIgJaIOL-1Jn3KEPAZSOTxsVQUOzU2H_Ayog6TCjxBSiR4o2TyGMfIrWXRcDnvYUpgSUOkaUU8cuopJv3VyufqiLshy5kaRjdltPHIIeah' },
+  { tag: 'BOMBAY • PLACES', title: 'The Hidden Libraries.', image: 'https://lh3.googleusercontent.com/aida-public/AB6AXuBuJ-t57AJFPTnA7vUNOLeoK3yVcipk9aOSfpCEX4MYAuUz6TnFYwpfxLxXMvDNlfgDZlX-LDt9VLg7EdRcbhS-eeDAljCMvYkzBf2yMZ-_evyT_LVEFgkEDB4NVsIbNlO_iIWsPR2Kyi2pqnXrwiMJhVJO98a9VXDDPXfPt0Lu9aM3USMkpT1fKsn9qjgxL0VKA6xHdAmgWcroRvYG4EqJrnVnanouM_Ua1LbZ18EFBMtJXCdmi_LFRIPt9Suso-XAgcRX2yBGM7_L' },
+  { tag: 'BOMBAY • ESSAY', title: 'Monsoons on the Promenades.', image: 'https://lh3.googleusercontent.com/aida-public/AB6AXuAgapYT9-rgUzI0QBVTjXn023uQZqAk2WHmcABZBL3CbfTabAjeRzwim5lDpDGzKB3Ca-v8u1jds_jyOqQRBzQWlTJV7zBebON4lue_tIAtpFp_tiXzj97T7P84-ADs9IRIHjODdfRsZT7plUlX4L_Oxf-DzrtG3hfplGmULq6ay9gHenWXCed-mCF6FA-stqLvbp9xgmxGZ2ywVB8hiYGk2d3hpo-MeNqMqMGOFYpuk88-7sYVmD28PKFdVYY5DuhzItjOQZf6nG_B' },
+];
+
+const DEFAULT_OPINION = {
+  quote: '"The city doesn\'t age, it only gains more character."',
+  author: "Ayesha D'Souza",
+  authorTitle: 'Curator, Heritage Trust',
+};
+
+export default async function BombayPage() {
+  let dbData: any = null;
+  try {
+    dbData = await getAllBombayData();
+  } catch (e) {
+    console.error('[Bombay] Failed to load DB data:', e);
+  }
+
+  const hero = DEFAULT_HERO;
+  const leadStory = dbData?.leadStory || DEFAULT_LEAD_STORY;
+  const sideStories = dbData?.sideStories?.length > 0 ? dbData.sideStories : DEFAULT_SIDE_STORIES;
+  const pulseItems = dbData?.pulseItems?.length > 0 ? dbData.pulseItems : DEFAULT_PULSE;
+  const storyGrid = dbData?.storyGrid?.length > 0 ? dbData.storyGrid : DEFAULT_STORY_GRID;
+  const opinion = dbData?.opinionStrip || DEFAULT_OPINION;
+
+  const ticker = hero.ticker;
+
   return (
     <>
       <TopBar />
@@ -29,34 +97,15 @@ export default function BombayPage() {
 
             {/* City Ticker */}
             <div className="grid grid-cols-2 md:grid-cols-4 gap-4 mt-12 py-8 border-t border-white/10">
-              <div className="flex flex-col">
-                <span className="text-[10px] text-slate-400 font-bold tracking-widest uppercase font-label">AQI</span>
-                <div className="flex items-baseline gap-2 mt-1">
-                  <span className="text-xl font-bold font-body">112</span>
-                  <span className="text-xs text-yellow-400 flex items-center font-body">Moderate</span>
+              {ticker.map((item: any, i: number) => (
+                <div key={i} className="flex flex-col">
+                  <span className="text-[10px] text-slate-400 font-bold tracking-widest uppercase font-label">{item.label}</span>
+                  <div className="flex items-baseline gap-2 mt-1">
+                    <span className="text-xl font-bold font-body">{item.value}</span>
+                    <span className={`text-xs flex items-center font-body ${item.badgeColor || 'text-slate-300'}`}>{item.badge}</span>
+                  </div>
                 </div>
-              </div>
-              <div className="flex flex-col">
-                <span className="text-[10px] text-slate-400 font-bold tracking-widest uppercase font-label">TRAFFIC INDEX</span>
-                <div className="flex items-baseline gap-2 mt-1">
-                  <span className="text-xl font-bold font-body">High</span>
-                  <span className="text-xs text-red-400 flex items-center font-body"><span className="material-symbols-outlined scale-75">arrow_drop_up</span>Peak</span>
-                </div>
-              </div>
-              <div className="flex flex-col">
-                <span className="text-[10px] text-slate-400 font-bold tracking-widest uppercase font-label">LOCAL TEMP</span>
-                <div className="flex items-baseline gap-2 mt-1">
-                  <span className="text-xl font-bold font-body">32°C</span>
-                  <span className="text-xs text-blue-400 flex items-center font-body">Humid</span>
-                </div>
-              </div>
-              <div className="flex flex-col">
-                <span className="text-[10px] text-slate-400 font-bold tracking-widest uppercase font-label">TRANSIT</span>
-                <div className="flex items-baseline gap-2 mt-1">
-                  <span className="text-xl font-bold font-body">Normal</span>
-                  <span className="text-xs text-green-400 flex items-center font-body"><span className="material-symbols-outlined scale-75">check</span>On Time</span>
-                </div>
-              </div>
+              ))}
             </div>
           </div>
         </section>
@@ -67,40 +116,34 @@ export default function BombayPage() {
             {/* Main Story */}
             <div className="lg:col-span-2 group">
               <div className="relative overflow-hidden aspect-[16/9] bg-surface-dim">
-                <img alt="Marine Drive Architecture" className="w-full h-full object-cover transition-transform duration-700 group-hover:scale-105" src="https://lh3.googleusercontent.com/aida-public/AB6AXuDnXjqHsjlTXQTo482LeWLj3QI75OjDIWux9SXXJFA8ycCcVGUy4u8fpeYEWGWKKP5AirFqT9e7NsYtBHVibaSxQbTsd_ZveFxvn-kiRUMohgHCmr5pqxNX1VXlATI4dNExyAwV19e6Fz1vbESx00Mi1z_jPgE-GemJ7ZKzk-fq_c9zN7TZgWDL7lPVOCLEb0dWobK65b7vWF59XzsIqzF92DfG317L6QC5nGqSBDoZfScP1LV4Cx4cwpOY-2IVx-_Vdq4GCeuUs-Gl"/>
+                <img
+                  alt={leadStory.title}
+                  className="w-full h-full object-cover transition-transform duration-700 group-hover:scale-105"
+                  src={leadStory.image}
+                />
               </div>
               <div className="mt-8 flex flex-col gap-4">
-                <span className="text-[#2DD4BF] text-[10px] font-bold tracking-widest uppercase font-label">BOMBAY • ARCHITECTURE</span>
-                <h2 className="text-5xl font-medium leading-[1.1] group-hover:text-primary transition-colors cursor-pointer font-headline">The Art Deco Renaissance of Marine Drive.</h2>
+                <span className="text-[#2DD4BF] text-[10px] font-bold tracking-widest uppercase font-label">{leadStory.tag}</span>
+                <h2 className="text-5xl font-medium leading-[1.1] group-hover:text-primary transition-colors cursor-pointer font-headline">{leadStory.title}</h2>
                 <div className="flex items-center gap-4 text-xs font-bold text-on-surface/60 uppercase tracking-widest font-label">
-                  <span>BY ARJUN KHANNA</span>
-                  <span>MARCH 14, 2024</span>
+                  {leadStory.author && <span>BY {leadStory.author}</span>}
+                  {leadStory.date && <span>{leadStory.date}</span>}
                 </div>
-                <p className="text-lg text-on-surface/80 leading-relaxed font-body font-light">
-                  Exploring the pastel facades and nautical motifs that define Mumbai's most iconic coastline in a new golden era of preservation.
-                </p>
+                {leadStory.excerpt && (
+                  <p className="text-lg text-on-surface/80 leading-relaxed font-body font-light">{leadStory.excerpt}</p>
+                )}
                 <button className="w-fit border-b-2 border-primary pt-2 pb-1 text-xs font-bold uppercase tracking-[0.2em] hover:text-primary transition-all font-label">Read Story</button>
               </div>
             </div>
 
             {/* Secondary Stories */}
             <div className="flex flex-col divide-y divide-on-surface/10">
-              <div className="pb-8 group cursor-pointer">
-                <span className="text-[#2DD4BF] text-[10px] font-bold tracking-widest uppercase font-label">BOMBAY • GASTRONOMY</span>
-                <h3 className="mt-3 text-2xl font-medium leading-snug group-hover:text-primary transition-colors font-headline">Gateway to the Gastronomy: The Evolving Palate of Colaba.</h3>
-              </div>
-              <div className="py-8 group cursor-pointer">
-                <span className="text-[#2DD4BF] text-[10px] font-bold tracking-widest uppercase font-label">BOMBAY • CULTURE</span>
-                <h3 className="mt-3 text-2xl font-medium leading-snug group-hover:text-primary transition-colors font-headline">The Street Photographers of Southern Tip.</h3>
-              </div>
-              <div className="py-8 group cursor-pointer">
-                <span className="text-[#2DD4BF] text-[10px] font-bold tracking-widest uppercase font-label">BOMBAY • HERITAGE</span>
-                <h3 className="mt-3 text-2xl font-medium leading-snug group-hover:text-primary transition-colors font-headline">The Lost Mills of Central Mumbai.</h3>
-              </div>
-              <div className="py-8 group cursor-pointer">
-                <span className="text-[#2DD4BF] text-[10px] font-bold tracking-widest uppercase font-label">BOMBAY • URBANISM</span>
-                <h3 className="mt-3 text-2xl font-medium leading-snug group-hover:text-primary transition-colors font-headline">The Coastal Road and the Changing Geography.</h3>
-              </div>
+              {sideStories.map((story: any, i: number) => (
+                <div key={i} className={`${i === 0 ? 'pb-8' : 'py-8'} group cursor-pointer`}>
+                  <span className="text-[#2DD4BF] text-[10px] font-bold tracking-widest uppercase font-label">{story.tag}</span>
+                  <h3 className="mt-3 text-2xl font-medium leading-snug group-hover:text-primary transition-colors font-headline">{story.title}</h3>
+                </div>
+              ))}
             </div>
           </div>
         </section>
@@ -113,18 +156,12 @@ export default function BombayPage() {
               <div className="flex-grow h-[1px] bg-on-surface/10"></div>
             </div>
             <div className="grid grid-cols-1 md:grid-cols-3 gap-12">
-              <div className="flex flex-col gap-4">
-                <h4 className="text-xl font-bold font-body">Infrastructure</h4>
-                <p className="text-sm text-on-surface/70 leading-relaxed font-body">The new aqua line is reshaping daily commutes, drastically reducing travel time between Colaba and Seepz.</p>
-              </div>
-              <div className="flex flex-col gap-4">
-                <h4 className="text-xl font-bold font-body">Culture</h4>
-                <p className="text-sm text-on-surface/70 leading-relaxed font-body">The indie music scene finds a new home in the revived acoustic halls of the Royal Opera House.</p>
-              </div>
-              <div className="flex flex-col gap-4">
-                <h4 className="text-xl font-bold font-body">Real Estate</h4>
-                <p className="text-sm text-on-surface/70 leading-relaxed font-body">Luxury residential demand in the suburbs is outpacing supply, leading to a new wave of sky-high developments.</p>
-              </div>
+              {pulseItems.map((item: any, i: number) => (
+                <div key={i} className="flex flex-col gap-4">
+                  <h4 className="text-xl font-bold font-body">{item.title}</h4>
+                  <p className="text-sm text-on-surface/70 leading-relaxed font-body">{item.body}</p>
+                </div>
+              ))}
             </div>
           </div>
         </section>
@@ -134,60 +171,21 @@ export default function BombayPage() {
           <div className="max-w-7xl mx-auto">
             <h2 className="text-4xl font-headline italic mb-16">Latest from Bombay</h2>
             <div className="grid grid-cols-1 md:grid-cols-3 gap-y-16 gap-x-12">
-              <div className="group cursor-pointer">
-                <div className="aspect-[4/3] bg-surface-dim overflow-hidden">
-                  <img alt="Cityscape" className="w-full h-full object-cover grayscale group-hover:grayscale-0 transition-all duration-500" src="https://lh3.googleusercontent.com/aida-public/AB6AXuD4JM8Ir55bADxTD5UUwcuKTy3dsihbJ2EFK-0nRu-lqelIYZFl6wgj1PXbnG5MRDsyor3ARi3oT9jOLl0OPELnuqPhvzzTjGZOg8TLd0P2Iof3_K2w0oUptCGiotuyII-Tp0JdIH0t15o6m0jSaUYIr0Yxg8yJQU6lurgxq6SmlYeBp6naQEV73l_f476MAwy8WFL6UYqB0RNWdfxA76rkZWAUGqjJs9NlWP5HyljKpKzINArYh6xCtCrHGVkQ_6fp92Ogh-IhoIwS"/>
+              {storyGrid.map((item: any, i: number) => (
+                <div key={i} className="group cursor-pointer">
+                  <div className="aspect-[4/3] bg-surface-dim overflow-hidden">
+                    <img
+                      alt={item.title}
+                      className="w-full h-full object-cover grayscale group-hover:grayscale-0 transition-all duration-500"
+                      src={item.image}
+                    />
+                  </div>
+                  <div className="mt-6 flex flex-col gap-2">
+                    <span className="text-[#2DD4BF] text-[10px] font-bold tracking-widest uppercase font-label">{item.tag}</span>
+                    <h3 className="text-2xl font-medium leading-tight group-hover:underline underline-offset-4 decoration-1 font-headline">{item.title}</h3>
+                  </div>
                 </div>
-                <div className="mt-6 flex flex-col gap-2">
-                  <span className="text-[#2DD4BF] text-[10px] font-bold tracking-widest uppercase font-label">BOMBAY • DISTRICTS</span>
-                  <h3 className="text-2xl font-medium leading-tight group-hover:underline underline-offset-4 decoration-1 font-headline">The Secrets of Fort.</h3>
-                </div>
-              </div>
-              <div className="group cursor-pointer">
-                <div className="aspect-[4/3] bg-surface-dim overflow-hidden">
-                  <img alt="Stacks of coins" className="w-full h-full object-cover grayscale group-hover:grayscale-0 transition-all duration-500" src="https://lh3.googleusercontent.com/aida-public/AB6AXuB9cpNtQww0uYa8eK8OOEN11y3ESOJoLZhRDFnAlaVvsrbn2wAIi6gxEhPAp49bkVpQdsQ51nmqWk9j75iLfgrJWnZqY82u9eDUHSD9naR2nZBeLv9WIcj3D4jjLywbrSAqI-j2cz-uGXPG8GvOYUdNCBHvCXn1mA-lkkvxZ4l0FaoTd24iu3XqQLpq3G3FjJcL6LaK9mqQvyYC0EbyBZ-_Ln8IdfORu0xUeqqU_pOUHIM5N_JJ2K61FtiRSPQ_Oqq5iO536I2UXbOJ"/>
-                </div>
-                <div className="mt-6 flex flex-col gap-2">
-                  <span className="text-[#2DD4BF] text-[10px] font-bold tracking-widest uppercase font-label">BOMBAY • HERITAGE</span>
-                  <h3 className="text-2xl font-medium leading-tight group-hover:underline underline-offset-4 decoration-1 font-headline">Kala Ghoda's Revival.</h3>
-                </div>
-              </div>
-              <div className="group cursor-pointer">
-                <div className="aspect-[4/3] bg-surface-dim overflow-hidden">
-                  <img alt="Gold bar" className="w-full h-full object-cover grayscale group-hover:grayscale-0 transition-all duration-500" src="https://lh3.googleusercontent.com/aida-public/AB6AXuB7BEji4Rfxsc9uaDm92BhJKteJCpeEqIL_XbM8586WBB9DSJNJ7N9akeh95DbZaM49P7H8Lmc4c_uHiKRU9XOM8IjoIu9GgIeyhnsm9HOpwWWSaqNWWea98xLl-0pRdFpXLMG498bLbOBSOt4UqmMh1loFyPpzRA71jzNObBm3BzsvVEJgE1Z5Wr0UBJJpo1HqDjr3oxswAUQfLxTkHAC5NMZLMyWJZGkv0ZMps02UtHaCrrY30lm5qkEzjEQvRUYbmmvZYz0hmFT_"/>
-                </div>
-                <div className="mt-6 flex flex-col gap-2">
-                  <span className="text-[#2DD4BF] text-[10px] font-bold tracking-widest uppercase font-label">BOMBAY • SOCIETY</span>
-                  <h3 className="text-2xl font-medium leading-tight group-hover:underline underline-offset-4 decoration-1 font-headline">The New Social Clubs.</h3>
-                </div>
-              </div>
-              <div className="group cursor-pointer">
-                <div className="aspect-[4/3] bg-surface-dim overflow-hidden">
-                  <img alt="Tech city" className="w-full h-full object-cover grayscale group-hover:grayscale-0 transition-all duration-500" src="https://lh3.googleusercontent.com/aida-public/AB6AXuB7UCUWRzhE-9M6HKolX1RxWFaqgIJ4t6ytMqkSD7NB739-HkzX8JFaTcLikLuyBen53CPIpmLdlecWt-c8LUpmJnj2JsYfT1n5HVgA5BP3ZtKgifrHWD68EP9EfQtAcZ5OKKJ92p3he_DxiIateXgM6uphbcQI4IEV_1vIgJaIOL-1Jn3KEPAZSOTxsVQUOzU2H_Ayog6TCjxBSiR4o2TyGMfIrWXRcDnvYUpgSUOkaUU8cuopJv3VyufqiLshy5kaRjdltPHIIeah"/>
-                </div>
-                <div className="mt-6 flex flex-col gap-2">
-                  <span className="text-[#2DD4BF] text-[10px] font-bold tracking-widest uppercase font-label">BOMBAY • NIGHTLIFE</span>
-                  <h3 className="text-2xl font-medium leading-tight group-hover:underline underline-offset-4 decoration-1 font-headline">After Hours in Bandra.</h3>
-                </div>
-              </div>
-              <div className="group cursor-pointer">
-                <div className="aspect-[4/3] bg-surface-dim overflow-hidden">
-                  <img alt="Business executive" className="w-full h-full object-cover grayscale group-hover:grayscale-0 transition-all duration-500" src="https://lh3.googleusercontent.com/aida-public/AB6AXuBuJ-t57AJFPTnA7vUNOLeoK3yVcipk9aOSfpCEX4MYAuUz6TnFYwpfxLxXMvDNlfgDZlX-LDt9VLg7EdRcbhS-eeDAljCMvYkzBf2yMZ-_evyT_LVEFgkEDB4NVsIbNlO_iIWsPR2Kyi2pqnXrwiMJhVJO98a9VXDDPXfPt0Lu9aM3USMkpT1fKsn9qjgxL0VKA6xHdAmgWcroRvYG4EqJrnVnanouM_Ua1LbZ18EFBMtJXCdmi_LFRIPt9Suso-XAgcRX2yBGM7_L"/>
-                </div>
-                <div className="mt-6 flex flex-col gap-2">
-                  <span className="text-[#2DD4BF] text-[10px] font-bold tracking-widest uppercase font-label">BOMBAY • PLACES</span>
-                  <h3 className="text-2xl font-medium leading-tight group-hover:underline underline-offset-4 decoration-1 font-headline">The Hidden Libraries.</h3>
-                </div>
-              </div>
-              <div className="group cursor-pointer">
-                <div className="aspect-[4/3] bg-surface-dim overflow-hidden">
-                  <img alt="Currency background" className="w-full h-full object-cover grayscale group-hover:grayscale-0 transition-all duration-500" src="https://lh3.googleusercontent.com/aida-public/AB6AXuAgapYT9-rgUzI0QBVTjXn023uQZqAk2WHmcABZBL3CbfTabAjeRzwim5lDpDGzKB3Ca-v8u1jds_jyOqQRBzQWlTJV7zBebON4lue_tIAtpFp_tiXzj97T7P84-ADs9IRIHjODdfRsZT7plUlX4L_Oxf-DzrtG3hfplGmULq6ay9gHenWXCed-mCF6FA-stqLvbp9xgmxGZ2ywVB8hiYGk2d3hpo-MeNqMqMGOFYpuk88-7sYVmD28PKFdVYY5DuhzItjOQZf6nG_B"/>
-                </div>
-                <div className="mt-6 flex flex-col gap-2">
-                  <span className="text-[#2DD4BF] text-[10px] font-bold tracking-widest uppercase font-label">BOMBAY • ESSAY</span>
-                  <h3 className="text-2xl font-medium leading-tight group-hover:underline underline-offset-4 decoration-1 font-headline">Monsoons on the Promenades.</h3>
-                </div>
-              </div>
+              ))}
             </div>
           </div>
         </section>
@@ -198,11 +196,11 @@ export default function BombayPage() {
           <div className="max-w-4xl mx-auto text-center flex flex-col items-center gap-10">
             <div className="w-12 h-1 bg-[#2DD4BF]"></div>
             <blockquote className="text-5xl md:text-6xl text-white font-headline italic leading-tight">
-              "The city doesn't age, it only gains more character."
+              {opinion.quote}
             </blockquote>
             <div className="flex flex-col items-center">
-              <span className="text-white text-lg font-body font-bold">Ayesha D'Souza</span>
-              <span className="text-slate-400 text-sm font-body uppercase tracking-[0.2em] mt-1 font-label">Curator, Heritage Trust</span>
+              <span className="text-white text-lg font-body font-bold">{opinion.author}</span>
+              <span className="text-slate-400 text-sm font-body uppercase tracking-[0.2em] mt-1 font-label">{opinion.authorTitle}</span>
             </div>
             <button className="bg-[#2DD4BF] text-[#0B1929] px-10 py-4 text-xs font-bold uppercase tracking-widest transition-transform hover:scale-105 active:scale-95 font-label">
               Read the Full Essay
@@ -216,7 +214,7 @@ export default function BombayPage() {
             <h2 className="text-4xl font-headline mb-4 italic">Get the Bombay Journal — every Sunday.</h2>
             <p className="text-on-surface/60 font-body mb-10">The stories, people, and places that define Mumbai's soul, delivered directly to your inbox.</p>
             <form className="flex flex-col md:flex-row gap-4">
-              <input className="flex-grow bg-surface-container-low border-0 px-6 py-4 focus:ring-2 focus:ring-primary text-on-surface placeholder:text-on-surface/40 font-body" placeholder="Email Address" type="email"/>
+              <input className="flex-grow bg-surface-container-low border-0 px-6 py-4 focus:ring-2 focus:ring-primary text-on-surface placeholder:text-on-surface/40 font-body" placeholder="Email Address" type="email" />
               <button className="bg-primary text-white px-12 py-4 text-xs font-bold uppercase tracking-widest transition-all hover:bg-[#800018] font-label" type="submit">
                 Subscribe
               </button>

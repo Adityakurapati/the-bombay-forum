@@ -12,6 +12,11 @@ export interface Article {
   excerpt: string;
   readTime: number;
   published: boolean;
+  associatedProfileId?: string;
+  associatedProfileType?: 'founder' | 'creator';
+  metaTitle?: string;
+  metaDescription?: string;
+  tags?: string[];
   createdAt?: string;
   updatedAt?: string;
 }

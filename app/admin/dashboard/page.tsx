@@ -72,21 +72,21 @@ export default function AdminDashboardPage() {
   return (
     <div className="flex flex-col min-h-screen bg-surface">
       {/* Top Bar */}
-      <header className="h-20 px-10 flex items-center justify-between bg-surface-container-lowest shadow-[0px_20px_40px_rgba(15,28,44,0.06)] z-40">
-        <h1 className="font-headline text-3xl font-medium tracking-tight" style={{ color: '#0f1c2c' }}>
+      <header className="px-6 md:px-10 py-6 md:h-20 flex flex-col md:flex-row md:items-center justify-between bg-surface-container-lowest shadow-[0px_20px_40px_rgba(15,28,44,0.06)] z-40 gap-4">
+        <h1 className="font-headline text-2xl md:text-3xl font-medium tracking-tight text-center md:text-left" style={{ color: '#0f1c2c' }}>
           Good morning, Admin
         </h1>
-        <div className="flex items-center gap-4">
+        <div className="flex items-center justify-center gap-3">
           <Link
             href="/"
-            className="px-6 py-2 text-white font-label text-xs uppercase tracking-widest hover:opacity-90 transition-all"
+            className="flex-1 md:flex-none px-4 md:px-6 py-2 text-white font-label text-[10px] md:text-xs uppercase tracking-widest hover:opacity-90 transition-all text-center"
             style={{ backgroundColor: '#0f1c2c' }}
           >
-            Preview Site
+            Preview
           </Link>
           <Link
             href="/admin/articles/edit"
-            className="px-6 py-2 text-white font-label text-xs uppercase tracking-widest hover:opacity-90 transition-all"
+            className="flex-1 md:flex-none px-4 md:px-6 py-2 text-white font-label text-[10px] md:text-xs uppercase tracking-widest hover:opacity-90 transition-all text-center"
             style={{ backgroundColor: '#9e001f' }}
           >
             New Article
@@ -95,10 +95,10 @@ export default function AdminDashboardPage() {
       </header>
 
       {/* Page Canvas */}
-      <div className="p-10 flex flex-col gap-10">
+      <div className="p-6 md:p-10 flex flex-col gap-6 md:gap-10">
 
         {/* ── STATS ROW ── */}
-        <section className="grid grid-cols-1 md:grid-cols-4 gap-6">
+        <section className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 md:gap-6">
           {STATS.map((card) => (
             <div
               key={card.label}
@@ -118,13 +118,13 @@ export default function AdminDashboardPage() {
         </section>
 
         {/* ── MIDDLE: Chart + Editorial Board ── */}
-        <div className="grid grid-cols-1 lg:grid-cols-3 gap-10">
+        <div className="grid grid-cols-1 lg:grid-cols-3 gap-6 md:gap-10">
           {/* Bar Chart */}
-          <div className="lg:col-span-2 bg-surface-container-lowest p-8 flex flex-col">
-            <div className="flex justify-between items-end mb-10">
+          <div className="lg:col-span-2 bg-surface-container-lowest p-6 md:p-8 flex flex-col">
+            <div className="flex flex-col sm:flex-row justify-between items-start sm:items-end mb-8 md:mb-10 gap-4">
               <div>
-                <h3 className="font-headline text-2xl mb-1">Engagement Metrics</h3>
-                <p className="text-xs text-secondary uppercase tracking-widest font-label">Reader retention by category</p>
+                <h3 className="font-headline text-xl md:text-2xl mb-1">Engagement Metrics</h3>
+                <p className="text-[10px] md:text-xs text-secondary uppercase tracking-widest font-label">Reader retention by category</p>
               </div>
               <div className="flex gap-4 items-center">
                 <div className="flex items-center gap-2">
@@ -196,9 +196,9 @@ export default function AdminDashboardPage() {
         </div>
 
         {/* ── RECENT ARTICLES TABLE ── */}
-        <section className="bg-surface-container-lowest p-10">
-          <div className="flex items-center justify-between mb-8">
-            <h3 className="font-headline text-3xl">Recent Articles</h3>
+        <section className="bg-surface-container-lowest p-6 md:p-10">
+          <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between mb-8 gap-4">
+            <h3 className="font-headline text-2xl md:text-3xl">Recent Articles</h3>
             <div className="flex items-center gap-2">
               <span className="text-xs uppercase tracking-widest text-secondary font-bold font-label">Filter by</span>
               <select
@@ -274,9 +274,9 @@ export default function AdminDashboardPage() {
       </div>
 
       {/* Footer */}
-      <footer className="mt-auto py-8 px-10 flex justify-between items-center text-[10px] uppercase tracking-widest text-secondary border-t border-outline-variant/10 font-label">
+      <footer className="mt-auto py-8 px-6 md:px-10 flex flex-col md:flex-row justify-between items-center text-[10px] uppercase tracking-widest text-secondary border-t border-outline-variant/10 font-label gap-4 text-center">
         <span>The Bombay Forum CMS v4.2.0</span>
-        <div className="flex gap-6">
+        <div className="flex flex-wrap justify-center gap-6">
           <Link href="/policies" className="hover:text-primary transition-colors">Privacy</Link>
           <a href="#" className="hover:text-primary transition-colors">Security</a>
           <button

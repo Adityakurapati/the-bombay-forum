@@ -212,22 +212,21 @@ export default function ProfileEditorPage() {
     return (
       <>
         <header
-          className="h-16 flex justify-between items-center px-8 shadow-[0px_20px_40px_rgba(15,28,44,0.06)] z-40 flex-shrink-0"
-          style={{ backgroundColor: '#0B1929' }}
+          className="px-6 md:px-8 py-4 bg-[#0B1929] flex flex-col sm:flex-row justify-between items-center shadow-[0px_20px_40px_rgba(15,28,44,0.06)] z-40 gap-4"
         >
-          <div className="flex items-center gap-6">
+          <div className="flex items-center gap-4 md:gap-6">
             <Link
               href="/admin/profiles"
-              className="text-slate-400 hover:text-white transition-colors flex items-center gap-2 font-label uppercase tracking-widest text-xs"
+              className="text-slate-400 hover:text-white transition-colors flex items-center gap-2 font-label uppercase tracking-widest text-[10px] md:text-xs"
             >
               <span className="material-symbols-outlined text-sm">arrow_back</span>
-              Back to Profiles
+              <span className="hidden sm:inline">Back</span>
             </Link>
             <div className="h-4 w-[1px] bg-white/20" />
-            <h1 className="text-white font-headline text-xl tracking-tighter">Profile Editor</h1>
+            <h1 className="text-white font-headline text-lg md:text-xl tracking-tighter">Profile Editor</h1>
           </div>
         </header>
-        <main className="flex-1 p-12 flex items-center justify-center" style={{ backgroundColor: '#fafaf5' }}>
+        <main className="flex-1 p-6 md:p-12 flex items-center justify-center" style={{ backgroundColor: '#fafaf5' }}>
           <div className="text-center">
             <span className="material-symbols-outlined text-5xl text-on-surface-variant animate-spin mb-4 block">progress_activity</span>
             <p className="font-label uppercase tracking-widest text-xs text-on-surface-variant">Loading profile...</p>
@@ -241,32 +240,32 @@ export default function ProfileEditorPage() {
     <>
       {/* Fixed Top Nav (sits above admin layout's ml-64 main area) */}
       <header
-        className="h-16 flex justify-between items-center px-8 shadow-[0px_20px_40px_rgba(15,28,44,0.06)] z-40 flex-shrink-0"
-        style={{ backgroundColor: '#0B1929' }}
+        className="px-6 md:px-8 py-4 bg-[#0B1929] flex flex-col sm:flex-row justify-between items-center shadow-[0px_20px_40px_rgba(15,28,44,0.06)] z-40 sticky top-0 md:relative gap-4"
       >
-        <div className="flex items-center gap-6">
+        <div className="flex items-center gap-4 md:gap-6">
           <Link
             href="/admin/profiles"
-            className="text-slate-400 hover:text-white transition-colors flex items-center gap-2 font-label uppercase tracking-widest text-xs"
+            className="text-slate-400 hover:text-white transition-colors flex items-center gap-2 font-label uppercase tracking-widest text-[10px] md:text-xs text-nowrap"
           >
             <span className="material-symbols-outlined text-sm">arrow_back</span>
-            Back to Profiles
+            <span className="hidden sm:inline">Back to Profiles</span>
+            <span className="sm:hidden">Back</span>
           </Link>
           <div className="h-4 w-[1px] bg-white/20" />
-          <h1 className="text-white font-headline text-xl tracking-tighter">Profile Editor</h1>
+          <h1 className="text-white font-headline text-lg md:text-xl tracking-tighter">Profile Editor</h1>
         </div>
-        <div className="flex items-center gap-4">
+        <div className="flex items-center gap-3 md:gap-4 w-full sm:w-auto">
           <button
             onClick={() => handleSave('draft')}
             disabled={saving}
-            className="px-6 py-2 border border-white/20 text-white font-label uppercase tracking-widest text-xs hover:bg-white/5 transition-all disabled:opacity-50"
+            className="flex-1 sm:flex-none px-4 md:px-6 py-2 border border-white/20 text-white font-label uppercase tracking-widest text-[10px] md:text-xs hover:bg-white/5 transition-all disabled:opacity-50"
           >
-            Save Draft
+            Draft
           </button>
           <button
             onClick={() => handleSave('active')}
             disabled={saving}
-            className="px-6 py-2 text-white font-label uppercase tracking-widest text-xs hover:opacity-90 transition-all disabled:opacity-50"
+            className="flex-1 sm:flex-none px-4 md:px-6 py-2 text-white font-label uppercase tracking-widest text-[10px] md:text-xs hover:opacity-90 transition-all disabled:opacity-50"
             style={{ backgroundColor: '#9e001f' }}
           >
             {saving ? 'Saving...' : 'Publish'}
@@ -275,8 +274,8 @@ export default function ProfileEditorPage() {
       </header>
 
       {/* Main canvas */}
-      <main className="flex-1 overflow-y-auto p-12 max-w-7xl" style={{ backgroundColor: '#fafaf5' }}>
-        <div className="grid grid-cols-12 gap-16">
+      <main className="flex-1 overflow-y-auto p-6 md:p-12 max-w-7xl" style={{ backgroundColor: '#fafaf5' }}>
+        <div className="grid grid-cols-12 gap-10 md:gap-16">
 
           {/* ── LEFT (7 cols) ── */}
           <div className="col-span-12 lg:col-span-7 space-y-16">
@@ -370,7 +369,7 @@ export default function ProfileEditorPage() {
             {/* Stats Grid */}
             <section>
               <label className="block font-label uppercase tracking-widest text-[10px] text-secondary mb-6">Key Performance Indicators</label>
-              <div className="grid grid-cols-2 gap-4">
+              <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
                 {stats.map((stat, i) => (
                   <div key={i} className="bg-surface-container p-6">
                     <input

@@ -25,10 +25,23 @@ export default function ArticleEditorPage() {
   const [tags, setTags] = useState<string[]>([]);
   const [tagInput, setTagInput] = useState('');
   const [featuredImage, setFeaturedImage] = useState('');
+  
+  // Profile Association
+  const [profileType, setProfileType] = useState<'none' | 'founder' | 'creator'>('none');
+  const [profileId, setProfileId] = useState('');
+  const [founders, setFounders] = useState<any[]>([]);
+  const [creators, setCreators] = useState<any[]>([]);
+
   const [uploading, setUploading] = useState(false);
   const [saving, setSaving] = useState(false);
   const [error, setError] = useState('');
   const [loadingArticle, setLoadingArticle] = useState(!!articleId);
+
+  // Fetch profiles
+  useEffect(() => {
+    fetch('/api/founders').then(res => res.json()).then(setFounders).catch(console.error);
+    fetch('/api/creators').then(res => res.json()).then(setCreators).catch(console.error);
+  }, []);
 
   // Fetch existing article when editing
   useEffect(() => {
@@ -46,8 +59,10 @@ export default function ArticleEditorPage() {
           setAuthor(article.author || 'Aarav Malhotra');
           setStatus(article.published ? 'Published' : 'Draft');
           setFeaturedImage(article.featuredImage || '');
-          setMetaTitle(article.title ? `${article.title} | TBF` : '');
-          setMetaDesc(article.excerpt || article.subtitle || '');
+          setMetaTitle(article.metaTitle || (article.title ? `${article.title} | TBF` : ''));
+          setMetaDesc(article.metaDescription || article.excerpt || article.subtitle || '');
+          setProfileType(article.associatedProfileType || 'none');
+          setProfileId(article.associatedProfileId || '');
           if (article.tags) setTags(article.tags);
         }
       })
@@ -103,6 +118,11 @@ export default function ArticleEditorPage() {
         readTime: Math.max(1, Math.ceil(body.split(' ').length / 200)),
         slug: title.toLowerCase().replace(/[^a-z0-9]+/g, '-').replace(/(^-|-$)/g, ''),
         id: articleId || undefined,
+        associatedProfileId: profileType !== 'none' ? profileId : undefined,
+        associatedProfileType: profileType !== 'none' ? profileType : undefined,
+        metaTitle,
+        metaDescription: metaDesc,
+        tags,
       };
       const res = await fetch('/api/articles', {
         method: articleId ? 'PUT' : 'POST',
@@ -130,33 +150,34 @@ export default function ArticleEditorPage() {
   }
 
   return (
-    <div className="flex flex-col h-screen overflow-hidden">
+    <div className="flex flex-col min-h-screen">
       {/* TOP NAV */}
-      <header className="h-20 bg-white flex items-center justify-between px-10 shadow-[0px_1px_0px_0px_rgba(0,0,0,0.05)] z-40 flex-shrink-0">
-        <div className="flex items-center gap-4 text-sm font-label tracking-wide uppercase">
-          <Link href="/admin/articles" className="text-on-surface-variant/40 hover:text-on-surface transition-colors">
+      <header className="px-6 md:px-10 py-4 md:h-20 bg-white flex flex-col sm:flex-row items-center justify-between shadow-[0px_1px_0px_0px_rgba(0,0,0,0.05)] z-40 gap-4">
+        <div className="flex items-center gap-4 text-xs font-label tracking-wide uppercase">
+          <Link href="/admin/articles" className="text-on-surface-variant/40 hover:text-on-surface transition-colors flex items-center gap-2">
+            <span className="material-symbols-outlined text-sm sm:hidden">arrow_back</span>
             Articles
           </Link>
-          <span className="material-symbols-outlined text-xs text-on-surface-variant/20">chevron_right</span>
-          <span className="text-on-surface font-bold">{articleId ? 'Edit Article' : 'New Article'}</span>
+          <span className="hidden sm:inline-flex material-symbols-outlined text-xs text-on-surface-variant/20">chevron_right</span>
+          <span className="text-on-surface font-bold text-nowrap">{articleId ? 'Edit Article' : 'New Article'}</span>
         </div>
-        <div className="flex items-center gap-4">
-          {error && <p className="text-xs text-red-600 font-bold font-label">{error}</p>}
+        <div className="flex flex-wrap items-center justify-center gap-3 md:gap-4 w-full sm:w-auto">
+          {error && <p className="text-[10px] text-red-600 font-bold font-label w-full text-center sm:w-auto">{error}</p>}
           <button
             onClick={() => handleSave(false)}
             disabled={saving}
-            className="px-6 py-2 border border-surface-container-highest text-xs font-bold tracking-widest uppercase hover:bg-surface-container-low transition-colors disabled:opacity-50 font-label"
+            className="flex-1 sm:flex-none px-4 md:px-6 py-2 border border-surface-container-highest text-[10px] md:text-xs font-bold tracking-widest uppercase hover:bg-surface-container-low transition-colors disabled:opacity-50 font-label"
           >
-            Save Draft
+            Draft
           </button>
-          <button className="px-6 py-2 border border-surface-container-highest text-xs font-bold tracking-widest uppercase hover:bg-surface-container-low transition-colors flex items-center gap-2 font-label">
+          <button className="hidden sm:flex px-4 md:px-6 py-2 border border-surface-container-highest text-[10px] md:text-xs font-bold tracking-widest uppercase hover:bg-surface-container-low transition-colors items-center gap-2 font-label">
             <span className="material-symbols-outlined text-base">visibility</span>
             Preview
           </button>
           <button
             onClick={() => handleSave(true)}
             disabled={saving}
-            className="px-8 py-2 text-white text-xs font-bold tracking-widest uppercase hover:opacity-90 transition-all disabled:opacity-50 font-label"
+            className="flex-1 sm:flex-none px-6 md:px-8 py-2 text-white text-[10px] md:text-xs font-bold tracking-widest uppercase hover:opacity-90 transition-all disabled:opacity-50 font-label"
             style={{ backgroundColor: '#9e001f' }}
           >
             {saving ? 'Saving...' : 'Publish'}
@@ -164,14 +185,13 @@ export default function ArticleEditorPage() {
         </div>
       </header>
 
-      <div className="flex flex-1 overflow-hidden">
+      <div className="flex flex-col lg:flex-row flex-1 overflow-hidden">
         {/* ── EDITOR (65%) ── */}
         <section
-          className="h-full bg-white overflow-y-auto border-r border-surface-container"
-          style={{ width: '65%' }}
+          className="lg:h-full bg-white lg:overflow-y-auto border-r border-surface-container w-full lg:w-[65%]"
         >
           {/* Formatting toolbar */}
-          <div className="sticky top-0 bg-white/95 backdrop-blur-sm px-16 py-4 border-b border-surface-container-low flex items-center gap-6 z-10">
+          <div className="sticky top-0 bg-white/95 backdrop-blur-sm px-6 md:px-16 py-4 border-b border-surface-container-low flex overflow-x-auto whitespace-nowrap items-center gap-6 z-10 custom-scrollbar">
             <div className="flex items-center gap-1 border-r border-surface-container-high pr-6">
               {['format_bold', 'format_italic', 'format_underlined'].map((ic) => (
                 <button key={ic} className="p-2 hover:bg-surface-container-low transition-colors">
@@ -199,10 +219,10 @@ export default function ArticleEditorPage() {
           </div>
 
           {/* Canvas */}
-          <div className="px-24 py-16 space-y-10 max-w-4xl mx-auto">
+          <div className="px-8 md:px-24 py-12 md:py-16 space-y-10 max-w-4xl mx-auto">
             {/* Title */}
             <textarea
-              className="w-full font-headline text-6xl font-bold border-none focus:ring-0 p-0 placeholder:text-surface-dim resize-none leading-tight bg-transparent outline-none"
+              className="w-full font-headline text-4xl md:text-6xl font-bold border-none focus:ring-0 p-0 placeholder:text-surface-dim resize-none leading-tight bg-transparent outline-none"
               placeholder="The Unspoken Rhythm of Marine Drive at Dawn"
               rows={2}
               value={title}
@@ -212,7 +232,7 @@ export default function ArticleEditorPage() {
             {/* Deck */}
             <textarea
               className="w-full font-body text-xl font-medium border-none focus:ring-0 p-0 placeholder:text-surface-dim resize-none italic bg-transparent outline-none"
-              style={{ color: 'rgba(210,227,250,0.8)' }}
+              style={{ color: '#525F72' }}
               placeholder="An editorial exploration into the sensory transformation of Mumbai's most iconic promenade before the city awakens."
               rows={2}
               value={deck}
@@ -240,8 +260,8 @@ export default function ArticleEditorPage() {
                 Joggers move like ghosts in the mist, their steady footfalls the only percussion against the rhythmic lap of the Arabian Sea. It is here that the Forum finds its most honest reflection of the city—stripped of pretense, waiting for the first light to ignite the skyline.
               </p>
 
-              {/* Image slot */}
-              <label className="group relative w-full h-96 bg-surface-container-low flex items-center justify-center cursor-pointer overflow-hidden transition-all hover:bg-surface-container block">
+               {/* Image slot */}
+              <label className="group relative w-full h-64 md:h-96 bg-surface-container-low flex items-center justify-center cursor-pointer overflow-hidden transition-all hover:bg-surface-container block">
                 <input type="file" accept="image/*" className="sr-only" onChange={handleImageUpload} />
                 {featuredImage ? (
                   <img src={featuredImage} alt="Hero" className="absolute inset-0 w-full h-full object-cover opacity-80" />
@@ -265,8 +285,7 @@ export default function ArticleEditorPage() {
 
         {/* ── SETTINGS SIDEBAR (35%) ── */}
         <aside
-          className="h-full bg-surface-container-low overflow-y-auto border-l border-surface-container"
-          style={{ width: '35%' }}
+          className="lg:h-full bg-surface-container-low lg:overflow-y-auto border-l border-surface-container w-full lg:w-[35%]"
         >
           <div className="p-8 space-y-10">
             {/* Publish Settings */}
@@ -301,6 +320,51 @@ export default function ArticleEditorPage() {
                     Public <span className="material-symbols-outlined text-xs">expand_more</span>
                   </span>
                 </div>
+              </div>
+            </section>
+
+            {/* Profile Association */}
+            <section className="space-y-6">
+              <div className="flex items-center justify-between border-b border-surface-container pb-2">
+                <h3 className="text-[11px] font-bold tracking-[0.2em] uppercase text-on-surface-variant font-label">Profile Sync</h3>
+                <span className="material-symbols-outlined text-sm text-on-surface-variant">sync</span>
+              </div>
+              <div className="space-y-4">
+                <div className="space-y-2">
+                  <label className="text-[10px] font-bold uppercase text-secondary font-label">Associated Profile Type</label>
+                  <select
+                    value={profileType}
+                    onChange={(e) => {
+                      setProfileType(e.target.value as any);
+                      setProfileId('');
+                    }}
+                    className="w-full bg-white border border-surface-container-highest p-2 text-xs font-body focus:ring-0 outline-none"
+                  >
+                    <option value="none">None</option>
+                    <option value="founder">Founder</option>
+                    <option value="creator">Creator</option>
+                  </select>
+                </div>
+
+                {profileType !== 'none' && (
+                  <div className="space-y-2">
+                    <label className="text-[10px] font-bold uppercase text-secondary font-label">
+                      Select {profileType === 'founder' ? 'Founder' : 'Creator'}
+                    </label>
+                    <select
+                      value={profileId}
+                      onChange={(e) => setProfileId(e.target.value)}
+                      className="w-full bg-white border border-surface-container-highest p-2 text-xs font-body focus:ring-0 outline-none"
+                    >
+                      <option value="">Choose Profile...</option>
+                      {(profileType === 'founder' ? founders : creators).map((p) => (
+                        <option key={p.id} value={p.id}>
+                          {p.name} ({p.company || p.specialization})
+                        </option>
+                      ))}
+                    </select>
+                  </div>
+                )}
               </div>
             </section>
 

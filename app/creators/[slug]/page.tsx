@@ -3,7 +3,7 @@ import { notFound } from 'next/navigation';
 import { TopBar } from '@/components/TopBar';
 import { Header } from '@/components/Header';
 import { Footer } from '@/components/Footer';
-import { getCreatorBySlug, getCreators } from '@/lib/firebase';
+import { getCreatorBySlug, getCreators, getArticles } from '@/lib/firebase';
 
 type PageProps = {
   params: Promise<{ slug: string }>;
@@ -23,7 +23,10 @@ export async function generateMetadata({ params }: PageProps) {
 
 export default async function CreatorPage({ params }: PageProps) {
   const { slug } = await params;
-  const creator = await getCreatorBySlug(slug);
+  const [creator, allArticles] = await Promise.all([
+    getCreatorBySlug(slug),
+    getArticles()
+  ]);
 
   if (!creator) {
     notFound();
@@ -66,6 +69,11 @@ export default async function CreatorPage({ params }: PageProps) {
         slug: c.slug,
       }));
   }
+
+  // Fetch associated articles
+  const associatedArticles = allArticles.filter(
+    (a: any) => a.associatedProfileId === creator.id && a.published !== false
+  );
 
   return (
     <>
@@ -264,6 +272,46 @@ export default async function CreatorPage({ params }: PageProps) {
             )}
           </div>
         </article>
+
+        {/* ── ASSOCIATED ARTICLES ── */}
+        {associatedArticles.length > 0 && (
+          <section className="py-24 px-8 md:px-24 bg-surface">
+            <div className="max-w-7xl mx-auto">
+              <div className="flex items-center gap-6 mb-16">
+                <h3 className="text-[10px] tracking-[0.4em] font-bold uppercase whitespace-nowrap font-label text-brand-navy">
+                  IN CONVERSATION
+                </h3>
+                <div className="h-[1px] w-full bg-brand-navy/10" />
+              </div>
+              
+              <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-12">
+                {associatedArticles.map((art: any) => (
+                  <Link key={art.id} href={`/articles/${art.slug}`} className="group block">
+                    <div className="aspect-[16/9] overflow-hidden mb-6 bg-surface-container-low">
+                      <img
+                        src={art.featuredImage}
+                        alt={art.title}
+                        className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-700"
+                      />
+                    </div>
+                    <span className="text-[9px] font-bold tracking-[0.2em] uppercase text-brand-teal mb-3 block font-label">
+                      {art.tags?.[0] || 'CREATORS'}
+                    </span>
+                    <h4 className="text-2xl font-headline group-hover:text-brand-teal transition-colors mb-3">
+                      {art.title}
+                    </h4>
+                    <p className="text-sm text-on-surface-variant line-clamp-2 font-body mb-4">
+                      {art.subtitle || art.excerpt}
+                    </p>
+                    <span className="text-[10px] font-bold tracking-widest text-on-surface-variant/40 uppercase font-label">
+                      {art.readTime} MIN READ
+                    </span>
+                  </Link>
+                ))}
+              </div>
+            </div>
+          </section>
+        )}
 
         {/* Creator Network Strip */}
         {networkCreators.length > 0 && (

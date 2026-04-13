@@ -190,34 +190,54 @@ export default async function CreatorsPage() {
           <div className="max-w-7xl mx-auto">
             <div className="flex items-center gap-6 mb-16">
               <span className="text-[11px] tracking-[0.4em] font-bold text-on-surface/40 uppercase whitespace-nowrap font-label">
-                From Creators
+                Latest Stories
               </span>
               <div className="h-[1px] bg-outline-variant/30 w-full" />
             </div>
             <div className="grid grid-cols-1 md:grid-cols-3 gap-y-16 gap-x-12">
-              {contentGrid.map((item: any, i: number) => (
+              {articles.map((item: any, i: number) => (
                 <article key={i} className="group flex flex-col cursor-pointer">
-                  <Link href={item.slug}>
+                  <Link href={`/articles/${item.slug}`}>
                     <div className="aspect-[16/10] overflow-hidden mb-6">
                       <img
                         className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-700"
                         alt={item.title}
-                        src={item.image}
+                        src={item.featuredImage}
                       />
                     </div>
                     <span className="text-brand-teal text-[9px] tracking-[0.2em] font-bold mb-3 uppercase font-label">
-                      {item.category}
+                      {item.tags?.[0] || 'CREATOR'}
                     </span>
                     <h3 className="font-headline text-2xl mb-3 group-hover:text-brand-teal transition-colors">
                       {item.title}
                     </h3>
                     <p className="font-body text-on-surface/60 text-sm mb-4 line-clamp-2">
-                      {item.excerpt}
+                      {item.subtitle || item.excerpt}
                     </p>
                     <span className="text-on-surface/40 text-[10px] font-medium tracking-wide font-label uppercase">
-                      {item.read}
+                      {item.readTime} MIN READ
                     </span>
                   </Link>
+                </article>
+              ))}
+              {articles.length === 0 && defaultContentGrid.map((item: any, i: number) => (
+                <article key={i} className="group flex flex-col cursor-pointer">
+                  <div className="aspect-[16/10] overflow-hidden mb-6">
+                    <img
+                      className="w-full h-full object-cover grayscale opacity-70"
+                      alt={item.title}
+                      src={item.image}
+                    />
+                  </div>
+                  <span className="text-brand-teal text-[9px] tracking-[0.2em] font-bold mb-3 uppercase font-label">
+                    {item.category}
+                  </span>
+                  <h3 className="font-headline text-2xl mb-3">
+                    {item.title}
+                  </h3>
+                  <p className="font-body text-on-surface/60 text-sm mb-4">
+                    {item.excerpt}
+                  </p>
                 </article>
               ))}
             </div>
@@ -244,29 +264,72 @@ export default async function CreatorsPage() {
           </div>
         </section>
 
-        {/* Faces Strip */}
-        <section className="py-24 px-12" style={{ backgroundColor: '#F5F5F0' }}>
+        {/* Faces in Creation (Spotlight on others) */}
+        {facesCreators.length > 0 && (
+          <section className="py-24 px-12 bg-surface">
+            <div className="max-w-7xl mx-auto">
+              <div className="flex items-center gap-6 mb-16">
+                <span className="text-[11px] tracking-[0.4em] font-bold text-on-surface/40 uppercase whitespace-nowrap font-label">
+                  Faces in Creation
+                </span>
+                <div className="h-[1px] bg-outline-variant/30 w-full" />
+              </div>
+              
+              <div className="grid grid-cols-2 lg:grid-cols-5 gap-8">
+                {facesCreators.map((c: any) => (
+                  <Link key={c.id} href={`/creators/${c.slug}`} className="group block">
+                    <div className="aspect-square rounded-full overflow-hidden mb-6 bg-surface-container-low grayscale group-hover:grayscale-0 transition-all duration-700">
+                      <img
+                        src={c.image || c.heroImage || 'https://images.unsplash.com/photo-1534528741775-53994a69daeb?q=80&w=2000&auto=format&fit=crop'}
+                        alt={c.name}
+                        className="w-full h-full object-cover group-hover:scale-110 transition-transform duration-700"
+                      />
+                    </div>
+                    <div className="text-center">
+                      <h4 className="font-headline text-lg mb-1 group-hover:text-brand-teal transition-colors">
+                        {c.name}
+                      </h4>
+                      <p className="font-label text-on-surface/40 text-[9px] uppercase tracking-widest font-bold">
+                        {c.specialization || c.title}
+                      </p>
+                    </div>
+                  </Link>
+                ))}
+              </div>
+            </div>
+          </section>
+        )}
+
+        {/* Creator Directory */}
+        <section className="py-32 px-12" style={{ backgroundColor: '#F5F5F0' }}>
           <div className="max-w-7xl mx-auto">
-            <span className="text-[11px] tracking-[0.4em] font-bold text-on-surface/40 uppercase block mb-12 font-label">
-              Faces
-            </span>
-            <div className="flex flex-nowrap md:grid md:grid-cols-5 gap-8 overflow-x-auto pb-8 md:pb-0">
-              {facesCreators.length > 0 ? facesCreators.map((f: any) => (
-                <Link key={f.id} href={`/creators/${f.slug}`} className="flex-shrink-0 w-[240px] md:w-full group cursor-pointer block">
-                  <div className="aspect-square bg-surface-dim overflow-hidden mb-4 grayscale group-hover:grayscale-0 transition-all duration-500">
-                    <img className="w-full h-full object-cover" alt={f.name} src={f.image || f.heroImage} />
+            <div className="flex items-center gap-6 mb-20">
+              <h3 className="text-[11px] tracking-[0.4em] font-bold uppercase whitespace-nowrap font-label text-brand-navy">
+                CREATOR DIRECTORY
+              </h3>
+              <div className="h-[1px] bg-brand-navy/10 w-full" />
+            </div>
+            
+            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-8">
+              {creators.map((f: any) => (
+                <Link key={f.id} href={`/creators/${f.slug}`} className="group cursor-pointer block">
+                  <div className="aspect-square bg-surface-dim overflow-hidden mb-6 grayscale group-hover:grayscale-0 transition-all duration-700">
+                    <img 
+                      className="w-full h-full object-cover transition-transform duration-700 group-hover:scale-105" 
+                      alt={f.name} 
+                      src={f.image || f.heroImage || 'https://images.unsplash.com/photo-1534528741775-53994a69daeb?q=80&w=2000&auto=format&fit=crop'} 
+                    />
                   </div>
-                  <h5 className="font-headline text-xl mb-1 group-hover:text-brand-teal transition-colors">{f.name}</h5>
-                  <p className="font-body text-on-surface/50 text-xs">{f.specialization || f.title}</p>
+                  <h5 className="font-headline text-2xl mb-1 group-hover:text-brand-teal transition-colors font-bold uppercase tracking-tight">
+                    {f.name}
+                  </h5>
+                  <p className="font-label text-secondary text-[10px] font-bold uppercase tracking-widest">
+                    {f.specialization || f.title}
+                  </p>
+                  <p className="font-body text-on-surface/40 text-[10px] uppercase font-medium mt-2">
+                    {f.location || 'Mumbai'}
+                  </p>
                 </Link>
-              )) : defaultFaces.map((f) => (
-                <div key={f.name} className="flex-shrink-0 w-[240px] md:w-full group cursor-pointer">
-                  <div className="aspect-square bg-surface-dim overflow-hidden mb-4 grayscale group-hover:grayscale-0 transition-all duration-500">
-                    <img className="w-full h-full object-cover" alt={f.name} src={f.image} />
-                  </div>
-                  <h5 className="font-headline text-xl mb-1">{f.name}</h5>
-                  <p className="font-body text-on-surface/50 text-xs">{f.role}</p>
-                </div>
               ))}
             </div>
           </div>

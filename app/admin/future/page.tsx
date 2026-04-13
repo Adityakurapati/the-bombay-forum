@@ -264,20 +264,20 @@ export default function AdminFuturePage() {
   return (
     <div className="flex flex-col min-h-screen pb-20" style={{ backgroundColor: BG }}>
       {/* Header */}
-      <header className="flex items-center justify-between px-10 py-8 bg-surface-bright">
+      <header className="flex flex-col sm:flex-row items-center justify-between px-6 md:px-10 py-8 bg-surface-bright gap-6 text-center sm:text-left">
         <div>
-          <nav className="flex space-x-2 text-[10px] uppercase tracking-[0.2em] text-on-surface-variant mb-1 font-label">
+          <nav className="flex justify-center sm:justify-start space-x-2 text-[10px] uppercase tracking-[0.2em] text-on-surface-variant mb-1 font-label">
             <span>Admin</span><span>/</span>
             <span className="text-primary font-bold">Future</span>
           </nav>
-          <h2 className="font-headline text-4xl font-bold tracking-tight" style={{ color: DARK }}>
-            Future Page
+          <h2 className="font-headline text-3xl md:text-4xl font-bold tracking-tight" style={{ color: DARK }}>
+            Future Page Manager
           </h2>
         </div>
         <a
           href="/categories/future"
           target="_blank"
-          className="flex items-center gap-2 border border-surface-container-highest px-5 py-2 text-[11px] font-bold uppercase tracking-widest font-label hover:bg-surface-container-low transition-colors"
+          className="w-full sm:w-auto flex items-center justify-center gap-2 border border-surface-container-highest px-5 py-2 text-[11px] font-bold uppercase tracking-widest font-label hover:bg-surface-container-low transition-colors"
         >
           <span className="material-symbols-outlined text-sm">open_in_new</span>
           View Live Page
@@ -285,13 +285,13 @@ export default function AdminFuturePage() {
       </header>
 
       {/* Tab bar */}
-      <div className="border-b border-surface-container-highest bg-white">
-        <div className="flex px-10">
+      <div className="border-b border-surface-container-highest bg-white overflow-x-auto whitespace-nowrap custom-scrollbar">
+        <div className="flex px-6 md:px-10">
           {TABS.map((t) => (
             <button
               key={t.key}
               onClick={() => setTab(t.key)}
-              className={`flex items-center gap-2 px-6 py-4 border-b-2 font-label text-[11px] uppercase tracking-widest font-bold transition-colors ${
+              className={`flex items-center gap-2 px-6 py-4 border-b-2 font-label text-[11px] uppercase tracking-widest font-bold transition-colors whitespace-nowrap ${
                 tab === t.key
                   ? 'border-teal-700 text-on-surface'
                   : 'border-transparent text-on-surface-variant hover:text-on-surface'
@@ -310,7 +310,7 @@ export default function AdminFuturePage() {
           <span className="material-symbols-outlined text-4xl animate-spin text-on-surface-variant">progress_activity</span>
         </div>
       ) : (
-        <div className="flex-1 px-10 py-10 max-w-5xl">
+        <div className="flex-1 px-6 md:px-10 py-10 max-w-5xl">
 
           {/* ── LEAD STORY TAB ── */}
           {tab === 'lead' && (
@@ -320,7 +320,7 @@ export default function AdminFuturePage() {
                 <p className="text-xs text-on-surface-variant font-body">This is the large featured article at the top of the page.</p>
               </div>
               <div className="bg-white p-8 space-y-6 border border-surface-container-highest">
-                <div className="grid grid-cols-2 gap-6">
+                <div className="grid grid-cols-1 sm:grid-cols-2 gap-6">
                   <Field label="Category Label">
                     <input className={inputCls} value={lead.leadCategory} onChange={(e) => setLead((p) => ({ ...p, leadCategory: e.target.value }))} placeholder="e.g. FUTURE, AI & ETHICS" />
                   </Field>
@@ -331,7 +331,7 @@ export default function AdminFuturePage() {
                 <Field label="Title">
                   <input className={inputCls} value={lead.leadTitle} onChange={(e) => setLead((p) => ({ ...p, leadTitle: e.target.value }))} placeholder="Article title..." />
                 </Field>
-                <div className="grid grid-cols-2 gap-6">
+                <div className="grid grid-cols-1 sm:grid-cols-2 gap-6">
                   <Field label="Date">
                     <input className={inputCls} value={lead.leadDate} onChange={(e) => setLead((p) => ({ ...p, leadDate: e.target.value }))} placeholder="e.g. October 24, 2024" />
                   </Field>
@@ -503,7 +503,7 @@ export default function AdminFuturePage() {
                 <h4 className="font-label text-[11px] uppercase tracking-widest font-bold text-on-surface-variant">
                   {storyEditing ? 'Edit Story' : 'Add New Story'}
                 </h4>
-                <div className="grid grid-cols-2 gap-4">
+                <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
                   <Field label="Sub-category">
                     <input className={inputCls} value={storyForm.sub || ''} onChange={(e) => setStoryForm((p) => ({ ...p, sub: e.target.value }))} placeholder="e.g. BIOTECH" />
                   </Field>
@@ -582,7 +582,7 @@ export default function AdminFuturePage() {
                 <Field label="Attribution">
                   <input className={inputCls} value={opinion.attribution} onChange={(e) => setOpinion((p) => ({ ...p, attribution: e.target.value }))} placeholder="— ROHINI RAO, PRINCIPAL AT AKASH VENTURES" />
                 </Field>
-                <div className="grid grid-cols-2 gap-6">
+                <div className="grid grid-cols-1 sm:grid-cols-2 gap-6">
                   <Field label="Link Label">
                     <input className={inputCls} value={opinion.linkLabel} onChange={(e) => setOpinion((p) => ({ ...p, linkLabel: e.target.value }))} placeholder="Read the Full Essay" />
                   </Field>

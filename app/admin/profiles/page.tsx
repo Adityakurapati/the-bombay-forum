@@ -112,17 +112,17 @@ export default function ProfilesPage() {
   });
 
   return (
-    <div className="min-h-screen p-12" style={{ backgroundColor: '#fafaf5' }}>
+    <div className="min-h-screen p-6 md:p-12" style={{ backgroundColor: '#fafaf5' }}>
       {/* Header */}
-      <header className="flex justify-between items-end mb-12">
-        <div>
-          <nav className="flex space-x-2 text-[10px] uppercase tracking-[0.2em] text-on-surface-variant mb-4 font-label">
+      <header className="flex flex-col sm:flex-row justify-between items-center sm:items-end mb-12 gap-6">
+        <div className="text-center sm:text-left">
+          <nav className="flex justify-center sm:justify-start space-x-2 text-[10px] uppercase tracking-[0.2em] text-on-surface-variant mb-4 font-label">
             <span>Admin</span>
             <span>/</span>
             <span className="text-primary font-bold">Directory</span>
           </nav>
           <h2
-            className="text-5xl font-headline font-extrabold tracking-tighter"
+            className="text-4xl md:text-5xl font-headline font-extrabold tracking-tighter"
             style={{ color: '#0B1929' }}
           >
             Founders &amp; Creators
@@ -130,7 +130,7 @@ export default function ProfilesPage() {
         </div>
         <Link
           href="/admin/profiles/edit"
-          className="text-white px-8 py-4 font-label uppercase tracking-widest text-xs flex items-center group transition-all hover:opacity-90"
+          className="w-full sm:w-auto text-white px-8 py-4 font-label uppercase tracking-widest text-xs flex items-center justify-center group transition-all hover:opacity-90"
           style={{ backgroundColor: '#11262B' }}
         >
           <span className="material-symbols-outlined mr-2 text-sm">add</span>
@@ -139,7 +139,7 @@ export default function ProfilesPage() {
       </header>
 
       {/* Tabs */}
-      <div className="border-b border-surface-container-highest mb-12 flex space-x-12">
+      <div className="border-b border-surface-container-highest mb-12 flex space-x-8 md:space-x-12 overflow-x-auto custom-scrollbar whitespace-nowrap">
         {TABS.map((tab) => (
           <button
             key={tab}
@@ -158,7 +158,7 @@ export default function ProfilesPage() {
 
       {/* Profiles Grid */}
       {loading ? (
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-0">
+        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-0">
           {[1, 2, 3, 4, 5, 6].map((i) => (
             <div
               key={i}
@@ -189,7 +189,7 @@ export default function ProfilesPage() {
           ))}
         </div>
       ) : (
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-0">
+        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-0">
           {filtered.map((profile) => (
             <div
               key={`${profile.type}-${profile.id}`}
@@ -293,7 +293,7 @@ export default function ProfilesPage() {
       )}
 
       {/* Pagination */}
-      <footer className="mt-16 border-t border-surface-container-highest pt-8 flex justify-between items-center">
+      <footer className="mt-16 border-t border-surface-container-highest pt-8 flex flex-col md:flex-row justify-between items-center gap-6 text-center">
         <p className="text-[10px] uppercase tracking-[0.2em] text-on-surface-variant font-label">
           Showing {filtered.length} of {profiles.length} total profiles
         </p>

@@ -191,11 +191,11 @@ export default function AdminArticlesPage() {
     <div className="flex flex-col min-h-screen pb-20" style={{ backgroundColor: '#fafaf5' }}>
 
       {/* ── TOP APP BAR ── */}
-      <header className="flex items-center justify-between px-10 py-8 bg-surface-bright">
-        <h2 className="font-headline text-4xl font-bold tracking-tight text-primary">Articles</h2>
+      <header className="flex flex-col sm:flex-row items-center justify-between px-6 md:px-10 py-8 bg-surface-bright gap-4">
+        <h2 className="font-headline text-3xl md:text-4xl font-bold tracking-tight text-primary text-center sm:text-left">Articles</h2>
         <Link
           href="/admin/articles/edit"
-          className="text-white px-6 py-3 font-label text-xs font-bold uppercase tracking-[0.2em] hover:opacity-90 transition-colors flex items-center gap-2"
+          className="w-full sm:w-auto text-white px-6 py-3 font-label text-xs font-bold uppercase tracking-[0.2em] hover:opacity-90 transition-colors flex items-center justify-center gap-2"
           style={{ backgroundColor: '#11262B' }}
         >
           <span className="material-symbols-outlined text-sm">add</span>
@@ -204,8 +204,8 @@ export default function AdminArticlesPage() {
       </header>
 
       {/* ── FILTER BAR ── */}
-      <section className="px-10 space-y-6">
-        <div className="flex flex-col gap-6 p-8 bg-surface-container-low">
+      <section className="px-6 md:px-10 space-y-6">
+        <div className="flex flex-col gap-6 p-6 md:p-8 bg-surface-container-low">
 
           {/* Status chips + dropdowns */}
           <div className="flex flex-wrap items-center justify-between gap-4">
@@ -228,7 +228,7 @@ export default function AdminArticlesPage() {
             </div>
 
             {/* Dropdowns */}
-            <div className="flex gap-4">
+            <div className="flex flex-col sm:flex-row gap-4 w-full sm:w-auto">
               <div className="relative">
                 <select
                   value={categoryFilter}
@@ -273,7 +273,8 @@ export default function AdminArticlesPage() {
       </section>
 
       {/* ── ARTICLES TABLE ── */}
-      <section className="flex-1 px-10 py-8">
+      <section className="flex-1 px-6 md:px-10 py-8">
+        <div className="w-full overflow-x-auto custom-scrollbar border border-surface-container-highest">
         {loading ? (
           // Loading skeleton
           <div className="space-y-4">
@@ -414,6 +415,7 @@ export default function AdminArticlesPage() {
             </tbody>
           </table>
         )}
+      </div>
 
         {!loading && visible.length === 0 && (
           <div className="text-center py-24 text-on-surface-variant">
@@ -424,7 +426,7 @@ export default function AdminArticlesPage() {
       </section>
 
       {/* ── PAGINATION ── */}
-      <footer className="flex items-center justify-between px-10 py-10 bg-surface-bright mt-auto">
+      <footer className="flex flex-col sm:flex-row items-center justify-between px-6 md:px-10 py-10 bg-surface-bright mt-auto gap-4 text-center">
         <p className="text-[10px] font-bold uppercase tracking-widest text-on-surface-variant font-label">
           Showing {visible.length} of {articles.length} articles
         </p>
@@ -437,15 +439,15 @@ export default function AdminArticlesPage() {
 
       {/* ── BULK ACTIONS BAR (fixed bottom, hidden when nothing selected) ── */}
       <div
-        className={`fixed bottom-0 right-0 text-white px-10 py-5 flex items-center justify-between z-40 shadow-2xl transition-transform duration-300 ${
+        className={`fixed bottom-0 right-0 text-white px-6 md:px-10 py-5 flex flex-col lg:flex-row items-center justify-between z-40 shadow-2xl transition-transform duration-300 gap-4 ${
           showBulkBar ? 'translate-y-0' : 'translate-y-full'
         }`}
         style={{
-          left: '18rem', /* 72 * 4px = 288px = w-72 sidebar */
+          left: '0px',
           backgroundColor: '#11262B',
         }}
       >
-        <div className="flex items-center gap-4">
+        <div className="md:ml-64 flex items-center gap-4">
           <span className="material-symbols-outlined" style={{ color: '#2DD4BF' }}>check_circle</span>
           <p className="text-sm font-label tracking-wide">{selected.size} article{selected.size !== 1 ? 's' : ''} selected</p>
         </div>
@@ -471,7 +473,7 @@ export default function AdminArticlesPage() {
           </button>
           <button
             onClick={() => setSelected(new Set())}
-            className="ml-4 w-10 h-10 flex items-center justify-center bg-white/10 hover:bg-white/20 transition-colors"
+            className="w-10 h-10 flex items-center justify-center bg-white/10 hover:bg-white/20 transition-colors"
           >
             <span className="material-symbols-outlined text-sm">close</span>
           </button>

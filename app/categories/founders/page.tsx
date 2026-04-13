@@ -64,11 +64,11 @@ export default async function FoundersPage() {
   ];
 
   const defaultOnesToWatch = [
-    { name: 'Aman Mehra',  company: 'Solaris AI',   city: 'Bengaluru' },
-    { name: 'Isha Patil',  company: 'Vayu Health',  city: 'Pune' },
-    { name: 'Kabir Singh', company: 'BlockRoot',    city: 'Hyderabad' },
-    { name: 'Meera Joshi', company: 'Terraform',    city: 'Mumbai' },
-    { name: 'Zayan Mirza', company: 'Q-Core',       city: 'Delhi' },
+    { name: 'Aman Mehra',  company: 'Solaris AI',   city: 'Bengaluru', image: 'https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?q=80&w=2000&auto=format&fit=crop' },
+    { name: 'Isha Patil',  company: 'Vayu Health',  city: 'Pune', image: 'https://images.unsplash.com/photo-1494790108377-be9c29b29330?q=80&w=2000&auto=format&fit=crop' },
+    { name: 'Kabir Singh', company: 'BlockRoot',    city: 'Hyderabad', image: 'https://images.unsplash.com/photo-1500648767791-00dcc994a43e?q=80&w=2000&auto=format&fit=crop' },
+    { name: 'Meera Joshi', company: 'Terraform',    city: 'Mumbai', image: 'https://images.unsplash.com/photo-1438761681033-6461ffad8d80?q=80&w=2000&auto=format&fit=crop' },
+    { name: 'Zayan Mirza', company: 'Q-Core',       city: 'Delhi', image: 'https://images.unsplash.com/photo-1472099645785-5658abf4ff4e?q=80&w=2000&auto=format&fit=crop' },
   ];
 
   return (
@@ -237,6 +237,13 @@ export default async function FoundersPage() {
           <div className="grid grid-cols-2 md:grid-cols-5 gap-8">
             {onesToWatch.length > 0 ? onesToWatch.map((p: any) => (
               <Link key={p.id} href={`/founders/${p.slug}`} className="flex flex-col group cursor-pointer">
+                <div className="aspect-[3/4] overflow-hidden mb-6 bg-surface-container-low">
+                  <img
+                    src={p.image || p.heroImage || 'https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?q=80&w=2000&auto=format&fit=crop'}
+                    alt={p.name}
+                    className="w-full h-full object-cover grayscale brightness-90 contrast-110 group-hover:grayscale-0 group-hover:brightness-100 transition-all duration-700"
+                  />
+                </div>
                 <span className="text-xl font-headline mb-1 group-hover:text-primary transition-colors" style={{ color: '#0B1929' }}>
                   {p.name}
                 </span>
@@ -255,6 +262,13 @@ export default async function FoundersPage() {
               </Link>
             )) : defaultOnesToWatch.map((p) => (
               <div key={p.name} className="flex flex-col">
+                <div className="aspect-[3/4] overflow-hidden mb-6 bg-surface-container-low grayscale">
+                  <img
+                    src={p.image || 'https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?q=80&w=2000&auto=format&fit=crop'}
+                    alt={p.name}
+                    className="w-full h-full object-cover opacity-80"
+                  />
+                </div>
                 <span className="text-xl font-headline mb-1" style={{ color: '#0B1929' }}>
                   {p.name}
                 </span>
@@ -276,7 +290,44 @@ export default async function FoundersPage() {
         </div>
       </section>
 
-      {/* ── 5. SPOTLIGHT STRIP ── */}
+      {/* ── 5. COMMUNITY DIRECTORY ── */}
+      <section className="py-32 px-8 md:px-12 bg-white">
+        <div className="max-w-7xl mx-auto">
+          <div className="flex items-center gap-6 mb-20">
+            <h3 className="text-[11px] tracking-[0.4em] font-bold uppercase whitespace-nowrap font-label text-brand-navy">
+              THE COMMUNITY DIRECTORY
+            </h3>
+            <div className="h-[1px] w-full bg-brand-navy/10" />
+          </div>
+
+          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-x-8 gap-y-20">
+            {founders.map((p: any) => (
+              <Link key={p.id} href={`/founders/${p.slug}`} className="group block">
+                <div className="aspect-[4/5] overflow-hidden mb-8 bg-surface-container-low">
+                  <img
+                    src={p.image || p.heroImage || 'https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?q=80&w=2000&auto=format&fit=crop'}
+                    alt={p.name}
+                    className="w-full h-full object-cover grayscale brightness-90 contrast-110 group-hover:grayscale-0 group-hover:brightness-100 transition-all duration-700"
+                  />
+                </div>
+                <div className="space-y-1">
+                  <h4 className="text-2xl font-headline group-hover:text-primary transition-colors">
+                    {p.name}
+                  </h4>
+                  <p className="text-[10px] font-bold tracking-[0.2em] uppercase text-surface-dim font-label">
+                    {p.company}
+                  </p>
+                  <p className="text-[9px] font-medium uppercase tracking-widest text-surface-dim/60 font-label">
+                    {p.title} · {p.location || p.tags?.[2] || 'Mumbai'}
+                  </p>
+                </div>
+              </Link>
+            ))}
+          </div>
+        </div>
+      </section>
+
+      {/* ── 6. SPOTLIGHT STRIP ── */}
       <section className="py-24" style={{ backgroundColor: '#0B1929' }}>
         <div className="max-w-7xl mx-auto px-12">
           <div className="flex flex-col md:flex-row items-start md:items-center justify-between gap-12 md:gap-24">

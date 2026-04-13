@@ -55,20 +55,16 @@ export function Header() {
         {/* Centered Logo */}
         <Link
           href="/"
-          className="absolute left-1/2 -translate-x-1/2 flex items-center"
+          className="absolute left-1/2 -translate-x-1/2 flex items-center h-full"
         >
           <Image
-            src="/logo.png"   // from public folder
-            alt="Logo"
-            width={32}        // equivalent to h-8 (adjust if needed)
+            src="/logo.png"
+            alt="The Bombay Forum"
+            width={120}
             height={32}
-            style={{
-              filter: "brightness(0) invert(1)",
-              display: "block",
-            }}
+            className="h-8 w-auto object-contain"
             priority
           />
-
         </Link>
 
 

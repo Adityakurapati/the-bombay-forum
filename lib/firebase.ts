@@ -336,3 +336,355 @@ export async function getAllFutureData() {
     opinionStrip: d.opinionStrip || null,
   };
 }
+
+// ─────────────────────────────────────────────────────────
+// Bombay Page
+// ─────────────────────────────────────────────────────────
+
+export async function getBombayHero() {
+  const snap = await get(ref(database, 'bombay/hero'));
+  return snap.exists() ? snap.val() : null;
+}
+export async function setBombayHero(data: any) {
+  await set(ref(database, 'bombay/hero'), data);
+}
+
+export async function getBombayLeadStory() {
+  const snap = await get(ref(database, 'bombay/leadStory'));
+  return snap.exists() ? snap.val() : null;
+}
+export async function setBombayLeadStory(data: any) {
+  await set(ref(database, 'bombay/leadStory'), data);
+}
+
+export async function getBombaySideStories() {
+  const snap = await get(ref(database, 'bombay/sideStories'));
+  if (!snap.exists()) return [];
+  return Object.entries(snap.val()).map(([id, val]: [string, any]) => ({ id, ...val }));
+}
+export async function createBombaySideStory(data: any) {
+  const r = push(ref(database, 'bombay/sideStories'));
+  await set(r, data);
+  return r.key;
+}
+export async function updateBombaySideStory(id: string, data: any) {
+  await set(ref(database, `bombay/sideStories/${id}`), data);
+}
+export async function deleteBombaySideStory(id: string) {
+  await remove(ref(database, `bombay/sideStories/${id}`));
+}
+
+export async function getBombayPulseItems() {
+  const snap = await get(ref(database, 'bombay/pulseItems'));
+  if (!snap.exists()) return [];
+  return Object.entries(snap.val()).map(([id, val]: [string, any]) => ({ id, ...val }));
+}
+export async function createBombayPulseItem(data: any) {
+  const r = push(ref(database, 'bombay/pulseItems'));
+  await set(r, data);
+  return r.key;
+}
+export async function updateBombayPulseItem(id: string, data: any) {
+  await set(ref(database, `bombay/pulseItems/${id}`), data);
+}
+export async function deleteBombayPulseItem(id: string) {
+  await remove(ref(database, `bombay/pulseItems/${id}`));
+}
+
+export async function getBombayStoryGrid() {
+  const snap = await get(ref(database, 'bombay/storyGrid'));
+  if (!snap.exists()) return [];
+  return Object.entries(snap.val()).map(([id, val]: [string, any]) => ({ id, ...val }));
+}
+export async function createBombayStoryItem(data: any) {
+  const r = push(ref(database, 'bombay/storyGrid'));
+  await set(r, data);
+  return r.key;
+}
+export async function updateBombayStoryItem(id: string, data: any) {
+  await set(ref(database, `bombay/storyGrid/${id}`), data);
+}
+export async function deleteBombayStoryItem(id: string) {
+  await remove(ref(database, `bombay/storyGrid/${id}`));
+}
+
+export async function getBombayOpinionStrip() {
+  const snap = await get(ref(database, 'bombay/opinionStrip'));
+  return snap.exists() ? snap.val() : null;
+}
+export async function setBombayOpinionStrip(data: any) {
+  await set(ref(database, 'bombay/opinionStrip'), data);
+}
+
+export async function getAllBombayData() {
+  const snap = await get(ref(database, 'bombay'));
+  if (!snap.exists()) return null;
+  const d = snap.val();
+  const listify = (obj: any) =>
+    obj ? Object.entries(obj).map(([id, val]: [string, any]) => ({ id, ...val })) : [];
+  return {
+    hero: d.hero || null,
+    leadStory: d.leadStory || null,
+    sideStories: listify(d.sideStories),
+    pulseItems: listify(d.pulseItems),
+    storyGrid: listify(d.storyGrid),
+    opinionStrip: d.opinionStrip || null,
+  };
+}
+
+// ─────────────────────────────────────────────────────────
+// Suite Page
+// ─────────────────────────────────────────────────────────
+
+export async function getSuiteHero() {
+  const snap = await get(ref(database, 'suite/hero'));
+  return snap.exists() ? snap.val() : null;
+}
+export async function setSuiteHero(data: any) {
+  await set(ref(database, 'suite/hero'), data);
+}
+
+export async function getSuiteFeaturedCards() {
+  const snap = await get(ref(database, 'suite/featuredCards'));
+  if (!snap.exists()) return [];
+  return Object.entries(snap.val()).map(([id, val]: [string, any]) => ({ id, ...val }));
+}
+export async function createSuiteFeaturedCard(data: any) {
+  const r = push(ref(database, 'suite/featuredCards'));
+  await set(r, data);
+  return r.key;
+}
+export async function updateSuiteFeaturedCard(id: string, data: any) {
+  await set(ref(database, `suite/featuredCards/${id}`), data);
+}
+export async function deleteSuiteFeaturedCard(id: string) {
+  await remove(ref(database, `suite/featuredCards/${id}`));
+}
+
+export async function getSuitePullQuote() {
+  const snap = await get(ref(database, 'suite/pullQuote'));
+  return snap.exists() ? snap.val() : null;
+}
+export async function setSuitePullQuote(data: any) {
+  await set(ref(database, 'suite/pullQuote'), data);
+}
+
+export async function getSuiteFeaturedStrip() {
+  const snap = await get(ref(database, 'suite/featuredStrip'));
+  return snap.exists() ? snap.val() : null;
+}
+export async function setSuiteFeaturedStrip(data: any) {
+  await set(ref(database, 'suite/featuredStrip'), data);
+}
+
+export async function getSuiteSecondRow() {
+  const snap = await get(ref(database, 'suite/secondRow'));
+  if (!snap.exists()) return [];
+  return Object.entries(snap.val()).map(([id, val]: [string, any]) => ({ id, ...val }));
+}
+export async function createSuiteSecondRowItem(data: any) {
+  const r = push(ref(database, 'suite/secondRow'));
+  await set(r, data);
+  return r.key;
+}
+export async function updateSuiteSecondRowItem(id: string, data: any) {
+  await set(ref(database, `suite/secondRow/${id}`), data);
+}
+export async function deleteSuiteSecondRowItem(id: string) {
+  await remove(ref(database, `suite/secondRow/${id}`));
+}
+
+export async function getAllSuiteData() {
+  const snap = await get(ref(database, 'suite'));
+  if (!snap.exists()) return null;
+  const d = snap.val();
+  const listify = (obj: any) =>
+    obj ? Object.entries(obj).map(([id, val]: [string, any]) => ({ id, ...val })) : [];
+  return {
+    hero: d.hero || null,
+    featuredCards: listify(d.featuredCards),
+    pullQuote: d.pullQuote || null,
+    featuredStrip: d.featuredStrip || null,
+    secondRow: listify(d.secondRow),
+  };
+}
+
+// ─────────────────────────────────────────────────────────
+// Homepage
+// ─────────────────────────────────────────────────────────
+
+export async function getHomepageCoverStory() {
+  const snap = await get(ref(database, 'homepage/coverStory'));
+  return snap.exists() ? snap.val() : null;
+}
+export async function setHomepageCoverStory(data: any) {
+  await set(ref(database, 'homepage/coverStory'), data);
+}
+
+export async function getHomepageEditorPicks() {
+  const snap = await get(ref(database, 'homepage/editorPicks'));
+  if (!snap.exists()) return [];
+  return Object.entries(snap.val()).map(([id, val]: [string, any]) => ({ id, ...val }));
+}
+export async function createHomepageEditorPick(data: any) {
+  const r = push(ref(database, 'homepage/editorPicks'));
+  await set(r, data);
+  return r.key;
+}
+export async function updateHomepageEditorPick(id: string, data: any) {
+  await set(ref(database, `homepage/editorPicks/${id}`), data);
+}
+export async function deleteHomepageEditorPick(id: string) {
+  await remove(ref(database, `homepage/editorPicks/${id}`));
+}
+
+export async function getHomepageFeaturedWeek() {
+  const snap = await get(ref(database, 'homepage/featuredWeek'));
+  if (!snap.exists()) return [];
+  return Object.entries(snap.val()).map(([id, val]: [string, any]) => ({ id, ...val }));
+}
+export async function createHomepageFeaturedWeekItem(data: any) {
+  const r = push(ref(database, 'homepage/featuredWeek'));
+  await set(r, data);
+  return r.key;
+}
+export async function updateHomepageFeaturedWeekItem(id: string, data: any) {
+  await set(ref(database, `homepage/featuredWeek/${id}`), data);
+}
+export async function deleteHomepageFeaturedWeekItem(id: string) {
+  await remove(ref(database, `homepage/featuredWeek/${id}`));
+}
+
+export async function getHomepageSuiteCarousel() {
+  const snap = await get(ref(database, 'homepage/suiteCarousel'));
+  if (!snap.exists()) return [];
+  return Object.entries(snap.val()).map(([id, val]: [string, any]) => ({ id, ...val }));
+}
+export async function createHomepageSuiteCarouselItem(data: any) {
+  const r = push(ref(database, 'homepage/suiteCarousel'));
+  await set(r, data);
+  return r.key;
+}
+export async function updateHomepageSuiteCarouselItem(id: string, data: any) {
+  await set(ref(database, `homepage/suiteCarousel/${id}`), data);
+}
+export async function deleteHomepageSuiteCarouselItem(id: string) {
+  await remove(ref(database, `homepage/suiteCarousel/${id}`));
+}
+
+export async function getAllHomepageData() {
+  const snap = await get(ref(database, 'homepage'));
+  if (!snap.exists()) return null;
+  const d = snap.val();
+  const listify = (obj: any) =>
+    obj ? Object.entries(obj).map(([id, val]: [string, any]) => ({ id, ...val })) : [];
+  return {
+    coverStory: d.coverStory || null,
+    editorPicks: listify(d.editorPicks),
+    featuredWeek: listify(d.featuredWeek),
+    suiteCarousel: listify(d.suiteCarousel),
+  };
+}
+// ─────────────────────────────────────────────────────────
+// Wealth Page
+// ─────────────────────────────────────────────────────────
+
+export async function getWealthHero() {
+  const snap = await get(ref(database, 'wealth/hero'));
+  return snap.exists() ? snap.val() : null;
+}
+export async function setWealthHero(data: any) {
+  await set(ref(database, 'wealth/hero'), data);
+}
+
+export async function getWealthTicker() {
+  const snap = await get(ref(database, 'wealth/ticker'));
+  return snap.exists() ? snap.val() : null;
+}
+export async function setWealthTicker(data: any) {
+  await set(ref(database, 'wealth/ticker'), data);
+}
+
+export async function getWealthLeadStory() {
+  const snap = await get(ref(database, 'wealth/leadStory'));
+  return snap.exists() ? snap.val() : null;
+}
+export async function setWealthLeadStory(data: any) {
+  await set(ref(database, 'wealth/leadStory'), data);
+}
+
+export async function getWealthSideStories() {
+  const snap = await get(ref(database, 'wealth/sideStories'));
+  if (!snap.exists()) return [];
+  return Object.entries(snap.val()).map(([id, val]: [string, any]) => ({ id, ...val }));
+}
+export async function createWealthSideStory(data: any) {
+  const r = push(ref(database, 'wealth/sideStories'));
+  await set(r, data);
+  return r.key;
+}
+export async function updateWealthSideStory(id: string, data: any) {
+  await set(ref(database, `wealth/sideStories/${id}`), data);
+}
+export async function deleteWealthSideStory(id: string) {
+  await remove(ref(database, `wealth/sideStories/${id}`));
+}
+
+export async function getWealthPulseItems() {
+  const snap = await get(ref(database, 'wealth/pulseItems'));
+  if (!snap.exists()) return [];
+  return Object.entries(snap.val()).map(([id, val]: [string, any]) => ({ id, ...val }));
+}
+export async function createWealthPulseItem(data: any) {
+  const r = push(ref(database, 'wealth/pulseItems'));
+  await set(r, data);
+  return r.key;
+}
+export async function updateWealthPulseItem(id: string, data: any) {
+  await set(ref(database, `wealth/pulseItems/${id}`), data);
+}
+export async function deleteWealthPulseItem(id: string) {
+  await remove(ref(database, `wealth/pulseItems/${id}`));
+}
+
+export async function getWealthStoryGrid() {
+  const snap = await get(ref(database, 'wealth/storyGrid'));
+  if (!snap.exists()) return [];
+  return Object.entries(snap.val()).map(([id, val]: [string, any]) => ({ id, ...val }));
+}
+export async function createWealthStoryGridItem(data: any) {
+  const r = push(ref(database, 'wealth/storyGrid'));
+  await set(r, data);
+  return r.key;
+}
+export async function updateWealthStoryGridItem(id: string, data: any) {
+  await set(ref(database, `wealth/storyGrid/${id}`), data);
+}
+export async function deleteWealthStoryGridItem(id: string) {
+  await remove(ref(database, `wealth/storyGrid/${id}`));
+}
+
+export async function getWealthOpinionStrip() {
+  const snap = await get(ref(database, 'wealth/opinionStrip'));
+  return snap.exists() ? snap.val() : null;
+}
+export async function setWealthOpinionStrip(data: any) {
+  await set(ref(database, 'wealth/opinionStrip'), data);
+}
+
+export async function getAllWealthData() {
+  const snap = await get(ref(database, 'wealth'));
+  if (!snap.exists()) return null;
+  const d = snap.val();
+  const listify = (obj: any) =>
+    obj ? Object.entries(obj).map(([id, val]: [string, any]) => ({ id, ...val })) : [];
+  return {
+    hero: d.hero || null,
+    ticker: d.ticker || null,
+    leadStory: d.leadStory || null,
+    sideStories: listify(d.sideStories),
+    pulseItems: listify(d.pulseItems),
+    storyGrid: listify(d.storyGrid),
+    opinionStrip: d.opinionStrip || null,
+  };
+}

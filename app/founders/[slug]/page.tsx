@@ -3,7 +3,7 @@ import { notFound } from 'next/navigation';
 import { TopBar } from '@/components/TopBar';
 import { Header } from '@/components/Header';
 import { Footer } from '@/components/Footer';
-import { getFounderBySlug, getFounders } from '@/lib/firebase';
+import { getFounderBySlug, getFounders, getArticles } from '@/lib/firebase';
 
 type PageProps = {
   params: Promise<{ slug: string }>;
@@ -23,7 +23,10 @@ export async function generateMetadata({ params }: PageProps) {
 
 export default async function FounderPage({ params }: PageProps) {
   const { slug } = await params;
-  const founder = await getFounderBySlug(slug);
+  const [founder, allArticles] = await Promise.all([
+    getFounderBySlug(slug),
+    getArticles()
+  ]);
 
   if (!founder) {
     notFound();
@@ -63,6 +66,11 @@ export default async function FounderPage({ params }: PageProps) {
       .filter((f: any) => f.id !== founder.id)
       .slice(0, 3);
   }
+
+  // Fetch associated articles
+  const associatedArticles = allArticles.filter(
+    (a: any) => a.associatedProfileId === founder.id && a.published !== false
+  );
 
   return (
     <>
@@ -225,6 +233,46 @@ export default async function FounderPage({ params }: PageProps) {
           </div>
         </article>
 
+        {/* ── ASSOCIATED ARTICLES ── */}
+        {associatedArticles.length > 0 && (
+          <section className="py-24 px-8 md:px-24 bg-surface">
+            <div className="max-w-7xl mx-auto">
+              <div className="flex items-center gap-6 mb-16">
+                <h3 className="text-[10px] tracking-[0.4em] font-bold uppercase whitespace-nowrap font-label text-brand-navy">
+                  IN CONVERSATION
+                </h3>
+                <div className="h-[1px] w-full bg-brand-navy/10" />
+              </div>
+              
+              <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-12">
+                {associatedArticles.map((art: any) => (
+                  <Link key={art.id} href={`/articles/${art.slug}`} className="group block">
+                    <div className="aspect-[16/9] overflow-hidden mb-6 bg-surface-container-low">
+                      <img
+                        src={art.featuredImage}
+                        alt={art.title}
+                        className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-700"
+                      />
+                    </div>
+                    <span className="text-[9px] font-bold tracking-[0.2em] uppercase text-primary mb-3 block font-label">
+                      {art.tags?.[0] || 'FEATURED'}
+                    </span>
+                    <h4 className="text-2xl font-headline group-hover:text-primary transition-colors mb-3">
+                      {art.title}
+                    </h4>
+                    <p className="text-sm text-on-surface-variant line-clamp-2 font-body mb-4">
+                      {art.subtitle || art.excerpt}
+                    </p>
+                    <span className="text-[10px] font-bold tracking-widest text-on-surface-variant/40 uppercase font-label">
+                      {art.readTime} MIN READ
+                    </span>
+                  </Link>
+                ))}
+              </div>
+            </div>
+          </section>
+        )}
+
         {/* From the Archive */}
         {(archiveItems.length > 0 || otherFounders.length > 0) && (
           <section className="bg-surface-container-low py-24 px-8 md:px-24">
@@ -252,20 +300,20 @@ export default async function FounderPage({ params }: PageProps) {
                     <Link
                       key={f.id}
                       href={`/founders/${f.slug}`}
-                      className="group cursor-pointer block"
+                      className="group block"
                     >
-                      <div className="aspect-[4/5] overflow-hidden mb-6 bg-white">
-                        {(f.heroImage || f.image) && (
-                          <img
-                            alt={f.name}
-                            className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-700"
-                            src={f.heroImage || f.image}
-                          />
-                        )}
+                      <div className="aspect-[4/5] overflow-hidden mb-6 bg-surface-container-low">
+                        <img
+                          src={f.image || f.heroImage || 'https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?q=80&w=2000&auto=format&fit=crop'}
+                          alt={f.name}
+                          className="w-full h-full object-cover grayscale group-hover:grayscale-0 transition-all duration-700"
+                        />
                       </div>
-                      <h4 className="text-2xl font-headline mb-2">{f.name}</h4>
-                      <p className="text-sm text-on-surface-variant font-body">
-                        {f.title} · {f.company}
+                      <h4 className="text-2xl font-headline group-hover:text-primary transition-colors mb-1">
+                        {f.name}
+                      </h4>
+                      <p className="text-[10px] uppercase tracking-widest text-on-surface-variant/60 font-label">
+                        {f.company}
                       </p>
                     </Link>
                   ))}
