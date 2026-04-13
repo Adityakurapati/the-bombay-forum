@@ -1,6 +1,6 @@
 'use client';
 
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import Link from 'next/link';
 import { useRouter, useSearchParams } from 'next/navigation';
 import { Article } from '@/lib/types';
@@ -16,22 +16,47 @@ export default function ArticleEditorPage() {
 
   const [title, setTitle] = useState('');
   const [deck, setDeck] = useState('');
-  const [body, setBody] = useState(
-    'In the quietest hours, before the local trains begin their mechanical symphony and the humidity starts to climb, Mumbai breathes differently. At 4:30 AM, Marine Drive is not the vibrant "Queen\'s Necklace" depicted on postcards, but a silver thread of solitude...'
-  );
+  const [body, setBody] = useState('');
   const [selectedCategory, setSelectedCategory] = useState('Culture');
   const [author, setAuthor] = useState('Aarav Malhotra');
   const [status, setStatus] = useState<'Draft' | 'Published'>('Draft');
-  const [metaTitle, setMetaTitle] = useState('The Unspoken Rhythm of Marine Drive at Dawn | TBF');
-  const [metaDesc, setMetaDesc] = useState(
-    "Explore the early morning culture of Mumbai's Marine Drive. An editorial journey through the city's quietest hours before the sunrise rush."
-  );
-  const [tags, setTags] = useState(['Mumbai', 'Dawn', 'Photography']);
+  const [metaTitle, setMetaTitle] = useState('');
+  const [metaDesc, setMetaDesc] = useState('');
+  const [tags, setTags] = useState<string[]>([]);
   const [tagInput, setTagInput] = useState('');
   const [featuredImage, setFeaturedImage] = useState('');
   const [uploading, setUploading] = useState(false);
   const [saving, setSaving] = useState(false);
   const [error, setError] = useState('');
+  const [loadingArticle, setLoadingArticle] = useState(!!articleId);
+
+  // Fetch existing article when editing
+  useEffect(() => {
+    if (!articleId) return;
+    setLoadingArticle(true);
+    fetch('/api/articles')
+      .then((res) => res.json())
+      .then((articles) => {
+        const article = articles.find((a: any) => a.id === articleId);
+        if (article) {
+          setTitle(article.title || '');
+          setDeck(article.subtitle || article.excerpt || '');
+          setBody(article.content || '');
+          setSelectedCategory(article.category || 'Culture');
+          setAuthor(article.author || 'Aarav Malhotra');
+          setStatus(article.published ? 'Published' : 'Draft');
+          setFeaturedImage(article.featuredImage || '');
+          setMetaTitle(article.title ? `${article.title} | TBF` : '');
+          setMetaDesc(article.excerpt || article.subtitle || '');
+          if (article.tags) setTags(article.tags);
+        }
+      })
+      .catch((err) => {
+        console.error('Failed to load article:', err);
+        setError('Failed to load article data.');
+      })
+      .finally(() => setLoadingArticle(false));
+  }, [articleId]);
 
   const metaTitlePct = Math.min(100, Math.round((metaTitle.length / 60) * 100));
   const metaDescPct = Math.min(100, Math.round((metaDesc.length / 160) * 100));
@@ -76,7 +101,7 @@ export default function ArticleEditorPage() {
         featuredImage,
         excerpt: deck,
         readTime: Math.max(1, Math.ceil(body.split(' ').length / 200)),
-        slug: title.toLowerCase().replace(/\s+/g, '-'),
+        slug: title.toLowerCase().replace(/[^a-z0-9]+/g, '-').replace(/(^-|-$)/g, ''),
         id: articleId || undefined,
       };
       const res = await fetch('/api/articles', {
@@ -84,7 +109,7 @@ export default function ArticleEditorPage() {
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify(payload),
       });
-      if (res.ok) router.push('/admin/dashboard');
+      if (res.ok) router.push('/admin/articles');
       else setError('Failed to save article.');
     } catch {
       setError('Error saving article.');
@@ -93,12 +118,23 @@ export default function ArticleEditorPage() {
     }
   }
 
+  if (loadingArticle) {
+    return (
+      <div className="flex items-center justify-center h-screen" style={{ backgroundColor: '#fafaf5' }}>
+        <div className="text-center">
+          <span className="material-symbols-outlined text-4xl animate-spin mb-4 block text-on-surface-variant">progress_activity</span>
+          <p className="font-label text-xs uppercase tracking-widest text-on-surface-variant">Loading article...</p>
+        </div>
+      </div>
+    );
+  }
+
   return (
     <div className="flex flex-col h-screen overflow-hidden">
       {/* TOP NAV */}
       <header className="h-20 bg-white flex items-center justify-between px-10 shadow-[0px_1px_0px_0px_rgba(0,0,0,0.05)] z-40 flex-shrink-0">
         <div className="flex items-center gap-4 text-sm font-label tracking-wide uppercase">
-          <Link href="/admin/dashboard" className="text-on-surface-variant/40 hover:text-on-surface transition-colors">
+          <Link href="/admin/articles" className="text-on-surface-variant/40 hover:text-on-surface transition-colors">
             Articles
           </Link>
           <span className="material-symbols-outlined text-xs text-on-surface-variant/20">chevron_right</span>
@@ -196,7 +232,7 @@ export default function ArticleEditorPage() {
               {/* Pull Quote */}
               <div className="border-l-4 border-tertiary-fixed-dim pl-8 py-4 my-10">
                 <blockquote className="font-headline text-2xl italic text-on-surface">
-                  "The city's heartbeat isn't found in its rush, but in the silence that precedes it."
+                  &quot;The city&apos;s heartbeat isn&apos;t found in its rush, but in the silence that precedes it.&quot;
                 </blockquote>
               </div>
 
@@ -347,11 +383,15 @@ export default function ArticleEditorPage() {
                 <label className="text-[10px] font-bold uppercase text-secondary font-label">Social Preview</label>
                 <div className="bg-white border border-surface-container-highest p-4 flex gap-4">
                   <div className="w-20 h-20 bg-surface-container-low flex-shrink-0 overflow-hidden">
-                    <img
-                      src="https://lh3.googleusercontent.com/aida-public/AB6AXuDRS7JwJiSzJbbe8u8BPfL8-yORAiy31jEjqBhMgqnX4lvUnd4-Hipz--VVrGRRTUPxnl4gmsH6dYy25dwynH3FqUPmOLw8z9IEu-8-lvVptmW3iLzyJvE5qlI-c8_v9DsadKEvmEpD-qalCsvZeT_6_W6sohSWIOYSDZt61XwG8y48tM2aC9Icrz-L3J8qO-rYHwXBt4iQEZ59Ht6KnfwImFVJby5a6PC4SHmlk48RGaSyRA0Pfr01OExp98FNT71-BXgkDhbrft8H"
-                      alt="Social preview"
-                      className="w-full h-full object-cover"
-                    />
+                    {featuredImage ? (
+                      <img src={featuredImage} alt="Social preview" className="w-full h-full object-cover" />
+                    ) : (
+                      <img
+                        src="https://lh3.googleusercontent.com/aida-public/AB6AXuDRS7JwJiSzJbbe8u8BPfL8-yORAiy31jEjqBhMgqnX4lvUnd4-Hipz--VVrGRRTUPxnl4gmsH6dYy25dwynH3FqUPmOLw8z9IEu-8-lvVptmW3iLzyJvE5qlI-c8_v9DsadKEvmEpD-qalCsvZeT_6_W6sohSWIOYSDZt61XwG8y48tM2aC9Icrz-L3J8qO-rYHwXBt4iQEZ59Ht6KnfwImFVJby5a6PC4SHmlk48RGaSyRA0Pfr01OExp98FNT71-BXgkDhbrft8H"
+                        alt="Social preview"
+                        className="w-full h-full object-cover"
+                      />
+                    )}
                   </div>
                   <div className="space-y-1 overflow-hidden">
                     <p className="text-[10px] font-bold font-body">thebombayforum.com</p>

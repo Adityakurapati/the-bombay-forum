@@ -1,15 +1,19 @@
 'use client';
 
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import Link from 'next/link';
 import { useSearchParams } from 'next/navigation';
 
 export default function ProfileEditorPage() {
   const searchParams = useSearchParams();
-  const profileName = searchParams.get('name') || '';
+  const profileId = searchParams.get('id') || '';
+  const profileTypeParam = searchParams.get('type') || '';
+  const isEditing = !!profileId;
 
-  const [profileType, setProfileType] = useState<'Founder' | 'Creator'>('Founder');
-  const [fullName, setFullName] = useState(profileName);
+  const [profileType, setProfileType] = useState<'Founder' | 'Creator'>(
+    profileTypeParam === 'creator' ? 'Creator' : 'Founder'
+  );
+  const [fullName, setFullName] = useState('');
   const [roleCompany, setRoleCompany] = useState('');
   const [tagline, setTagline] = useState('');
   const [pullQuote, setPullQuote] = useState('');
@@ -27,18 +31,210 @@ export default function ProfileEditorPage() {
   const [metaDesc, setMetaDesc] = useState('');
   const [slug, setSlug] = useState('');
   const [socialLink, setSocialLink] = useState('');
+  const [heroImage, setHeroImage] = useState('');
+  const [portraitImage, setPortraitImage] = useState('');
+  const [tags, setTags] = useState('');
   const [saving, setSaving] = useState(false);
+  const [loading, setLoading] = useState(false);
+  const [status, setStatus] = useState<'active' | 'review' | 'draft'>('draft');
+
+  // Fetch existing profile if editing
+  useEffect(() => {
+    if (isEditing) {
+      loadProfile();
+    }
+  }, [profileId, profileTypeParam]);
+
+  async function loadProfile() {
+    setLoading(true);
+    try {
+      const endpoint = profileTypeParam === 'creator' ? '/api/creators' : '/api/founders';
+      const res = await fetch(endpoint);
+      if (!res.ok) throw new Error('Failed to fetch');
+      const items = await res.json();
+      const profile = items.find((item: any) => item.id === profileId);
+
+      if (profile) {
+        setProfileType(profileTypeParam === 'creator' ? 'Creator' : 'Founder');
+        setFullName(profile.name || '');
+        setRoleCompany(
+          profileTypeParam === 'founder'
+            ? `${profile.title || ''} at ${profile.company || ''}`.replace(/ at $/, '')
+            : profile.specialization || profile.title || ''
+        );
+        setTagline(profile.tagline || profile.quote || '');
+        setPullQuote(profile.pullQuote || profile.quote || '');
+        setBio1(profile.bioParagraphs?.[0] || profile.bio || '');
+        setBio2(profile.bioParagraphs?.[1] || '');
+        setBio3(profile.bioParagraphs?.[2] || '');
+        setLongForm(
+          profile.editorialSections
+            ?.map((s: any) => `## ${s.heading}\n\n${s.paragraphs?.join('\n\n') || ''}`)
+            .join('\n\n') || ''
+        );
+        setMetaTitle(profile.metaTitle || '');
+        setMetaDesc(profile.metaDescription || '');
+        setSlug(profile.slug || '');
+        setHeroImage(profile.heroImage || '');
+        setPortraitImage(profile.image || '');
+        setTags((profile.tags || []).join(', '));
+        setStatus(profile.status || 'active');
+        setSocialLink(
+          profile.socialLinks?.instagram ||
+          profile.socialLinks?.twitter ||
+          profile.socialLinks?.website ||
+          ''
+        );
+
+        if (profile.stats && profile.stats.length > 0) {
+          const padded = [...profile.stats];
+          while (padded.length < 4) padded.push({ value: '', label: '' });
+          setStats(padded.slice(0, 4));
+        }
+      }
+    } catch (err) {
+      console.error('Failed to load profile:', err);
+    } finally {
+      setLoading(false);
+    }
+  }
 
   function updateStat(idx: number, field: 'value' | 'label', val: string) {
     setStats((prev) => prev.map((s, i) => (i === idx ? { ...s, [field]: val } : s)));
   }
 
-  async function handlePublish() {
+  function generateSlug(name: string) {
+    return name
+      .toLowerCase()
+      .replace(/[^a-z0-9\s-]/g, '')
+      .replace(/\s+/g, '-')
+      .replace(/-+/g, '-')
+      .trim();
+  }
+
+  // Auto-generate slug from name if slug is empty
+  useEffect(() => {
+    if (!isEditing && fullName && !slug) {
+      setSlug(generateSlug(fullName));
+    }
+  }, [fullName]);
+
+  function buildPayload(publishStatus: 'active' | 'draft') {
+    // Parse roleCompany into title and company
+    const parts = roleCompany.split(/\s+at\s+/i);
+    const title = parts[0]?.trim() || '';
+    const company = parts[1]?.trim() || roleCompany;
+
+    // Parse editorial content from longForm
+    const sections = longForm
+      .split(/^## /gm)
+      .filter((s) => s.trim())
+      .map((section) => {
+        const lines = section.split('\n').filter((l) => l.trim());
+        const heading = lines[0] || '';
+        const paragraphs = lines.slice(1).filter((l) => l.trim());
+        return { heading, paragraphs };
+      });
+
+    const tagList = tags
+      .split(',')
+      .map((t) => t.trim().toUpperCase())
+      .filter(Boolean);
+
+    const filteredStats = stats.filter((s) => s.value || s.label);
+
+    const base = {
+      name: fullName,
+      slug: slug || generateSlug(fullName),
+      image: portraitImage,
+      heroImage: heroImage,
+      quote: pullQuote || tagline,
+      tagline,
+      bioParagraphs: [bio1, bio2, bio3].filter(Boolean),
+      bio: bio1,
+      stats: filteredStats,
+      editorialSections: sections,
+      tags: tagList,
+      metaTitle,
+      metaDescription: metaDesc,
+      status: publishStatus,
+      socialLinks: socialLink ? { instagram: socialLink } : {},
+    };
+
+    if (profileType === 'Founder') {
+      return {
+        ...base,
+        title,
+        company,
+      };
+    } else {
+      return {
+        ...base,
+        title,
+        specialization: company || title,
+      };
+    }
+  }
+
+  async function handleSave(publishStatus: 'active' | 'draft') {
     setSaving(true);
-    // Stub: wire to backend when ready
-    await new Promise((r) => setTimeout(r, 800));
-    setSaving(false);
-    alert('Profile saved!');
+    try {
+      const endpoint = profileType === 'Founder' ? '/api/founders' : '/api/creators';
+      const payload = buildPayload(publishStatus);
+
+      if (isEditing) {
+        // Update
+        await fetch(endpoint, {
+          method: 'PUT',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ id: profileId, ...payload }),
+        });
+      } else {
+        // Create
+        await fetch(endpoint, {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify(payload),
+        });
+      }
+
+      setStatus(publishStatus);
+      alert(publishStatus === 'active' ? 'Profile published!' : 'Draft saved!');
+    } catch (err) {
+      console.error('Save failed:', err);
+      alert('Failed to save profile. Please try again.');
+    } finally {
+      setSaving(false);
+    }
+  }
+
+  if (loading) {
+    return (
+      <>
+        <header
+          className="h-16 flex justify-between items-center px-8 shadow-[0px_20px_40px_rgba(15,28,44,0.06)] z-40 flex-shrink-0"
+          style={{ backgroundColor: '#0B1929' }}
+        >
+          <div className="flex items-center gap-6">
+            <Link
+              href="/admin/profiles"
+              className="text-slate-400 hover:text-white transition-colors flex items-center gap-2 font-label uppercase tracking-widest text-xs"
+            >
+              <span className="material-symbols-outlined text-sm">arrow_back</span>
+              Back to Profiles
+            </Link>
+            <div className="h-4 w-[1px] bg-white/20" />
+            <h1 className="text-white font-headline text-xl tracking-tighter">Profile Editor</h1>
+          </div>
+        </header>
+        <main className="flex-1 p-12 flex items-center justify-center" style={{ backgroundColor: '#fafaf5' }}>
+          <div className="text-center">
+            <span className="material-symbols-outlined text-5xl text-on-surface-variant animate-spin mb-4 block">progress_activity</span>
+            <p className="font-label uppercase tracking-widest text-xs text-on-surface-variant">Loading profile...</p>
+          </div>
+        </main>
+      </>
+    );
   }
 
   return (
@@ -60,11 +256,15 @@ export default function ProfileEditorPage() {
           <h1 className="text-white font-headline text-xl tracking-tighter">Profile Editor</h1>
         </div>
         <div className="flex items-center gap-4">
-          <button className="px-6 py-2 border border-white/20 text-white font-label uppercase tracking-widest text-xs hover:bg-white/5 transition-all">
+          <button
+            onClick={() => handleSave('draft')}
+            disabled={saving}
+            className="px-6 py-2 border border-white/20 text-white font-label uppercase tracking-widest text-xs hover:bg-white/5 transition-all disabled:opacity-50"
+          >
             Save Draft
           </button>
           <button
-            onClick={handlePublish}
+            onClick={() => handleSave('active')}
             disabled={saving}
             className="px-6 py-2 text-white font-label uppercase tracking-widest text-xs hover:opacity-90 transition-all disabled:opacity-50"
             style={{ backgroundColor: '#9e001f' }}
@@ -89,11 +289,12 @@ export default function ProfileEditorPage() {
                   <button
                     key={type}
                     onClick={() => setProfileType(type)}
+                    disabled={isEditing}
                     className={`px-8 py-2 font-label uppercase tracking-widest text-xs transition-colors ${
                       profileType === type
                         ? 'text-white'
                         : 'text-on-surface-variant hover:bg-surface-container-high'
-                    }`}
+                    } ${isEditing ? 'cursor-not-allowed' : ''}`}
                     style={profileType === type ? { backgroundColor: '#0B1929' } : {}}
                   >
                     {type}
@@ -192,6 +393,18 @@ export default function ProfileEditorPage() {
               </div>
             </section>
 
+            {/* Tags */}
+            <section>
+              <label className="block font-label uppercase tracking-widest text-[10px] text-secondary mb-4">Tags (comma separated)</label>
+              <input
+                className="w-full bg-surface-container-lowest border-0 p-4 focus:ring-2 focus:ring-primary/10 text-on-surface font-body outline-none"
+                placeholder="e.g. FINTECH, BOOTSTRAPPED, BENGALURU"
+                type="text"
+                value={tags}
+                onChange={(e) => setTags(e.target.value)}
+              />
+            </section>
+
             {/* Long-form Editor */}
             <section>
               <label className="block font-label uppercase tracking-widest text-[10px] text-secondary mb-4">Long-form Editorial Content</label>
@@ -209,7 +422,7 @@ export default function ProfileEditorPage() {
                 <div className="p-8 min-h-[400px]">
                   <textarea
                     className="w-full h-full border-0 focus:ring-0 text-on-surface leading-loose font-body p-0 resize-none outline-none min-h-[360px]"
-                    placeholder="Start drafting the full story..."
+                    placeholder="Start drafting the full story... Use ## Heading for sections."
                     value={longForm}
                     onChange={(e) => setLongForm(e.target.value)}
                   />
@@ -224,12 +437,57 @@ export default function ProfileEditorPage() {
             {/* Portrait Upload */}
             <section>
               <label className="block font-label uppercase tracking-widest text-[10px] text-secondary mb-4">Portrait Cover</label>
-              <label className="aspect-[4/5] bg-surface-container-high border-2 border-dashed border-outline-variant flex flex-col items-center justify-center text-center p-12 group cursor-pointer hover:bg-surface-container-highest transition-all block">
-                <input type="file" accept="image/*" className="sr-only" />
-                <span className="material-symbols-outlined text-4xl text-outline mb-4 group-hover:scale-110 transition-transform">add_a_photo</span>
-                <p className="font-label uppercase tracking-widest text-[10px] text-outline font-bold">Upload High-Res Portrait</p>
-                <p className="text-[10px] text-outline/60 mt-2">Recommended: 1200 x 1500px (4:5)</p>
-              </label>
+              {portraitImage ? (
+                <div className="aspect-[4/5] overflow-hidden mb-4 relative group">
+                  <img src={portraitImage} alt="Portrait preview" className="w-full h-full object-cover" />
+                  <button
+                    onClick={() => setPortraitImage('')}
+                    className="absolute top-2 right-2 bg-black/60 text-white p-1 opacity-0 group-hover:opacity-100 transition-opacity"
+                  >
+                    <span className="material-symbols-outlined text-sm">close</span>
+                  </button>
+                </div>
+              ) : (
+                <label className="aspect-[4/5] bg-surface-container-high border-2 border-dashed border-outline-variant flex flex-col items-center justify-center text-center p-12 group cursor-pointer hover:bg-surface-container-highest transition-all block">
+                  <input type="file" accept="image/*" className="sr-only" />
+                  <span className="material-symbols-outlined text-4xl text-outline mb-4 group-hover:scale-110 transition-transform">add_a_photo</span>
+                  <p className="font-label uppercase tracking-widest text-[10px] text-outline font-bold">Upload High-Res Portrait</p>
+                  <p className="text-[10px] text-outline/60 mt-2">Recommended: 1200 x 1500px (4:5)</p>
+                </label>
+              )}
+              <div className="mt-4">
+                <label className="text-[9px] font-label uppercase tracking-widest text-secondary block mb-1">Or paste image URL</label>
+                <input
+                  className="w-full bg-surface-container-lowest border border-outline-variant p-3 focus:border-primary focus:ring-0 text-xs font-body outline-none"
+                  type="text"
+                  placeholder="https://..."
+                  value={portraitImage}
+                  onChange={(e) => setPortraitImage(e.target.value)}
+                />
+              </div>
+            </section>
+
+            {/* Hero Image URL */}
+            <section>
+              <label className="block font-label uppercase tracking-widest text-[10px] text-secondary mb-4">Hero / Banner Image</label>
+              {heroImage && (
+                <div className="aspect-video overflow-hidden mb-4 relative group">
+                  <img src={heroImage} alt="Hero preview" className="w-full h-full object-cover" />
+                  <button
+                    onClick={() => setHeroImage('')}
+                    className="absolute top-2 right-2 bg-black/60 text-white p-1 opacity-0 group-hover:opacity-100 transition-opacity"
+                  >
+                    <span className="material-symbols-outlined text-sm">close</span>
+                  </button>
+                </div>
+              )}
+              <input
+                className="w-full bg-surface-container-lowest border border-outline-variant p-3 focus:border-primary focus:ring-0 text-xs font-body outline-none"
+                type="text"
+                placeholder="https://..."
+                value={heroImage}
+                onChange={(e) => setHeroImage(e.target.value)}
+              />
             </section>
 
             {/* SEO */}
@@ -266,7 +524,9 @@ export default function ProfileEditorPage() {
                 <div>
                   <label className="text-[9px] font-label uppercase tracking-widest text-secondary block mb-1">URL Slug</label>
                   <div className="flex items-center bg-surface-container-highest px-3 border border-outline-variant">
-                    <span className="text-[10px] text-outline-variant font-mono">/profiles/</span>
+                    <span className="text-[10px] text-outline-variant font-mono">
+                      /{profileType === 'Founder' ? 'founders' : 'creators'}/
+                    </span>
                     <input
                       className="w-full bg-transparent border-0 p-3 focus:ring-0 text-xs font-mono outline-none"
                       type="text"
@@ -304,11 +564,17 @@ export default function ProfileEditorPage() {
               <div className="bg-[#f0f0f0] p-1 shadow-sm">
                 <div className="bg-white">
                   <div className="h-48 bg-surface-container overflow-hidden">
-                    <img
-                      src="https://lh3.googleusercontent.com/aida-public/AB6AXuAKt9vs9sZSbYR8aIcexSIpDC8oftU3kzMKUryZjf_rhZRRfvnPdYN_Nbvsp62gPAX2KL_NL6a9vfKMvREsUde3xoa_eN2_s46j_xLVrYtkkr4fxTNATFNz4rWyrxPK9kgm9alt8B4DVt4H9Le_3U6Ua0h1N-CcY4t3d0RI-9niMmTxVcDO7yT8Jl8i5xbVqWUaRO8aazW8xV4QoknbwN1Vl-wFrNwJCX9MRH3jtLDZJxZUhSOhSf2YZEsikximGrxdO44zPElqH6xi"
-                      alt="Social preview cover"
-                      className="w-full h-full object-cover grayscale"
-                    />
+                    {(heroImage || portraitImage) ? (
+                      <img
+                        src={heroImage || portraitImage}
+                        alt="Social preview cover"
+                        className="w-full h-full object-cover grayscale"
+                      />
+                    ) : (
+                      <div className="w-full h-full flex items-center justify-center bg-surface-container-highest">
+                        <span className="material-symbols-outlined text-4xl text-on-surface-variant">image</span>
+                      </div>
+                    )}
                   </div>
                   <div className="p-4 space-y-2">
                     <p className="text-[10px] text-secondary uppercase tracking-widest font-label">thebombayforum.com</p>
@@ -327,16 +593,22 @@ export default function ProfileEditorPage() {
             <section className="border-t-2 pt-8" style={{ borderColor: '#0B1929' }}>
               <div className="flex items-center justify-between mb-4">
                 <span className="text-[10px] font-label uppercase tracking-widest text-secondary">Current Status</span>
-                <span className="px-3 py-1 bg-surface-container-high text-on-surface-variant text-[9px] font-bold uppercase tracking-widest font-label">Draft</span>
+                <span className={`px-3 py-1 text-[9px] font-bold uppercase tracking-widest font-label ${
+                  status === 'active' ? 'bg-green-100 text-green-800' :
+                  status === 'review' ? 'bg-amber-100 text-amber-800' :
+                  'bg-surface-container-high text-on-surface-variant'
+                }`}>
+                  {status === 'active' ? 'Published' : status === 'review' ? 'In Review' : 'Draft'}
+                </span>
               </div>
               <div className="space-y-2">
                 <div className="flex items-center gap-2 text-[10px] text-secondary font-body">
                   <span className="material-symbols-outlined text-xs">history</span>
-                  Last edited 14 minutes ago by Admin
+                  {isEditing ? 'Editing existing profile' : 'Creating new profile'}
                 </div>
                 <div className="flex items-center gap-2 text-[10px] text-secondary font-body">
                   <span className="material-symbols-outlined text-xs">visibility</span>
-                  0 public views
+                  {status === 'active' ? 'Visible to public' : 'Not yet visible'}
                 </div>
               </div>
             </section>

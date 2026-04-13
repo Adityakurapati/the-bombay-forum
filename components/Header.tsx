@@ -2,6 +2,7 @@
 
 import Link from 'next/link';
 import { useState } from 'react';
+import Image from "next/image";
 
 const NAV_LEFT = [
   { label: 'The Founders', href: '/categories/founders' },
@@ -51,18 +52,25 @@ export function Header() {
           </span>
         </button>
 
-        {/* Centered logo */}
+        {/* Centered Logo */}
         <Link
           href="/"
           className="absolute left-1/2 -translate-x-1/2 flex items-center"
         >
-          <img
-            src="/logo.png"
-            alt="TBF asdo"
-            className="h-8"
-            style={{ filter: 'brightness(0) invert(1)', display: 'block' }}
+          <Image
+            src="/logo.png"   // from public folder
+            alt="Logo"
+            width={32}        // equivalent to h-8 (adjust if needed)
+            height={32}
+            style={{
+              filter: "brightness(0) invert(1)",
+              display: "block",
+            }}
+            priority
           />
+
         </Link>
+
 
         {/* Right nav + dark-mode icon */}
         <div className="flex items-center gap-12">

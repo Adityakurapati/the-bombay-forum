@@ -33,7 +33,54 @@
       "company": "FinEdge Analytics",
       "bio": "Aarav founded FinEdge to bridge the gap between traditional finance and modern AI. With a decade of experience in investment banking, he realized the potential for predictive modeling in everyday trading.",
       "image": "https://images.unsplash.com/photo-1560250097-0b93528c311a?q=80&w=2000&auto=format&fit=crop",
+      "heroImage": "https://images.unsplash.com/photo-1560250097-0b93528c311a?q=80&w=2000&auto=format&fit=crop",
       "quote": "Building in Bombay teaches you resilience. If you can make it work here, amidst the chaos, you can scale it anywhere.",
+      "tagline": "In an era of rapid digital transformation, Aarav Desai stands at the forefront of India's fintech revolution, merging traditional financial wisdom with cutting-edge AI technology.",
+      "bioParagraphs": [
+        "Aarav founded FinEdge to bridge the gap between traditional finance and modern AI. With a decade of experience in investment banking, he realized the potential for predictive modeling in everyday trading.",
+        "His journey from a trading floor analyst to a tech CEO was driven by a singular obsession: making financial intelligence accessible to every Indian investor.",
+        "Today, FinEdge serves over 2 million users and has been recognized as one of the most innovative fintech startups in Asia."
+      ],
+      "stats": [
+        { "label": "FOUNDED", "value": "2019" },
+        { "label": "TEAM", "value": "250+" },
+        { "label": "USERS", "value": "2M+" },
+        { "label": "FUNDING", "value": "$15M" }
+      ],
+      "editorialSections": [
+        {
+          "heading": "THE BEGINNING",
+          "paragraphs": [
+            "Aarav's journey into fintech began on the trading floors of Mumbai. As a young analyst, he saw firsthand how institutional investors had access to tools and data that retail investors could only dream of.",
+            "The disparity bothered him. 'Why should a retail investor with ₹10,000 have access to worse tools than someone managing ₹10 crore?' he recalls asking.",
+            "That question became the seed for FinEdge Analytics."
+          ]
+        },
+        {
+          "heading": "THE PHILOSOPHY",
+          "paragraphs": [
+            "Desai's philosophy revolves around democratization without dumbing down. He believes that making finance accessible doesn't mean making it simplistic.",
+            "This approach has earned FinEdge a reputation for being the 'thinking person's trading app' — sophisticated tools wrapped in intuitive interfaces."
+          ],
+          "pullQuote": "Democratization doesn't mean dumbing down. It means making the complex beautifully simple."
+        },
+        {
+          "heading": "BUILDING THE MACHINE",
+          "paragraphs": [
+            "The technical architecture of FinEdge is built on proprietary AI models that process over 50 million data points daily. The system can predict market movements with remarkable accuracy.",
+            "But Desai is quick to point out that technology is only half the equation. 'The real moat is trust. In finance, trust is everything.'"
+          ],
+          "highlightStat": "₹500 Cr",
+          "highlightLabel": "Assets Under Advisory (FY24)"
+        }
+      ],
+      "tags": ["FINTECH", "AI", "MUMBAI", "INVESTING", "STARTUP"],
+      "authorName": "Priya Nair",
+      "authorBio": "Senior Editor, TBF Digital Atelier. Covering the intersection of technology and finance.",
+      "authorImage": "https://images.unsplash.com/photo-1494790108377-be9c29b29330?q=80&w=150&auto=format&fit=crop",
+      "metaTitle": "Aarav Desai | The Founders Series | THE BOMBAY FORUM",
+      "metaDescription": "CEO & Co-founder of FinEdge Analytics — bridging traditional finance and modern AI.",
+      "status": "active",
       "achievements": [
         "Forbes 30 Under 30 Asia",
         "Raised $15M Series A",
@@ -53,7 +100,54 @@
       "company": "EcoWeave",
       "bio": "Riya started EcoWeave with a mission to bring sustainable fashion to the mainstream. Combining traditional Indian weaving techniques with modern ethical practices, her brand has taken over the D2C space.",
       "image": "https://images.unsplash.com/photo-1573496359142-b8d87734a5a2?q=80&w=2000&auto=format&fit=crop",
+      "heroImage": "https://images.unsplash.com/photo-1573496359142-b8d87734a5a2?q=80&w=2000&auto=format&fit=crop",
       "quote": "Sustainability is not a luxury; it is the only way forward for the fashion industry.",
+      "tagline": "Riya Sharma is rewriting the rules of Indian fashion — proving that sustainability and style are not mutually exclusive, but inseparable partners in the future of design.",
+      "bioParagraphs": [
+        "Riya started EcoWeave with a mission to bring sustainable fashion to the mainstream. Combining traditional Indian weaving techniques with modern ethical practices, her brand has taken over the D2C space.",
+        "What began as a small workshop in her apartment has grown into a movement that employs over 500 local artisans across three states.",
+        "Her zero-waste production model has become a case study at leading business schools, proving that ethical business can be profitable business."
+      ],
+      "stats": [
+        { "label": "FOUNDED", "value": "2020" },
+        { "label": "ARTISANS", "value": "500+" },
+        { "label": "WASTE", "value": "Zero" },
+        { "label": "STATES", "value": "3" }
+      ],
+      "editorialSections": [
+        {
+          "heading": "THE BEGINNING",
+          "paragraphs": [
+            "The idea for EcoWeave was born during a trip to Varanasi. Watching master weavers struggle to find buyers for their exquisite handloom, Riya saw both a problem and an opportunity.",
+            "She spent two years learning the craft herself, understanding every thread and technique before launching her brand.",
+            "The early days were challenging. 'Everyone told me sustainable fashion was a niche market. I believed it was the future market,' she recalls."
+          ]
+        },
+        {
+          "heading": "THE PHILOSOPHY",
+          "paragraphs": [
+            "At EcoWeave, every piece tells a story. Riya insists on full supply chain transparency, from the cotton fields to the customer's doorstep.",
+            "This radical transparency has resonated with a new generation of conscious consumers who want to know exactly where their clothes come from."
+          ],
+          "pullQuote": "The most luxurious thing you can wear is a clear conscience."
+        },
+        {
+          "heading": "THE NEXT CHAPTER",
+          "paragraphs": [
+            "EcoWeave is now expanding into home textiles, bringing the same zero-waste philosophy to interior design.",
+            "Riya is also launching the EcoWeave Academy, a training program to equip the next generation of artisans with both traditional skills and modern business acumen."
+          ],
+          "highlightStat": "₹45 Cr",
+          "highlightLabel": "Annual Revenue (FY24)"
+        }
+      ],
+      "tags": ["FASHION", "SUSTAINABILITY", "D2C", "HANDLOOM", "ARTISANS"],
+      "authorName": "Vikram Singh",
+      "authorBio": "Lifestyle and business editor covering India's creative economy.",
+      "authorImage": "https://images.unsplash.com/photo-1500648767791-00dcc994a43e?q=80&w=150&auto=format&fit=crop",
+      "metaTitle": "Riya Sharma | The Founders Series | THE BOMBAY FORUM",
+      "metaDescription": "Founder of EcoWeave — bringing sustainable fashion to the mainstream with zero-waste production.",
+      "status": "active",
       "achievements": [
         "Vogue's Best Sustainable Brand 2023",
         "Zero-waste production certified",
@@ -73,8 +167,47 @@
       "title": "Digital Artist & Animator",
       "bio": "Karan creates stunning 3D visual loops combining cyberpunk aesthetics with traditional Indian motifs. His work has been featured in major digital art festivals worldwide.",
       "image": "https://images.unsplash.com/photo-1522075469751-3a6694fb2f61?q=80&w=2000&auto=format&fit=crop",
+      "heroImage": "https://images.unsplash.com/photo-1522075469751-3a6694fb2f61?q=80&w=2000&auto=format&fit=crop",
       "specialization": "3D Animation",
+      "location": "Mumbai",
       "quote": "The canvas is unlimited. I want to paint the future exactly as chaotic and beautiful as I see it.",
+      "tagline": "Where ancient temple geometry meets neon-lit cyber futures.",
+      "heroDescription": "Creating stunning 3D visual loops that fuse cyberpunk aesthetics with traditional Indian motifs. His digital art has captivated audiences at major festivals worldwide.",
+      "bioParagraphs": [
+        "Karan creates stunning 3D visual loops combining cyberpunk aesthetics with traditional Indian motifs. His work has been featured in major digital art festivals worldwide.",
+        "His unique style — a collision of ancient temple geometry and neon-lit cyber futures — has earned him recognition as one of India's most innovative digital artists."
+      ],
+      "socialLabels": ["INSTAGRAM", "TWITTER", "PORTFOLIO"],
+      "pullQuote": "Mumbai isn't just where I live; it's the raw material of everything I create. The city's chaos is my color palette, its contradictions my composition.",
+      "pullQuoteCite": "Karan Kapoor on 'Cyber-Deity'",
+      "workDescription": "From underground music visuals to international art festivals, Karan's work spans the breadth of digital artistic expression.",
+      "highlightStat": "50M+",
+      "highlightLabel": "Global Digital Views",
+      "editorialSections": [
+        {
+          "heading": "The Digital Canvas",
+          "paragraphs": [
+            "<strong class=\"text-primary\">Karan's process is deeply intuitive.</strong> He starts with field recordings from Mumbai's streets — the honk of auto-rickshaws, the call of chai vendors, the rhythm of local trains. These sounds become the foundation for his visual rhythm.",
+            "In a world obsessed with photorealism, Kapoor deliberately embraces the surreal. His work doesn't just show you Mumbai; it reimagines it through a cyberpunk lens, layering neon grids over colonial architecture."
+          ],
+          "image": "https://images.unsplash.com/photo-1550745165-9bc0b252726f?q=80&w=2000&auto=format&fit=crop",
+          "imageAlt": "Karan at work — digital art studio setup",
+          "imageCaption": "Karan's Bandra studio, where traditional sketches meet 3D rendering, 2023."
+        },
+        {
+          "heading": "What Comes Next",
+          "paragraphs": [
+            "Kapoor is currently developing 'Temple.exe,' an immersive AR experience that overlays ancient temple architecture onto Mumbai's modern skyline.",
+            "As he moves into more experiential art, his commitment to bridging the ancient and the futuristic remains his guiding principle."
+          ]
+        }
+      ],
+      "tags": ["3D ARTIST", "ANIMATION", "CYBERPUNK", "MUMBAI", "DIGITAL ART"],
+      "authorName": "Neha Gupta",
+      "authorImage": "https://images.unsplash.com/photo-1534528741775-53994a69daeb?q=80&w=150&auto=format&fit=crop",
+      "metaTitle": "Karan Kapoor | Creator Profile | THE BOMBAY FORUM",
+      "metaDescription": "Digital Artist & Animator creating stunning 3D visual loops combining cyberpunk aesthetics with traditional Indian motifs.",
+      "status": "active",
       "works": [
         "The Neon Bazaar (Short Film)",
         "Cyber-Deity Series (NFT Collection)",
@@ -92,8 +225,47 @@
       "title": "Documentary Photographer",
       "bio": "Ananya documents the unseen side of Mumbai. From the early morning prep at Dadar flower market to the late-night jazz scenes in Bandra, her lens captures raw emotion.",
       "image": "https://images.unsplash.com/photo-1544005313-94ddf0286df2?q=80&w=2000&auto=format&fit=crop",
+      "heroImage": "https://images.unsplash.com/photo-1544005313-94ddf0286df2?q=80&w=2000&auto=format&fit=crop",
       "specialization": "Photography",
+      "location": "Mumbai",
       "quote": "A photograph is a pause button on life.",
+      "tagline": "Capturing the unseen heartbeat of Mumbai, one frame at a time.",
+      "heroDescription": "Documenting the unseen side of Mumbai — from the early morning prep at Dadar flower market to the late-night jazz scenes in Bandra. Her lens captures raw emotion.",
+      "bioParagraphs": [
+        "Ananya documents the unseen side of Mumbai. From the early morning prep at Dadar flower market to the late-night jazz scenes in Bandra, her lens captures raw emotion.",
+        "Her work has been exhibited at Jehangir Art Gallery and featured in publications worldwide, earning her a reputation as one of the city's most authentic visual storytellers."
+      ],
+      "socialLabels": ["INSTAGRAM", "PORTFOLIO"],
+      "pullQuote": "The best photographs are the ones that make you feel the humidity of the air, the noise of the street, the texture of the light. They're not images; they're experiences.",
+      "pullQuoteCite": "Ananya Patel on 'Bombay In Rain'",
+      "workDescription": "From photo essays on the Dabbawalas to intimate portraits of jazz musicians, Ananya's photography spans the full spectrum of Mumbai's human experience.",
+      "highlightStat": "25M+",
+      "highlightLabel": "Global Views",
+      "editorialSections": [
+        {
+          "heading": "The Eye Behind the Lens",
+          "paragraphs": [
+            "<strong class=\"text-primary\">Ananya's process is one of patience.</strong> She often spends weeks in a single neighborhood, becoming part of the fabric before she ever lifts her camera.",
+            "Her philosophy is rooted in respect. 'I don't take photographs of people,' she says. 'I receive them. There's a difference.'"
+          ],
+          "image": "https://images.unsplash.com/photo-1518770660439-4636190af475?q=80&w=2070&auto=format&fit=crop",
+          "imageAlt": "Ananya shooting at Dadar flower market at dawn",
+          "imageCaption": "Documenting the pre-dawn flower market at Dadar, 2023."
+        },
+        {
+          "heading": "What Comes Next",
+          "paragraphs": [
+            "Ananya is working on 'Monsoon Diaries,' a year-long project capturing how the rainy season transforms the daily lives of Mumbai's diverse communities.",
+            "She's also launching a photography mentorship program for young women from underserved communities, providing cameras and training to the next generation of visual storytellers."
+          ]
+        }
+      ],
+      "tags": ["PHOTOGRAPHER", "DOCUMENTARY", "MUMBAI", "STREET ART", "VISUAL STORYTELLING"],
+      "authorName": "Siddharth Mehta",
+      "authorImage": "https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?q=80&w=150&auto=format&fit=crop",
+      "metaTitle": "Ananya Patel | Creator Profile | THE BOMBAY FORUM",
+      "metaDescription": "Documentary Photographer capturing the unseen side of Mumbai through raw, intimate imagery.",
+      "status": "active",
       "works": [
         "Bombay In Rain (Photo Book)",
         "Exhibition at Jehangir Art Gallery",

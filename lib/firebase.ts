@@ -38,6 +38,19 @@ export async function getArticleById(id: string) {
   return null;
 }
 
+export async function getArticleBySlug(slug: string) {
+  const articlesRef = ref(database, 'articles');
+  const snapshot = await get(articlesRef);
+  if (snapshot.exists()) {
+    const data = snapshot.val();
+    const articleId = Object.keys(data).find((key) => data[key].slug === slug);
+    if (articleId) {
+      return { id: articleId, ...data[articleId] };
+    }
+  }
+  return null;
+}
+
 export async function createArticle(data: any) {
   const articlesRef = ref(database, 'articles');
   const newArticleRef = push(articlesRef);

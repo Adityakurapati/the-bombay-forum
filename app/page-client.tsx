@@ -1,6 +1,8 @@
 'use client';
 
 import Link from 'next/link';
+import Image from "next/image";
+
 import { useEffect, useState } from 'react';
 
 /* ─────────────── DATA ─────────────── */
@@ -125,12 +127,22 @@ export default function HomePageClient() {
         </nav>
 
         {/* Centered Logo */}
-        <Link href="/" className="absolute left-1/2 -translate-x-1/2 flex items-center">
-          <img
-            src="/logo.png"
-            className="h-8"
-            style={{ filter: 'brightness(0) invert(1)', display: 'block' }}
+        <Link
+          href="/"
+          className="absolute left-1/2 -translate-x-1/2 flex items-center"
+        >
+          <Image
+            src="/logo.png"   // from public folder
+            alt="Logo"
+            width={32}        // equivalent to h-8 (adjust if needed)
+            height={32}
+            style={{
+              filter: "brightness(0) invert(1)",
+              display: "block",
+            }}
+            priority
           />
+
         </Link>
 
         {/* Right nav + dark mode icon */}

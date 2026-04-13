@@ -1,9 +1,10 @@
 'use client';
 
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import Link from 'next/link';
 
 type Profile = {
+  id: string;
   name: string;
   type: 'FOUNDER' | 'CREATOR';
   company: string;
@@ -12,40 +13,8 @@ type Profile = {
   updated: string;
   status: 'active' | 'review' | 'draft';
   image: string;
+  slug: string;
 };
-
-const PROFILES: Profile[] = [
-  {
-    name: 'Nithin Kamath', type: 'FOUNDER', company: 'Zerodha',
-    articles: 12, views: '142K', updated: '2d ago', status: 'active',
-    image: 'https://lh3.googleusercontent.com/aida-public/AB6AXuCN9EffWcxrGV8bAmp9r9LNyd9UFInPCOXrkAqRHLI2iP-QJjhxoJWd7raofRmG6styt-uj9Sc9u3qmfvM951nw8ELjcdnm5l8FDH4vHCJFnRbDeZd9LryvxjB1i03kWW3LjlCzWd38u-E-YQ7G9Oek-kUTRoMghinaiGKpS6Ien7YGeHel0gHsQ9hcRDFsLZWhvf7kCOCmT6FR2QwUhjATlluk3V9ohd6ZVxHUOEfKq7lhxP2qwAy1lch_g99cM_bRN06FpEglQF4I',
-  },
-  {
-    name: 'Ranveer Allahbadia', type: 'CREATOR', company: 'BeerBiceps',
-    articles: 28, views: '890K', updated: '5h ago', status: 'active',
-    image: 'https://lh3.googleusercontent.com/aida-public/AB6AXuAh_PC2eHCJI3CxHr4d3ArxmOZDGcEkqxZ43RAF6X44pxzQDBVbm0dFMeyrPNYc9MI5r_f2nwxpofVOP8RkdJgLqJLmWBFqk4Ix1mFesXUGrCg_KmcwxOChRISnkBSuF8C5F-up7a6_zIQzzwqx3jgQHGC4nbJ-teTb1MIMFDzQQkz7N5vvBmzucrIDebSY8IkYGVEMvem75Lv_svGZomtbiB6uYpmZLJmeMqclHZcXJMTgm0woLKNlXLXntkmRzNnprPQiOScXiLRQ',
-  },
-  {
-    name: 'Falguni Nayar', type: 'FOUNDER', company: 'Nykaa',
-    articles: 9, views: '205K', updated: '1w ago', status: 'active',
-    image: 'https://lh3.googleusercontent.com/aida-public/AB6AXuDRkv54GL1VDk07gG-CPrNbYaEK4ZrE8vSWzHHA0QF4_AaU0PeP60ErAYjlF18Ad63qMAaU4E0BrAWD_HIwfgLYJl8ibiDgb1WlnZgn_GyaiDv8H_nd0FkGAUdniwdjMozv8Lz-J8ra7BBECoGVZOIe-N8IGChDsBRMyNkqpCifkmQwmcHMDfVn1wILd8Z8B2W7HXJD_I7sZ9mzrHsSFgq1p2ZLVtEbp6piZISvddbz9KOxbWGhBksEc-ksI9NWv-hRSlfjOXl4-bg4',
-  },
-  {
-    name: 'Prajakta Koli', type: 'CREATOR', company: 'MostlySane',
-    articles: 15, views: '312K', updated: '3d ago', status: 'active',
-    image: 'https://lh3.googleusercontent.com/aida-public/AB6AXuDJ4bNLOnBd7upP1PX7GxkCo4HFI9zKzMJOuXCsNE5DK90wwXyokEJOKmxWx_7jfxH5jGpt3sK5IhFaB-0eVVS_s3B0aLx2tTwQSUMsyt4mNx76sTPpKsaYwGXcXDWLcG7Zi6bxh1iHhpQfdgAchldk9GVy4yLxhDUeUal9yL6gpIRzU4-gD_2dU-LnWWWFbRpKXIrjfUXzXO3I_5VSl3GWCHJmQXqOLBQz4IwziIRzxHqy2YnWCtLqOkEt-8CeKckZ96zJx6mNnsTo',
-  },
-  {
-    name: 'Kunal Shah', type: 'FOUNDER', company: 'CRED',
-    articles: 5, views: '98K', updated: '1h ago', status: 'review',
-    image: 'https://lh3.googleusercontent.com/aida-public/AB6AXuBk_e_GtuXLuKjcMsKxQj7h--x6bHLmvYO4k2aDR4F5y38RV5dhGHXh1b7Y99NT2FHS1o33mR99oHYJNQKao9DvugwAnT5xt7kyOzY0Qu3lzV-JApx8NE_bD9ZzBNgKJjf-YTrJqxdUJ-oVUkZmNNCmUK_phzjJ4FnzKm2qsoCZ9qsv1H-axLQio8EAbX0gOBRUXeaQrico5gHxClzDO9t4_PDiytjpzYNoXXB3mXEeNzQIOiDSbtAiswowyJ4e7KDddMlCSohdXrfD',
-  },
-  {
-    name: 'Aryan Varma', type: 'CREATOR', company: 'Filmmaker',
-    articles: 2, views: '12K', updated: 'Just now', status: 'draft',
-    image: 'https://lh3.googleusercontent.com/aida-public/AB6AXuAsVb5IVtRPtJTK2atkUD_mBPFrvUN-N7kydBTXbdU-GeLivrGlO8jIZSKodRSxtGjfcftGtWRYt1B7rnR3j_YA4DN4ouAHWLudkWnv_-3wX2oP9CfVIRiPrdZmGuKUvsACnSZrTu9OOMf60N7hW3r7FiPgLRP4atgj6cbp3Pj5HK_3MLd1lG81aTK00Pf99QBZil7T0B5nuvaVfEfxntpl-JJyhta-mcUr9VMKdhZ_KMz5gfG31nK-kEGAiAarg5Tilr1R_haBDrHY',
-  },
-];
 
 const STATUS_DOT: Record<Profile['status'], string> = {
   active: 'bg-green-500',
@@ -57,8 +26,84 @@ const TABS = ['ALL', 'FOUNDERS', 'CREATORS', 'DRAFT PROFILES'];
 
 export default function ProfilesPage() {
   const [activeTab, setActiveTab] = useState('ALL');
+  const [profiles, setProfiles] = useState<Profile[]>([]);
+  const [loading, setLoading] = useState(true);
 
-  const filtered = PROFILES.filter((p) => {
+  useEffect(() => {
+    fetchProfiles();
+  }, []);
+
+  async function fetchProfiles() {
+    setLoading(true);
+    try {
+      const [foundersRes, creatorsRes] = await Promise.all([
+        fetch('/api/founders'),
+        fetch('/api/creators'),
+      ]);
+
+      const founders = foundersRes.ok ? await foundersRes.json() : [];
+      const creators = creatorsRes.ok ? await creatorsRes.json() : [];
+
+      const merged: Profile[] = [
+        ...founders.map((f: any) => ({
+          id: f.id,
+          name: f.name || 'Untitled',
+          type: 'FOUNDER' as const,
+          company: f.company || f.title || '',
+          articles: f.articles || 0,
+          views: f.views || '0',
+          updated: formatUpdated(f.createdAt),
+          status: f.status || 'active',
+          image: f.image || f.heroImage || '',
+          slug: f.slug || '',
+        })),
+        ...creators.map((c: any) => ({
+          id: c.id,
+          name: c.name || 'Untitled',
+          type: 'CREATOR' as const,
+          company: c.specialization || c.title || '',
+          articles: c.articles || 0,
+          views: c.views || '0',
+          updated: formatUpdated(c.createdAt),
+          status: c.status || 'active',
+          image: c.image || c.heroImage || '',
+          slug: c.slug || '',
+        })),
+      ];
+
+      setProfiles(merged);
+    } catch (err) {
+      console.error('Failed to fetch profiles:', err);
+    } finally {
+      setLoading(false);
+    }
+  }
+
+  function formatUpdated(dateStr?: string): string {
+    if (!dateStr) return 'Just now';
+    const diff = Date.now() - new Date(dateStr).getTime();
+    const mins = Math.floor(diff / 60000);
+    if (mins < 60) return `${mins}m ago`;
+    const hours = Math.floor(mins / 60);
+    if (hours < 24) return `${hours}h ago`;
+    const days = Math.floor(hours / 24);
+    if (days < 7) return `${days}d ago`;
+    const weeks = Math.floor(days / 7);
+    return `${weeks}w ago`;
+  }
+
+  async function handleDelete(profile: Profile) {
+    const endpoint = profile.type === 'FOUNDER' ? '/api/founders' : '/api/creators';
+    if (!confirm(`Delete "${profile.name}"? This cannot be undone.`)) return;
+    try {
+      await fetch(`${endpoint}?id=${profile.id}`, { method: 'DELETE' });
+      await fetchProfiles();
+    } catch (err) {
+      console.error('Delete failed:', err);
+    }
+  }
+
+  const filtered = profiles.filter((p) => {
     if (activeTab === 'ALL') return true;
     if (activeTab === 'FOUNDERS') return p.type === 'FOUNDER';
     if (activeTab === 'CREATORS') return p.type === 'CREATOR';
@@ -112,93 +157,145 @@ export default function ProfilesPage() {
       </div>
 
       {/* Profiles Grid */}
-      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-0">
-        {filtered.map((profile) => (
-          <div
-            key={profile.name}
-            className="bg-surface-container-lowest p-8 border border-surface-container-highest hover:bg-white hover:shadow-xl transition-all duration-300 group"
-          >
-            <div className="flex items-start gap-6 mb-8">
-              <div className="w-24 h-32 flex-shrink-0 overflow-hidden">
-                <img
-                  src={profile.image}
-                  alt={profile.name}
-                  className={`w-full h-full object-cover transition-all duration-300 ${
-                    profile.type === 'FOUNDER' ? 'grayscale hover:grayscale-0' : ''
-                  }`}
-                />
-              </div>
-              <div className="flex-1">
-                <div className="flex justify-between items-start">
-                  <span
-                    className={`text-[9px] font-bold uppercase tracking-[0.2em] px-2 py-1 mb-2 inline-block font-label ${
-                      profile.type === 'FOUNDER'
-                        ? 'text-on-surface bg-surface-container-high'
-                        : 'text-brand-teal bg-brand-teal/10'
-                    }`}
-                    style={profile.type === 'CREATOR' ? { color: '#8BB0B8' } : { color: '#0B1929' }}
-                  >
-                    {profile.type}
-                  </span>
-                  <span className={`w-2 h-2 rounded-full ${STATUS_DOT[profile.status]}`} title={profile.status} />
+      {loading ? (
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-0">
+          {[1, 2, 3, 4, 5, 6].map((i) => (
+            <div
+              key={i}
+              className="bg-surface-container-lowest p-8 border border-surface-container-highest animate-pulse"
+            >
+              <div className="flex items-start gap-6 mb-8">
+                <div className="w-24 h-32 bg-surface-container-highest flex-shrink-0" />
+                <div className="flex-1 space-y-3">
+                  <div className="w-16 h-4 bg-surface-container-highest" />
+                  <div className="w-32 h-6 bg-surface-container-highest" />
+                  <div className="w-24 h-3 bg-surface-container-highest" />
                 </div>
-                <h3
-                  className="text-2xl font-headline font-bold mb-1 leading-tight group-hover:text-primary transition-colors"
+              </div>
+              <div className="grid grid-cols-3 gap-4 border-t border-surface-container-high pt-6 mb-8">
+                {[1, 2, 3].map((j) => (
+                  <div key={j} className="space-y-2">
+                    <div className="w-12 h-3 bg-surface-container-highest" />
+                    <div className="w-8 h-4 bg-surface-container-highest" />
+                  </div>
+                ))}
+              </div>
+              <div className="flex gap-2">
+                <div className="flex-1 h-10 bg-surface-container-high" />
+                <div className="w-10 h-10 bg-surface-container-high" />
+                <div className="w-10 h-10 bg-surface-container-high" />
+              </div>
+            </div>
+          ))}
+        </div>
+      ) : (
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-0">
+          {filtered.map((profile) => (
+            <div
+              key={`${profile.type}-${profile.id}`}
+              className="bg-surface-container-lowest p-8 border border-surface-container-highest hover:bg-white hover:shadow-xl transition-all duration-300 group"
+            >
+              <div className="flex items-start gap-6 mb-8">
+                <div className="w-24 h-32 flex-shrink-0 overflow-hidden">
+                  {profile.image ? (
+                    <img
+                      src={profile.image}
+                      alt={profile.name}
+                      className={`w-full h-full object-cover transition-all duration-300 ${
+                        profile.type === 'FOUNDER' ? 'grayscale hover:grayscale-0' : ''
+                      }`}
+                    />
+                  ) : (
+                    <div className="w-full h-full bg-surface-container-highest flex items-center justify-center">
+                      <span className="material-symbols-outlined text-3xl text-on-surface-variant">person</span>
+                    </div>
+                  )}
+                </div>
+                <div className="flex-1">
+                  <div className="flex justify-between items-start">
+                    <span
+                      className={`text-[9px] font-bold uppercase tracking-[0.2em] px-2 py-1 mb-2 inline-block font-label ${
+                        profile.type === 'FOUNDER'
+                          ? 'text-on-surface bg-surface-container-high'
+                          : 'text-brand-teal bg-brand-teal/10'
+                      }`}
+                      style={profile.type === 'CREATOR' ? { color: '#8BB0B8' } : { color: '#0B1929' }}
+                    >
+                      {profile.type}
+                    </span>
+                    <span className={`w-2 h-2 rounded-full ${STATUS_DOT[profile.status]}`} title={profile.status} />
+                  </div>
+                  <h3
+                    className="text-2xl font-headline font-bold mb-1 leading-tight group-hover:text-primary transition-colors"
+                    style={{ color: '#0B1929' }}
+                  >
+                    {profile.name}
+                  </h3>
+                  <p className="text-[11px] font-label uppercase tracking-widest text-on-surface-variant">
+                    {profile.company}
+                  </p>
+                </div>
+              </div>
+
+              <div className="grid grid-cols-3 gap-4 border-t border-surface-container-high pt-6 mb-8">
+                {[
+                  { label: 'Articles', value: profile.articles },
+                  { label: 'Views', value: profile.views },
+                  { label: 'Updated', value: profile.updated },
+                ].map((stat) => (
+                  <div key={stat.label}>
+                    <p className="text-[9px] text-on-surface-variant uppercase tracking-tighter mb-1 font-label">{stat.label}</p>
+                    <p className="text-sm font-bold font-body" style={{ color: '#0B1929' }}>{stat.value}</p>
+                  </div>
+                ))}
+              </div>
+
+              <div className="flex gap-2">
+                <Link
+                  href={`/admin/profiles/edit?id=${profile.id}&type=${profile.type.toLowerCase()}`}
+                  className="flex-1 py-3 bg-surface-container-high font-label text-[10px] uppercase tracking-widest hover:text-white transition-colors text-center"
+                  style={{ color: '#0B1929' }}
+                  onMouseEnter={(e) => (e.currentTarget.style.backgroundColor = '#0B1929')}
+                  onMouseLeave={(e) => (e.currentTarget.style.backgroundColor = '')}
+                >
+                  Edit Profile
+                </Link>
+                <Link
+                  href={`/${profile.type === 'FOUNDER' ? 'founders' : 'creators'}/${profile.slug}`}
+                  target="_blank"
+                  className="px-4 py-3 bg-surface-container-high hover:text-white transition-colors"
+                  style={{ color: '#0B1929' }}
+                  onMouseEnter={(e) => {
+                    (e.currentTarget.style.backgroundColor = '#8BB0B8');
+                  }}
+                  onMouseLeave={(e) => (e.currentTarget.style.backgroundColor = '')}
+                >
+                  <span className="material-symbols-outlined text-sm">search</span>
+                </Link>
+                <button
+                  onClick={() => handleDelete(profile)}
+                  className="px-4 py-3 bg-surface-container-high hover:bg-red-500 hover:text-white transition-colors"
                   style={{ color: '#0B1929' }}
                 >
-                  {profile.name}
-                </h3>
-                <p className="text-[11px] font-label uppercase tracking-widest text-on-surface-variant">
-                  {profile.company}
-                </p>
+                  <span className="material-symbols-outlined text-sm">delete</span>
+                </button>
               </div>
             </div>
+          ))}
+        </div>
+      )}
 
-            <div className="grid grid-cols-3 gap-4 border-t border-surface-container-high pt-6 mb-8">
-              {[
-                { label: 'Articles', value: profile.articles },
-                { label: 'Views', value: profile.views },
-                { label: 'Updated', value: profile.updated },
-              ].map((stat) => (
-                <div key={stat.label}>
-                  <p className="text-[9px] text-on-surface-variant uppercase tracking-tighter mb-1 font-label">{stat.label}</p>
-                  <p className="text-sm font-bold font-body" style={{ color: '#0B1929' }}>{stat.value}</p>
-                </div>
-              ))}
-            </div>
-
-            <div className="flex gap-2">
-              <Link
-                href={`/admin/profiles/edit?name=${encodeURIComponent(profile.name)}`}
-                className="flex-1 py-3 bg-surface-container-high font-label text-[10px] uppercase tracking-widest hover:text-white transition-colors text-center"
-                style={{ color: '#0B1929' }}
-                onMouseEnter={(e) => (e.currentTarget.style.backgroundColor = '#0B1929')}
-                onMouseLeave={(e) => (e.currentTarget.style.backgroundColor = '')}
-              >
-                Edit Profile
-              </Link>
-              <button
-                className="px-4 py-3 bg-surface-container-high hover:text-white transition-colors"
-                style={{ color: '#0B1929' }}
-                onMouseEnter={(e) => {
-                  (e.currentTarget.style.backgroundColor = '#8BB0B8');
-                }}
-                onMouseLeave={(e) => (e.currentTarget.style.backgroundColor = '')}
-              >
-                <span className="material-symbols-outlined text-sm">search</span>
-              </button>
-              <button className="px-4 py-3 bg-surface-container-high" style={{ color: '#0B1929' }}>
-                <span className="material-symbols-outlined text-sm">more_vert</span>
-              </button>
-            </div>
-          </div>
-        ))}
-      </div>
+      {!loading && filtered.length === 0 && (
+        <div className="text-center py-24 text-on-surface-variant">
+          <span className="material-symbols-outlined text-5xl mb-4 block">person_off</span>
+          <p className="font-label text-sm uppercase tracking-widest">No profiles found.</p>
+        </div>
+      )}
 
       {/* Pagination */}
       <footer className="mt-16 border-t border-surface-container-highest pt-8 flex justify-between items-center">
         <p className="text-[10px] uppercase tracking-[0.2em] text-on-surface-variant font-label">
-          Showing {filtered.length} of 142 total profiles
+          Showing {filtered.length} of {profiles.length} total profiles
         </p>
         <div className="flex space-x-2">
           {(['chevron_left', '1', '2', '3', 'chevron_right'] as const).map((item, i) => {
