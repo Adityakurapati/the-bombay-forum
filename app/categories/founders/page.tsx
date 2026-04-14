@@ -2,7 +2,8 @@ import Link from 'next/link';
 import { TopBar } from '@/components/TopBar';
 import { Header } from '@/components/Header';
 import { Footer } from '@/components/Footer';
-import { getFounders, getArticles } from '@/lib/firebase';
+import { getFounders } from '@/lib/firebase';
+import { getAllArticles } from '@/lib/articles';
 
 export const metadata = {
   title: 'The Founders | THE BOMBAY FORUM',
@@ -15,7 +16,7 @@ const TEAL = '#2A9D8F';
 export default async function FoundersPage() {
   const [allFounders, allArticles] = await Promise.all([
     getFounders(),
-    getArticles()
+    getAllArticles({ includeRSS: true })
   ]);
 
   const founders = allFounders.filter((f: any) => f.status !== 'draft');
@@ -32,7 +33,8 @@ export default async function FoundersPage() {
     author: a.author || 'TBF Editorial',
     read: a.readTime ? `${a.readTime} Min Read` : '5 Min Read',
     img: a.featuredImage || 'https://images.unsplash.com/photo-1590283603385-17ffb141ebbb?q=80&w=2000&auto=format&fit=crop',
-    slug: a.slug
+    slug: a.slug,
+    link: a.link
   })) : [
     {
       sub: 'SUSTAINABILITY',
@@ -187,7 +189,10 @@ export default async function FoundersPage() {
         <div className="grid grid-cols-1 md:grid-cols-3 gap-16">
           {featuredWeek.map((art: any, index: number) => (
             <article key={index} className="group cursor-pointer">
-              <Link href={art.slug !== '#' ? `/articles/${art.slug}` : '#'}>
+              <Link 
+                href={art.link || (art.slug !== '#' ? `/articles/${art.slug}` : '#')}
+                target={art.link ? '_blank' : '_self'}
+              >
                 <div className="aspect-[3/4] overflow-hidden mb-8">
                   <img
                     src={art.img}

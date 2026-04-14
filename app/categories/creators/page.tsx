@@ -2,7 +2,8 @@ import Link from 'next/link';
 import { TopBar } from '@/components/TopBar';
 import { Header } from '@/components/Header';
 import { Footer } from '@/components/Footer';
-import { getCreators, getArticles } from '@/lib/firebase';
+import { getCreators } from '@/lib/firebase';
+import { getAllArticles } from '@/lib/articles';
 
 export const metadata = {
   title: 'Creators | THE BOMBAY FORUM',
@@ -13,7 +14,7 @@ export const metadata = {
 export default async function CreatorsPage() {
   const [allCreators, allArticles] = await Promise.all([
     getCreators(),
-    getArticles()
+    getAllArticles({ includeRSS: true })
   ]);
 
   const creators = allCreators.filter((c: any) => c.status !== 'draft');
@@ -195,27 +196,30 @@ export default async function CreatorsPage() {
               <div className="h-[1px] bg-outline-variant/30 w-full" />
             </div>
             <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-y-12 lg:gap-y-16 gap-x-8 lg:gap-x-12">
-              {articles.map((item: any, i: number) => (
-                <article key={i} className="group flex flex-col cursor-pointer">
-                  <Link href={`/articles/${item.slug}`}>
-                    <div className="aspect-[16/10] overflow-hidden mb-6">
+              {articles.map((art: any, index: number) => (
+                <article key={index} className="group cursor-pointer">
+                  <Link 
+                    href={art.link || `/articles/${art.slug}`}
+                    target={art.link ? '_blank' : '_self'}
+                  >
+                    <div className="aspect-[4/5] overflow-hidden mb-8 relative bg-surface-container">
                       <img
                         className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-700"
-                        alt={item.title}
-                        src={item.featuredImage}
+                        alt={art.title}
+                        src={art.featuredImage}
                       />
                     </div>
                     <span className="text-brand-teal text-[9px] tracking-[0.2em] font-bold mb-3 uppercase font-label">
-                      {item.tags?.[0] || 'CREATOR'}
+                      {art.tags?.[0] || 'CREATOR'}
                     </span>
                     <h3 className="font-headline text-2xl mb-3 group-hover:text-brand-teal transition-colors">
-                      {item.title}
+                      {art.title}
                     </h3>
                     <p className="font-body text-on-surface/60 text-sm mb-4 line-clamp-2">
-                      {item.subtitle || item.excerpt}
+                      {art.subtitle || art.excerpt}
                     </p>
                     <span className="text-on-surface/40 text-[10px] font-medium tracking-wide font-label uppercase">
-                      {item.readTime} MIN READ
+                      {art.readTime || 5} MIN READ
                     </span>
                   </Link>
                 </article>

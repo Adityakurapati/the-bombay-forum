@@ -3,6 +3,7 @@ import { TopBar } from '@/components/TopBar';
 import { Header } from '@/components/Header';
 import { Footer } from '@/components/Footer';
 import { getAllWealthData } from '@/lib/firebase';
+import { getAllArticles } from '@/lib/articles';
 
 export const dynamic = 'force-dynamic';
 
@@ -69,11 +70,17 @@ const DEFAULT_OPINION = {
 export default async function WealthPage() {
   /* ── Fetch data ── */
   let raw: any = null;
+  let allArticles: any[] = [];
   try {
-    raw = await getAllWealthData();
+    [raw, allArticles] = await Promise.all([
+      getAllWealthData(),
+      getAllArticles({ includeRSS: true })
+    ]);
   } catch (err) {
-    console.error('[WealthPage] Firebase fetch failed:', err);
+    console.error('[WealthPage] Fetch failed:', err);
   }
+
+  const wealthArticles = allArticles.filter((a: any) => a.category === 'cat_wealth' && a.published !== false);
 
   /* ── Merge with defaults ── */
   const hero          = raw?.hero         ? { ...DEFAULT_HERO, ...raw.hero } : DEFAULT_HERO;
@@ -81,7 +88,19 @@ export default async function WealthPage() {
   const lead          = raw?.leadStory    ? { ...DEFAULT_LEAD, ...raw.leadStory } : DEFAULT_LEAD;
   const sideStories   = raw?.sideStories?.length ? raw.sideStories : DEFAULT_SIDE_STORIES;
   const pulseItems    = raw?.pulseItems?.length  ? raw.pulseItems : DEFAULT_PULSE;
-  const storyGrid     = raw?.storyGrid?.length   ? raw.storyGrid : DEFAULT_STORY_GRID;
+  let storyGrid     = raw?.storyGrid?.length   ? raw.storyGrid : DEFAULT_STORY_GRID;
+  
+  if (wealthArticles.length > 0) {
+    const mapped = wealthArticles.map((a: any) => ({
+      id: a.id,
+      category: a.tags?.[0] || 'WEALTH • INSIGHTS',
+      title: a.title,
+      image: a.featuredImage,
+      link: a.link,
+      slug: a.slug
+    }));
+    storyGrid = [...mapped, ...storyGrid].slice(0, 9);
+  }
   const opinion       = raw?.opinionStrip ? { ...DEFAULT_OPINION, ...raw.opinionStrip } : DEFAULT_OPINION;
 
   return (
@@ -188,7 +207,12 @@ export default async function WealthPage() {
             <h2 className="text-3xl md:text-4xl font-headline italic mb-12 md:mb-16">Latest from Wealth</h2>
             <div className="grid grid-cols-1 md:grid-cols-3 gap-y-12 md:gap-y-16 gap-x-12">
               {storyGrid.map((item: any) => (
-                <Link key={item.id} href={item.slug || '#'} className="group cursor-pointer block">
+                <Link 
+                  key={item.id} 
+                  href={item.link || (item.slug !== '#' ? `/articles/${item.slug}` : '#')}
+                  target={item.link ? '_blank' : '_self'}
+                  className="group cursor-pointer block"
+                >
                   <div className="aspect-[4/3] bg-surface-dim overflow-hidden font-body">
                     <img alt={item.title} className="w-full h-full object-cover grayscale group-hover:grayscale-0 transition-all duration-500" src={item.image}/>
                   </div>

@@ -32,11 +32,12 @@ const DEFAULT_COVER = {
 };
 
 const NAV_LEFT = ['The Founders', 'Creators', 'Wealth'];
-const NAV_RIGHT = ['Future', 'The Suite', 'Bombay'];
+const NAV_RIGHT = ['Articles', 'Future', 'The Suite', 'Bombay'];
 const NAV_HREFS: Record<string, string> = {
   'The Founders': '/categories/founders',
   'Creators': '/categories/creators',
   'Wealth': '/categories/wealth',
+  'Articles': '/articles',
   'Future': '/categories/future',
   'The Suite': '/categories/suite',
   'Bombay': '/categories/bombay',
@@ -62,7 +63,7 @@ export default function HomePageClient() {
     // Fetch all data in parallel
     Promise.all([
       fetch('/api/homepage').then(r => r.ok ? r.json() : null).catch(() => null),
-      fetch('/api/articles').then(r => r.ok ? r.json() : []).catch(() => []),
+      fetch('/api/articles?includeRSS=true').then(r => r.ok ? r.json() : []).catch(() => []),
       fetch('/api/founders').then(r => r.ok ? r.json() : []).catch(() => []),
       fetch('/api/creators').then(r => r.ok ? r.json() : []).catch(() => []),
     ]).then(([hp, arts, fnd, crt]) => {
@@ -82,8 +83,8 @@ export default function HomePageClient() {
     // Fallback: latest 3 published articles
     if (articles.length > 0) {
       return articles.slice(0, 3).map((a: any) => ({
-        href: `/articles/${a.slug}`,
-        section: a.category?.replace('cat_', '') || 'TBF',
+        href: a.link || `/articles/${a.slug}`,
+        section: a.category?.replace('cat_', '').toUpperCase() || 'INSIGHTS',
         title: a.title,
         img: a.featuredImage || DEFAULT_EDITORS_PICKS[0].img,
       }));
@@ -96,8 +97,8 @@ export default function HomePageClient() {
     // Try articles categorised across sections
     if (articles.length >= 3) {
       return articles.slice(0, 3).map((a: any) => ({
-        href: `/articles/${a.slug}`,
-        section: a.tags?.[0] || 'TBF Editorial',
+        href: a.link || `/articles/${a.slug}`,
+        section: a.tags?.[0] || 'TBF EDITORIAL',
         title: a.title,
         excerpt: a.subtitle || a.excerpt || '',
         img: a.featuredImage || DEFAULT_FEATURED_WEEK[0].img,
@@ -219,7 +220,7 @@ export default function HomePageClient() {
             </div>
             <div className="space-y-12">
               {editorPicks.map((pick: any) => (
-                <Link href={pick.href} key={pick.title} className="flex gap-6 items-start group block">
+                <Link href={pick.href} key={pick.title} target={pick.href.startsWith('http') ? '_blank' : '_self'} className="flex gap-6 items-start group block">
                   <div className="w-32 h-32 flex-shrink-0 bg-surface-container overflow-hidden">
                     <img src={pick.img} alt={pick.title} className="w-full h-full object-cover group-hover:scale-110 transition-transform duration-700" />
                   </div>
@@ -247,7 +248,7 @@ export default function HomePageClient() {
           </div>
           <div className="grid grid-cols-1 md:grid-cols-3 gap-12 md:gap-16">
             {featuredWeek.map((art: any) => (
-              <Link href={art.href || '#'} key={art.title}>
+              <Link href={art.href || '#'} key={art.title} target={art.href?.startsWith('http') ? '_blank' : '_self'}>
                 <article className="group cursor-pointer">
                   <div className="aspect-[4/5] bg-surface-container mb-8 overflow-hidden">
                     <img src={art.img || art.image} alt={art.title} className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-1000" />

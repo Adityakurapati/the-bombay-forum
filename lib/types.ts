@@ -19,6 +19,7 @@ export interface Article {
   tags?: string[];
   createdAt?: string;
   updatedAt?: string;
+  link?: string;
 }
 
 export interface Category {

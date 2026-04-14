@@ -11,6 +11,7 @@ const NAV_LEFT = [
 ];
 
 const NAV_RIGHT = [
+  { label: 'Articles', href: '/articles' },
   { label: 'Future', href: '/categories/future' },
   { label: 'The Suite', href: '/categories/suite' },
   { label: 'Bombay', href: '/categories/bombay' },

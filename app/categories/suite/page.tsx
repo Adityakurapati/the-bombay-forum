@@ -2,6 +2,7 @@ import { TopBar } from '@/components/TopBar';
 import { Header } from '@/components/Header';
 import { Footer } from '@/components/Footer';
 import { getAllSuiteData } from '@/lib/firebase';
+import { getAllArticles } from '@/lib/articles';
 import Link from 'next/link';
 
 export const dynamic = 'force-dynamic';
@@ -71,14 +72,32 @@ const DEFAULT_SECOND_ROW = [
 
 export default async function SuitePage() {
   let dbData: any = null;
+  let allArticles: any[] = [];
   try {
-    dbData = await getAllSuiteData();
+    [dbData, allArticles] = await Promise.all([
+      getAllSuiteData(),
+      getAllArticles({ includeRSS: true })
+    ]);
   } catch (e) {
-    console.error('[Suite] Failed to load DB data:', e);
+    console.error('[Suite] Failed to load data:', e);
   }
 
+  const suiteArticles = allArticles.filter((a: any) => a.category === 'cat_suite' && a.published !== false);
+
   const hero = DEFAULT_HERO;
-  const featuredCards = dbData?.featuredCards?.length > 0 ? dbData.featuredCards : DEFAULT_CARDS;
+  let featuredCards = dbData?.featuredCards?.length > 0 ? dbData.featuredCards : DEFAULT_CARDS;
+
+  if (suiteArticles.length > 0) {
+    const mapped = suiteArticles.map((a: any) => ({
+      tag: a.tags?.[0] || 'THE SUITE • ARTICLE',
+      title: a.title,
+      excerpt: a.subtitle || a.excerpt,
+      image: a.featuredImage,
+      link: a.link,
+      slug: a.slug
+    }));
+    featuredCards = [...mapped, ...featuredCards].slice(0, 6);
+  }
   const pullQuote = dbData?.pullQuote || DEFAULT_PULL_QUOTE;
   const featuredStrip = dbData?.featuredStrip || DEFAULT_STRIP;
   const secondRow = dbData?.secondRow?.length > 0 ? dbData.secondRow : DEFAULT_SECOND_ROW;
@@ -126,22 +145,29 @@ export default async function SuitePage() {
         {/* Featured Grid */}
         <div className="grid grid-cols-1 md:grid-cols-3 gap-16">
           {featuredCards.map((card: any, i: number) => (
-            <article key={i} className="group cursor-pointer">
-              <div className="aspect-[4/5] overflow-hidden mb-6">
-                <img
-                  alt={card.title}
-                  className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-700"
-                  src={card.image}
-                />
-              </div>
-              <span className="text-tertiary font-label uppercase tracking-widest text-[10px] font-bold block mb-3">
-                {card.tag}
-              </span>
-              <h3 className="text-2xl md:text-3xl font-headline text-on-secondary-fixed leading-tight mb-4 group-hover:text-brand-red transition-colors">
-                {card.title}
-              </h3>
-              <p className="text-secondary text-sm leading-relaxed line-clamp-3">{card.excerpt}</p>
-            </article>
+            <Link 
+              key={i} 
+              href={card.link || (card.slug && card.slug !== '#' ? `/articles/${card.slug}` : '#')}
+              target={card.link ? '_blank' : '_self'}
+              className="group block"
+            >
+              <article className="group cursor-pointer">
+                <div className="aspect-[4/5] overflow-hidden mb-6">
+                  <img
+                    alt={card.title}
+                    className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-700"
+                    src={card.image}
+                  />
+                </div>
+                <span className="text-tertiary font-label uppercase tracking-widest text-[10px] font-bold block mb-3">
+                  {card.tag}
+                </span>
+                <h3 className="text-2xl md:text-3xl font-headline text-on-secondary-fixed leading-tight mb-4 group-hover:text-brand-red transition-colors text-primary">
+                  {card.title}
+                </h3>
+                <p className="text-secondary text-sm leading-relaxed line-clamp-3">{card.excerpt}</p>
+              </article>
+            </Link>
           ))}
         </div>
 

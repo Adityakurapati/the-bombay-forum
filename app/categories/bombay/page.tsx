@@ -2,6 +2,8 @@ import { TopBar } from '@/components/TopBar';
 import { Header } from '@/components/Header';
 import { Footer } from '@/components/Footer';
 import { getAllBombayData } from '@/lib/firebase';
+import { getAllArticles } from '@/lib/articles';
+import Link from 'next/link';
 
 export const dynamic = 'force-dynamic';
 
@@ -61,17 +63,34 @@ const DEFAULT_OPINION = {
 
 export default async function BombayPage() {
   let dbData: any = null;
+  let allArticles: any[] = [];
   try {
-    dbData = await getAllBombayData();
+    [dbData, allArticles] = await Promise.all([
+      getAllBombayData(),
+      getAllArticles({ includeRSS: true })
+    ]);
   } catch (e) {
-    console.error('[Bombay] Failed to load DB data:', e);
+    console.error('[Bombay] Failed to load data:', e);
   }
+
+  const bombayArticles = allArticles.filter((a: any) => a.category === 'cat_bombay' && a.published !== false);
 
   const hero = DEFAULT_HERO;
   const leadStory = dbData?.leadStory || DEFAULT_LEAD_STORY;
   const sideStories = dbData?.sideStories?.length > 0 ? dbData.sideStories : DEFAULT_SIDE_STORIES;
   const pulseItems = dbData?.pulseItems?.length > 0 ? dbData.pulseItems : DEFAULT_PULSE;
-  const storyGrid = dbData?.storyGrid?.length > 0 ? dbData.storyGrid : DEFAULT_STORY_GRID;
+  let storyGrid = dbData?.storyGrid?.length > 0 ? dbData.storyGrid : DEFAULT_STORY_GRID;
+
+  if (bombayArticles.length > 0) {
+    const mapped = bombayArticles.map((a: any) => ({
+      tag: a.tags?.[0] || 'BOMBAY • ARTICLE',
+      title: a.title,
+      image: a.featuredImage,
+      link: a.link,
+      slug: a.slug
+    }));
+    storyGrid = [...mapped, ...storyGrid].slice(0, 9);
+  }
   const opinion = dbData?.opinionStrip || DEFAULT_OPINION;
 
   const ticker = hero.ticker;
@@ -171,9 +190,14 @@ export default async function BombayPage() {
           <div className="max-w-7xl mx-auto">
             <h2 className="text-4xl font-headline italic mb-16">Latest from Bombay</h2>
             <div className="grid grid-cols-1 md:grid-cols-3 gap-y-16 gap-x-12">
-              {storyGrid.map((item: any, i: number) => (
-                <div key={i} className="group cursor-pointer">
-                  <div className="aspect-[4/3] bg-surface-dim overflow-hidden">
+              {storyGrid.map((item: any) => (
+                <Link 
+                  key={item.id || item.title} 
+                  href={item.link || (item.slug ? `/articles/${item.slug}` : '#')}
+                  target={item.link ? '_blank' : '_self'}
+                  className="group cursor-pointer block"
+                >
+                  <div className="aspect-[4/3] bg-surface-dim overflow-hidden font-body relative">
                     <img
                       alt={item.title}
                       className="w-full h-full object-cover grayscale group-hover:grayscale-0 transition-all duration-500"
@@ -184,7 +208,7 @@ export default async function BombayPage() {
                     <span className="text-[#2DD4BF] text-[10px] font-bold tracking-widest uppercase font-label">{item.tag}</span>
                     <h3 className="text-2xl font-medium leading-tight group-hover:underline underline-offset-4 decoration-1 font-headline">{item.title}</h3>
                   </div>
-                </div>
+                </Link>
               ))}
             </div>
           </div>

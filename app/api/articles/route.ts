@@ -1,9 +1,14 @@
 import { NextRequest, NextResponse } from 'next/server';
-import { getArticles, createArticle, deleteArticle, updateArticle } from '@/lib/firebase';
+import { getAllArticles } from '@/lib/articles';
+import { createArticle, deleteArticle, updateArticle } from '@/lib/firebase';
 
-export async function GET() {
+export async function GET(request: NextRequest) {
   try {
-    const articles = await getArticles();
+    const { searchParams } = new URL(request.url);
+    const includeRSS = searchParams.get('includeRSS') === 'true';
+
+    const articles = await getAllArticles({ includeRSS });
+
     return NextResponse.json(articles);
   } catch (error) {
     console.error('[v0] Get Articles Error:', error);

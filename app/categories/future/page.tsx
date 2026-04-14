@@ -3,6 +3,7 @@ import { TopBar } from '@/components/TopBar';
 import { Header } from '@/components/Header';
 import { Footer } from '@/components/Footer';
 import { getAllFutureData } from '@/lib/firebase';
+import { getAllArticles } from '@/lib/articles';
 
 export const dynamic = 'force-dynamic'; // SSR on every request – always fresh from Firebase
 
@@ -58,17 +59,40 @@ const DEFAULT_OPINION = {
 export default async function FuturePage() {
   /* ── Fetch live data from Firebase (server-side) ── */
   let raw: Awaited<ReturnType<typeof getAllFutureData>> = null;
+  let allArticles: any[] = [];
   try {
-    raw = await getAllFutureData();
+    [raw, allArticles] = await Promise.all([
+      getAllFutureData(),
+      getAllArticles({ includeRSS: true })
+    ]);
   } catch (err) {
-    console.error('[FuturePage] Firebase fetch failed:', err);
+    console.error('[FuturePage] Fetch failed:', err);
   }
+
+  const futureArticles = allArticles.filter((a: any) => a.category === 'cat_future' && a.published !== false);
 
   /* ── Merge with defaults ── */
   const lead        = raw?.leadStory    ? { ...DEFAULT_LEAD,    ...raw.leadStory    } : DEFAULT_LEAD;
   const sideItems   = raw?.sideItems?.length   ? raw.sideItems   : DEFAULT_SIDE_ITEMS;
   const signalCards = raw?.signalCards?.length ? raw.signalCards : DEFAULT_SIGNAL_CARDS;
-  const storyGrid   = raw?.storyGrid?.length   ? raw.storyGrid   : DEFAULT_STORY_GRID;
+  // Merge story grid with recent articles if story grid is empty or just as additions
+  let storyGrid = raw?.storyGrid?.length ? raw.storyGrid : DEFAULT_STORY_GRID;
+  
+  if (futureArticles.length > 0) {
+    // Optionally prepend or append. Here we will use them as primary if they exist.
+    const mapped = futureArticles.map((a: any) => ({
+      id: a.id,
+      sub: a.tags?.[0] || 'ARTICLE',
+      title: a.title,
+      body: a.subtitle || a.excerpt,
+      read: `${a.readTime || 5} min read`,
+      img: a.featuredImage,
+      link: a.link,
+      slug: a.slug
+    }));
+    // Merge or replace. Let's merge for maximum content.
+    storyGrid = [...mapped, ...storyGrid].slice(0, 9);
+  }
   const opinion     = raw?.opinionStrip ? { ...DEFAULT_OPINION, ...raw.opinionStrip } : DEFAULT_OPINION;
 
   return (
@@ -190,7 +214,12 @@ export default async function FuturePage() {
           </div>
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-y-20 gap-x-12">
             {storyGrid.map((item: any) => (
-              <div key={item.id} className="group cursor-pointer">
+              <Link 
+                key={item.id} 
+                href={item.link || (item.slug !== '#' ? `/articles/${item.slug}` : '#')}
+                target={item.link ? '_blank' : '_self'}
+              >
+                <article className="group cursor-pointer">
                 <div className="aspect-square overflow-hidden mb-6">
                   <img
                     className="w-full h-full object-cover grayscale group-hover:grayscale-0 transition-all duration-700"
@@ -198,13 +227,14 @@ export default async function FuturePage() {
                     src={item.img}
                   />
                 </div>
-                <span className="font-label uppercase tracking-widest text-[10px] font-bold mb-3 block" style={{ color: TEAL }}>
-                  {item.sub}
-                </span>
-                <h3 className="font-headline text-2xl font-bold mb-4">{item.title}</h3>
-                <p className="font-body text-sm text-secondary leading-relaxed mb-4">{item.body}</p>
-                <span className="font-label text-[10px] text-outline uppercase tracking-widest">{item.read}</span>
-              </div>
+                  <span className="font-label uppercase tracking-widest text-[10px] font-bold mb-3 block" style={{ color: TEAL }}>
+                    {item.sub}
+                  </span>
+                  <h3 className="font-headline text-2xl font-bold mb-4">{item.title}</h3>
+                  <p className="font-body text-sm text-secondary leading-relaxed mb-4">{item.body}</p>
+                  <span className="font-label text-[10px] text-outline uppercase tracking-widest">{item.read}</span>
+                </article>
+              </Link>
             ))}
           </div>
         </section>
