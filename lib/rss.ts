@@ -5,7 +5,9 @@ const parser = new Parser({
   customFields: {
     item: [
       ['media:content', 'mediaContent', { keepArray: true }],
+      ['media:thumbnail', 'mediaThumbnail'],
       ['enclosure', 'enclosure'],
+      ['content:encoded', 'contentEncoded'],
     ],
   },
 });
@@ -14,26 +16,29 @@ const DEFAULT_RSS_URL = 'https://techcrunch.com/feed/';
 
 // Basic mapping of RSS categories to internal ones
 const CATEGORY_MAP: Record<string, string> = {
-  'AI': 'cat_future',
-  'Artificial Intelligence': 'cat_future',
-  'Technology': 'cat_future',
-  'Future': 'cat_future',
-  'Startups': 'cat_founders',
-  'VC': 'cat_founders',
-  'Venture Capital': 'cat_founders',
-  'Founders': 'cat_founders',
-  'Business': 'cat_founders',
-  'Finance': 'cat_wealth',
-  'Markets': 'cat_wealth',
-  'Economy': 'cat_wealth',
-  'Art': 'cat_creators',
-  'Culture': 'cat_creators',
-  'Design': 'cat_creators',
-  'Food': 'cat_suite',
-  'Travel': 'cat_suite',
-  'Lifestyle': 'cat_suite',
   'Bombay': 'cat_bombay',
   'Mumbai': 'cat_bombay',
+  'Enterprise': 'cat_founders',
+  'Apps': 'cat_creators',
+  'Media & Entertainment': 'cat_creators',
+  'Media': 'cat_creators',
+  'Hardware': 'cat_future',
+  'Transportation': 'cat_future',
+  'Security': 'cat_future',
+  'Fintech': 'cat_wealth',
+  'Climate': 'cat_future',
+  'Startup': 'cat_founders',
+  'Venture': 'cat_founders',
+};
+
+const CATEGORY_FALLBACKS: Record<string, string> = {
+  cat_future: 'https://images.unsplash.com/photo-1485827404703-89b55fcc595e?q=80&w=2000&auto=format&fit=crop',
+  cat_wealth: 'https://images.unsplash.com/photo-1590283603385-17ffb3a7f29f?q=80&w=2000&auto=format&fit=crop',
+  cat_founders: 'https://images.unsplash.com/photo-1556761175-b413da4baf72?q=80&w=2000&auto=format&fit=crop',
+  cat_creators: 'https://images.unsplash.com/photo-1499780332044-1f63057a80b3?q=80&w=2000&auto=format&fit=crop',
+  cat_suite: 'https://images.unsplash.com/photo-1445116572660-236099ec97a0?q=80&w=2000&auto=format&fit=crop',
+  cat_bombay: 'https://images.unsplash.com/photo-1566552881560-0be862a7c445?q=80&w=2000&auto=format&fit=crop',
+  cat_insights: 'https://images.unsplash.com/photo-1504711434969-e33886168f5c?q=80&w=2000&auto=format&fit=crop',
 };
 
 function mapCategory(categories: string[] = []): string {
@@ -47,20 +52,30 @@ function mapCategory(categories: string[] = []): string {
   return 'cat_insights';
 }
 
-function extractImage(item: any): string {
-  // Try media:content
+function extractImage(item: any, category: string): string {
+  // 1. Try media:content
   if (item.mediaContent && item.mediaContent.length > 0) {
-    return item.mediaContent[0].$.url;
+    const url = item.mediaContent[0].$.url || item.mediaContent[0].url;
+    if (url) return url;
   }
-  // Try enclosure
+  
+  // 2. Try media:thumbnail
+  if (item.mediaThumbnail && item.mediaThumbnail.$ && item.mediaThumbnail.$.url) {
+    return item.mediaThumbnail.$.url;
+  }
+
+  // 3. Try enclosure
   if (item.enclosure && item.enclosure.url) {
     return item.enclosure.url;
   }
-  // Try content for img tag
-  const imgMatch = item.content?.match(/<img[^>]+src="([^">]+)"/);
+
+  // 4. Try scanning HTML content for images
+  const searchContent = item.contentEncoded || item.content || item.description || '';
+  const imgMatch = searchContent.match(/<img[^>]+src="([^">]+)"/);
   if (imgMatch) return imgMatch[1];
   
-  return 'https://images.unsplash.com/photo-1504711434969-e33886168f5c?q=80&w=2000&auto=format&fit=crop';
+  // 5. Category-aware Fallback
+  return CATEGORY_FALLBACKS[category] || CATEGORY_FALLBACKS.cat_insights;
 }
 
 export async function fetchRSSArticles(feedUrl: string = DEFAULT_RSS_URL): Promise<Article[]> {
@@ -78,7 +93,7 @@ export async function fetchRSSArticles(feedUrl: string = DEFAULT_RSS_URL): Promi
         excerpt: item.contentSnippet || '',
         category: category,
         author: item.creator || item.author || 'TBF Insights',
-        featuredImage: extractImage(item),
+        featuredImage: extractImage(item, category),
         slug: item.link || '#',
         link: item.link,
         readTime: 5, // Default
