@@ -133,7 +133,7 @@ export default function HomePageClient() {
 
       {/* ── MAIN NAV / HEADER ── */}
       <header
-        className="text-white sticky top-0 z-50 flex justify-between items-center px-4 md:px-12 py-4 w-full"
+        className="text-white sticky top-0 z-50 flex justify-between items-center px-4 md:px-12 h-14 w-full"
         style={{ backgroundColor: '#0B1929' }}
       >
         {/* Left nav */}
@@ -151,8 +151,9 @@ export default function HomePageClient() {
             src="/logo.png"
             alt="The Bombay Forum"
             width={120}
-            height={32}
-            className="h-8 w-auto object-contain"
+            height={24}
+            className="h-6 w-auto object-contain"
+            style={{ width: 'auto', height: 'auto' }}
             priority
           />
         </Link>
@@ -404,11 +405,13 @@ export default function HomePageClient() {
           {/* Brand Col */}
           <div className="col-span-1">
             <div className="mb-10">
-              <img
-                src="https://lh3.googleusercontent.com/aida/ADBb0uij5k7AVG2BPCY0MFV2493gRfkVSUaP2PmvR8DUGfsWEW3FT4ssOP7cEMCAuJ10j4mOUjPSonF-tqr25x7tWBuoYscMSBd49YGDK4ZmKDBLgR2DrHQ4bJHlVUcS0JMqoN3lCeDy0KjFlLZRJuTkCksPeXTgzT3PKaIBPl61sNTjvPqUAM4ocMzKxdtiDlT4hC48Xw4bHiLsRYkwZBUHPLe1DPL-2EDeFrdqDORLXAN2EnNN9HDr17oKTNgDgptYYtjCa_TJT7LKnYk"
+              <Image
+                src="/logo.png"
                 alt="TBF Logo"
-                className="h-10"
-                style={{ filter: 'brightness(0) invert(1)' }}
+                width={160}
+                height={40}
+                className="h-10 w-auto object-contain"
+                style={{ width: 'auto', height: 'auto' }}
               />
             </div>
             <p className="text-slate-400 text-sm leading-relaxed mb-10 opacity-80 font-body">

@@ -4,6 +4,7 @@ import { Footer } from '@/components/Footer';
 import { getAllSuiteData } from '@/lib/firebase';
 import { getAllArticles } from '@/lib/articles';
 import Link from 'next/link';
+import { SuiteFilterableGrid } from '@/components/suite/SuiteFilterableGrid';
 
 export const dynamic = 'force-dynamic';
 
@@ -128,49 +129,11 @@ export default async function SuitePage() {
         </div>
       </section>
 
-      {/* Filter Bar */}
-      <nav className="sticky top-20 z-40 bg-surface/95 backdrop-blur-xl py-6 px-8 border-b border-outline-variant/15">
-        <div className="max-w-7xl mx-auto flex items-center justify-center overflow-x-auto whitespace-nowrap scrollbar-hide space-x-12">
-          <button className="text-brand-red font-bold border-b-2 border-brand-red pb-1 uppercase tracking-widest text-xs font-label">All Collections</button>
-          <button className="text-secondary hover:text-brand-red transition-colors uppercase tracking-widest text-xs font-label">Hotels & Retreats</button>
-          <button className="text-secondary hover:text-brand-red transition-colors uppercase tracking-widest text-xs font-label">Design & Interiors</button>
-          <button className="text-secondary hover:text-brand-red transition-colors uppercase tracking-widest text-xs font-label">Travel</button>
-          <button className="text-secondary hover:text-brand-red transition-colors uppercase tracking-widest text-xs font-label">Watches & Style</button>
-          <button className="text-secondary hover:text-brand-red transition-colors uppercase tracking-widest text-xs font-label">Fine Dining</button>
-        </div>
-      </nav>
+      {/* Sticky Bar and Filtered Grid */}
+      <SuiteFilterableGrid initialCards={featuredCards} />
 
-      {/* Content Canvas */}
-      <main className="max-w-7xl mx-auto px-8 py-24 space-y-32">
-        {/* Featured Grid */}
-        <div className="grid grid-cols-1 md:grid-cols-3 gap-16">
-          {featuredCards.map((card: any, i: number) => (
-            <Link 
-              key={i} 
-              href={card.link || (card.slug && card.slug !== '#' ? `/articles/${card.slug}` : '#')}
-              target={card.link ? '_blank' : '_self'}
-              className="group block"
-            >
-              <article className="group cursor-pointer">
-                <div className="aspect-[4/5] overflow-hidden mb-6">
-                  <img
-                    alt={card.title}
-                    className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-700"
-                    src={card.image}
-                  />
-                </div>
-                <span className="text-tertiary font-label uppercase tracking-widest text-[10px] font-bold block mb-3">
-                  {card.tag}
-                </span>
-                <h3 className="text-2xl md:text-3xl font-headline text-on-secondary-fixed leading-tight mb-4 group-hover:text-brand-red transition-colors text-primary">
-                  {card.title}
-                </h3>
-                <p className="text-secondary text-sm leading-relaxed line-clamp-3">{card.excerpt}</p>
-              </article>
-            </Link>
-          ))}
-        </div>
-
+      {/* Content Canvas (Remaining Sections) */}
+      <main className="max-w-7xl mx-auto px-8 pb-32 space-y-32">
         {/* Pull Quote */}
         <div className="relative py-12 border-l-4 border-tertiary-fixed pl-12 max-w-4xl mx-auto">
           <blockquote className="text-4xl md:text-5xl font-headline italic text-on-secondary-fixed leading-tight">

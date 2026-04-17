@@ -1,4 +1,5 @@
 import Link from 'next/link';
+import Image from 'next/image';
 
 const SECTIONS = [
   { label: 'The Founders', href: '/categories/founders' },
@@ -32,11 +33,13 @@ export function Footer() {
         {/* ── Brand Col ── */}
         <div className="col-span-1">
           <div className="mb-10">
-            <img
-              src="https://lh3.googleusercontent.com/aida/ADBb0uij5k7AVG2BPCY0MFV2493gRfkVSUaP2PmvR8DUGfsWEW3FT4ssOP7cEMCAuJ10j4mOUjPSonF-tqr25x7tWBuoYscMSBd49YGDK4ZmKDBLgR2DrHQ4bJHlVUcS0JMqoN3lCeDy0KjFlLZRJuTkCksPeXTgzT3PKaIBPl61sNTjvPqUAM4ocMzKxdtiDlT4hC48Xw4bHiLsRYkwZBUHPLe1DPL-2EDeFrdqDORLXAN2EnNN9HDr17oKTNgDgptYYtjCa_TJT7LKnYk"
+            <Image
+              src="/logo.png"
               alt="TBF Logo"
-              className="h-10"
-              style={{ filter: 'brightness(0) invert(1)' }}
+              width={160}
+              height={40}
+              className="h-10 w-auto object-contain"
+              style={{ width: 'auto', height: 'auto' }}
             />
           </div>
           <p className="text-slate-400 text-sm leading-relaxed mb-10 opacity-80 font-body">

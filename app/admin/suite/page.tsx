@@ -4,6 +4,15 @@ import { useState, useEffect } from 'react';
 
 type Tab = 'hero' | 'cards' | 'pullQuote' | 'featuredStrip' | 'secondRow';
 
+const SUITE_CATEGORIES = [
+  'All Collections',
+  'Hotels & Retreats',
+  'Design & Interiors',
+  'Travel',
+  'Watches & Style',
+  'Fine Dining'
+];
+
 const TABS: { key: Tab; label: string; icon: string }[] = [
   { key: 'cards', label: 'Featured Cards', icon: 'grid_view' },
   { key: 'pullQuote', label: 'Pull Quote', icon: 'format_quote' },
@@ -131,8 +140,8 @@ export default function AdminSuitePage() {
               <h2 className="font-headline text-2xl" style={{ color: '#0B1929' }}>Featured Cards (3 items)</h2>
               <button
                 onClick={async () => {
-                  const id = await saveListItem('featuredCard', null, { tag: 'The Suite — New', title: 'New Card', excerpt: '', image: '' });
-                  if (id) setData((p: any) => ({ ...p, featuredCards: [...(p.featuredCards || []), { id, tag: 'The Suite — New', title: 'New Card', excerpt: '', image: '' }] }));
+                  const id = await saveListItem('featuredCard', null, { tag: 'The Suite — New', title: 'New Card', excerpt: '', image: '', category: 'All Collections' });
+                  if (id) setData((p: any) => ({ ...p, featuredCards: [...(p.featuredCards || []), { id, tag: 'The Suite — New', title: 'New Card', excerpt: '', image: '', category: 'All Collections' }] }));
                 }}
                 className="flex items-center gap-2 px-4 py-2 text-white text-[11px] font-label uppercase tracking-widest"
                 style={{ backgroundColor: '#C8102E' }}
@@ -149,6 +158,16 @@ export default function AdminSuitePage() {
                 <Field label="Image URL" value={card.image} onChange={v => setData((p: any) => ({ ...p, featuredCards: p.featuredCards.map((c: any) => c.id === card.id ? { ...c, image: v } : c) }))} />
                 {card.image && <img src={card.image} alt="" className="w-full aspect-[4/5] object-cover border border-surface-container-highest" />}
                 <Field label="Tag (e.g. The Suite — Style)" value={card.tag} onChange={v => setData((p: any) => ({ ...p, featuredCards: p.featuredCards.map((c: any) => c.id === card.id ? { ...c, tag: v } : c) }))} />
+                <div className="mb-4">
+                  <label className="block text-[10px] uppercase tracking-widest font-bold font-label text-on-surface-variant mb-2">Category</label>
+                  <select 
+                    className="w-full bg-white border border-surface-container-highest px-4 py-3 text-sm font-body focus:outline-none focus:ring-2 focus:ring-[#0B1929]/30"
+                    value={card.category || 'All Collections'}
+                    onChange={e => setData((p: any) => ({ ...p, featuredCards: p.featuredCards.map((c: any) => c.id === card.id ? { ...c, category: e.target.value } : c) }))}
+                  >
+                    {SUITE_CATEGORIES.map(cat => <option key={cat} value={cat}>{cat}</option>)}
+                  </select>
+                </div>
                 <Field label="Title" value={card.title} onChange={v => setData((p: any) => ({ ...p, featuredCards: p.featuredCards.map((c: any) => c.id === card.id ? { ...c, title: v } : c) }))} />
                 <Field label="Excerpt" value={card.excerpt} onChange={v => setData((p: any) => ({ ...p, featuredCards: p.featuredCards.map((c: any) => c.id === card.id ? { ...c, excerpt: v } : c) }))} multiline />
                 <button onClick={() => saveListItem('featuredCard', card.id, card)} className="text-[10px] uppercase tracking-widest font-label font-bold text-[#0B1929] border-b border-[#0B1929] pb-0.5">Save Card</button>

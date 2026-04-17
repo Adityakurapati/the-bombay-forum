@@ -26,7 +26,7 @@ export function Header() {
     <>
       {/* ── STICKY MAIN HEADER ── */}
       <header
-        className="text-white sticky top-0 z-50 flex justify-between items-center px-4 md:px-12 py-4 w-full"
+        className="text-white sticky top-0 z-50 flex justify-between items-center px-4 md:px-12 h-14 w-full"
         style={{ backgroundColor: '#0B1929' }}
       >
         {/* Left nav — desktop only */}
@@ -62,8 +62,9 @@ export function Header() {
             src="/logo.png"
             alt="The Bombay Forum"
             width={120}
-            height={32}
-            className="h-8 w-auto object-contain"
+            height={20}
+            className="h-8 w-auto object-cover"
+            style={{ width: 'auto', height: 'auto' }}
             priority
           />
         </Link>
